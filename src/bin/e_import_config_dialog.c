@@ -481,7 +481,7 @@ e_import_config_dialog_show(E_Container *con, const char *path, Ecore_End_Cb ok,
    evas_object_image_size_get(preview,&w, &h);
    evas_object_del(preview);
 
-   _e_import_config_preview_size_get(320, w, h, &tw, &th);
+   _e_import_config_preview_size_get(340, w, h, &tw, &th);
    
    preview = e_widget_preview_add(evas, tw, th);
    e_widget_preview_thumb_set(preview, path, NULL, tw, th);
@@ -516,6 +516,22 @@ e_import_config_dialog_show(E_Container *con, const char *path, Ecore_End_Cb ok,
                                  24, 24, IMPORT_PAN, rg);
    e_widget_frametable_object_append(of, ord, 2, 1, 1, 1, 1, 0, 1, 0);
    e_widget_list_object_append(ot, of, 1, 1, 0.5);
+
+   if(e_import_place_show == IMPORT_PLACE_SHOW)
+   {
+       of = e_widget_frametable_add(evas, _("Where to place this Wallpaper"), 1);
+       rg = e_widget_radio_group_new(&import->place);
+       ord = e_widget_radio_add(evas, _("All Desktops"), IMPORT_WALLPAPER_ALL, rg);
+       e_widget_frametable_object_append(of, ord, 0, 0, 1, 1, 1, 0, 1, 0);
+       ord = e_widget_radio_add(evas, _("This Desktop"), IMPORT_WALLPAPER_DESK, rg);
+       e_widget_frametable_object_append(of, ord, 1, 0, 1, 1, 1, 0, 1, 0);
+       ord = e_widget_radio_add(evas, _("This Screen"), IMPORT_WALLPAPER_SCREEN, rg);
+       if (!(e_util_container_zone_number_get(0, 1) || (e_util_container_zone_number_get(1, 0))))
+           e_widget_disabled_set(ord, 1);
+       e_widget_frametable_object_append(of, ord, 2, 0, 1, 1, 1, 0, 1, 0);
+       e_widget_list_object_append(ot, of, 1, 1, 0);
+       e_import_place_show = IMPORT_PLACE_HIDE;
+   }
 
    ol = e_widget_list_add(evas, 0, 1);
 
