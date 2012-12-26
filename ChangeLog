@@ -1,5 +1,6 @@
 2013-05-08 Mike Blumenkrantz
 
+	* Notification settings: add check changed.
         * e_fm2_optimal_size_calc returns bool to indicate whether the returned size can be used
 
 2013-03-01 Sebastian Dransfeld

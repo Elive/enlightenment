@@ -10,6 +10,7 @@ struct _E_Config_Dialog_Data
    int    dual_screen;
    double timeout;
    int    corner;
+   Evas_Object *force_timeout_slider;
 };
 
 /* local function protos */
@@ -22,6 +23,10 @@ static Evas_Object *_basic_create(E_Config_Dialog      *cfd,
                                   E_Config_Dialog_Data *cfdata);
 static int _basic_apply(E_Config_Dialog      *cfd,
                         E_Config_Dialog_Data *cfdata);
+static int _basic_check_changed(E_Config_Dialog      *cfd,
+                                E_Config_Dialog_Data *cfdata);
+static void _force_timeout_changed(void        *data,
+                                   Evas_Object *obj __UNUSED__);
 
 E_Config_Dialog *
 e_int_config_notification_module(E_Container *con,
@@ -40,6 +45,7 @@ e_int_config_notification_module(E_Container *con,
    v->free_cfdata = _free_data;
    v->basic.create_widgets = _basic_create;
    v->basic.apply_cfdata = _basic_apply;
+   v->basic.check_changed = _basic_check_changed;
 
    snprintf(buf, sizeof(buf), "%s/e-module-notification.edj", notification_mod->dir);
    cfd = e_config_dialog_new(con, _("Notification Settings"), "Notification",
@@ -103,11 +109,13 @@ _basic_create(E_Config_Dialog      *cfd __UNUSED__,
 
    of = e_widget_framelist_add(evas, _("Default Timeout"), 0);
    ow = e_widget_check_add(evas, _("Force timeout for all notifications"), &(cfdata->force_timeout));
+   e_widget_on_change_hook_set(ow, _force_timeout_changed, cfdata);
    e_widget_framelist_object_append(of, ow);
-   ow = e_widget_slider_add(evas, 1, 0, _("%.1f seconds"), 0.0, 15.0, 0.1, 0,
-                            &(cfdata->timeout), NULL, 200);
+   cfdata->force_timeout_slider = ow =
+     e_widget_slider_add(evas, 1, 0, _("%.1f seconds"), 0.0, 15.0, 0.1, 0, &(cfdata->timeout), NULL, 200);
    e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
+   _force_timeout_changed(cfdata, NULL);
 
    /* man = e_manager_current_get();
     * of = e_widget_framelist_add(evas, _("Placement"), 0);
@@ -166,3 +174,26 @@ _basic_apply(E_Config_Dialog      *cfd __UNUSED__,
    return 1;
 }
 
+static int
+_basic_check_changed(E_Config_Dialog      *cfd __UNUSED__,
+                     E_Config_Dialog_Data *cfdata)
+{
+   return 
+     (cfdata->show_low != notification_cfg->show_low) ||
+     (cfdata->show_normal != notification_cfg->show_normal) ||
+     (cfdata->show_critical != notification_cfg->show_critical) ||
+     (cfdata->timeout != notification_cfg->timeout) ||
+     (cfdata->corner != notification_cfg->corner) ||
+     (cfdata->force_timeout != notification_cfg->force_timeout) ||
+     (cfdata->ignore_replacement != notification_cfg->ignore_replacement) ||
+     (cfdata->dual_screen != notification_cfg->dual_screen);
+}
+
+static void
+_force_timeout_changed(void        *data,
+                       Evas_Object *obj __UNUSED__)
+{
+   E_Config_Dialog_Data *cfdata = data;
+
+   e_widget_disabled_set(cfdata->force_timeout_slider, !cfdata->force_timeout);
+}
