@@ -183,7 +183,7 @@ _basic_check_changed(E_Config_Dialog      *cfd __UNUSED__,
      (cfdata->show_normal != notification_cfg->show_normal) ||
      (cfdata->show_critical != notification_cfg->show_critical) ||
      (cfdata->timeout != notification_cfg->timeout) ||
-     (cfdata->corner != notification_cfg->corner) ||
+     (cfdata->corner != (int)notification_cfg->corner) ||
      (cfdata->force_timeout != notification_cfg->force_timeout) ||
      (cfdata->ignore_replacement != notification_cfg->ignore_replacement) ||
      (cfdata->dual_screen != notification_cfg->dual_screen);
