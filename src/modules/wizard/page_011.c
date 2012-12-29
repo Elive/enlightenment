@@ -1,12 +1,22 @@
 /* Language chooser */
 #include "e_wizard.h"
 
+#define FREE_SPLIT(x) if (x[0]) { free(x[0]); free(x); }
 typedef struct _Layout Layout;
+typedef struct _XKB_Data XKB_Data;
 
 struct _Layout
 {
    const char *name;
    const char *label;
+};
+
+struct _XKB_Data
+{
+   Eina_List *layout;
+   Eina_List *options;
+   const char *variant;
+   const char *model;
 };
 
 static const char *rules_file = NULL;
@@ -44,6 +54,197 @@ find_rules(void)
              break;
           }
      }
+}
+
+static char*
+_xkb_clean_line(char* s)
+{
+    char* space;
+#define STR_CLEAN(x)             \
+ while ((space = strchr(s, x)))  \
+    {                            \
+        *space = '\0';           \
+        strcat(s, space + 1);    \
+    }
+
+    if (strchr(s, '#')) return NULL;
+    if (!strchr(s, '=')) return NULL;
+
+    STR_CLEAN(' ');
+    STR_CLEAN('\"');
+    STR_CLEAN('\n');
+#undef STR_CLEAN
+
+    space = strchr(s, '=');
+    if ((space-s+1) == (int) strlen(s)) return NULL;
+    if (strncmp(s, "XKB", 3)) return NULL;
+    return s;
+}
+
+static Eina_List *
+_xkb_list_get(const char *data)
+{
+   Eina_List *l = NULL;
+
+   if (strchr(data, ','))
+     {
+        int i;
+        char **split;
+
+        split = eina_str_split(data, ",", 0);
+
+        for (i = 0; split[i] != NULL; i++)
+          {
+             if(strlen(split[i]) == 0)
+               {
+                  l = eina_list_append(l, NULL);
+                  continue;
+               }
+             l = eina_list_append(l, eina_stringshare_add(split[i]));
+          }
+        FREE_SPLIT(split);
+     }
+   return l;
+}
+
+static XKB_Data *
+_xkb_data_get(void)
+{
+   XKB_Data *xkb_data = NULL;
+   FILE *fp;
+   fp = fopen("/etc/default/keyboard", "r");
+
+   if (fp)
+     {
+        xkb_data = E_NEW(XKB_Data, 1);
+
+        char line [1024];
+        while (fgets(line, sizeof line, fp))
+          {
+             if (_xkb_clean_line(line))
+               {
+                  char **split;
+                  split = eina_str_split(line, "=", 2);
+
+                  if (!strcasecmp(split[0], "XKBMODEL"))
+                    xkb_data->model = eina_stringshare_add(split[1]);
+
+                  if (!strcasecmp(split[0], "XKBLAYOUT"))
+                    xkb_data->layout = _xkb_list_get(split[1]);
+
+                  if (!strcasecmp(split[0], "XKBVARIANT"))
+                    xkb_data->variant = eina_stringshare_add(split[1]);
+
+                  if (!strcasecmp(split[0], "XKBOPTIONS"))
+                    xkb_data->options = _xkb_list_get(split[1]);
+
+                  FREE_SPLIT(split);
+               }
+          }
+        fclose(fp);
+     }
+   return xkb_data;
+}
+
+static void
+_xkb_data_add_to_e_config(XKB_Data *data)
+{
+   int i = 0;
+   const char *lay, *var, *opt, *mod;
+   E_Config_XKB_Layout *nl;
+   E_Config_XKB_Option *no;
+
+   if (!data) return;
+
+   EINA_LIST_FREE(data->layout, lay)
+     {
+        if (!lay) continue;
+
+        var = eina_stringshare_add(eina_list_nth(_xkb_list_get(data->variant), i));
+        if (!var) var = eina_stringshare_add("basic");
+
+        mod = data->model ? data->model : eina_stringshare_add("default");
+
+        printf("Setting keyboard layout: %s|%s|%s \n", lay, data->model, var);
+
+        if (!i && e_config->xkb.used_layouts)
+          {
+             E_Config_XKB_Layout *def;
+
+             def = eina_list_nth(e_config->xkb.used_layouts, 0);
+             if (!strcmp(def->name, lay))
+               {
+                  def->variant = eina_stringshare_add(var);
+                  def->model = eina_stringshare_add(mod);
+                  e_xkb_update(1);
+                  e_xkb_layout_set(def);
+                  i++;
+                  continue;
+               }
+          }
+
+        nl = E_NEW(E_Config_XKB_Layout, 1);
+        nl->name = eina_stringshare_add(lay);
+        nl->variant = eina_stringshare_add(var);
+        nl->model = eina_stringshare_add(mod);
+
+        e_config->xkb.used_layouts = eina_list_append(e_config->xkb.used_layouts, nl);
+        if (!i)
+          e_xkb_layout_set(nl);
+        i++;
+     }
+
+   e_config->xkb.used_options = eina_list_free(e_config->xkb.used_options);
+   EINA_LIST_FREE(data->options, opt)
+     {
+        no = E_NEW(E_Config_XKB_Option, 1);
+        no->name = eina_stringshare_add(opt);
+        e_config->xkb.used_options = eina_list_append(e_config->xkb.used_options, no);
+     }
+    eina_stringshare_del(data->model);
+    eina_stringshare_del(data->variant);
+    free(data);
+}
+
+static const char*
+locale_region_keyboard_get(void)
+{
+   const char *kb = eina_stringshare_add("us");
+   E_Locale_Parts *locale;
+
+   locale = e_intl_locale_parts_get(e_intl_language_get());
+   fprintf(stdout, "Lang:[%s], Region:[%s] \n", locale->lang, locale->region);
+   if (locale)
+     {
+        Eina_List *l;
+        Layout *lay;
+
+        if (!strcasecmp(locale->lang, "eo"))
+          {
+             eina_stringshare_del(kb);
+             return eina_stringshare_add("epo");;
+          }
+
+        EINA_LIST_FOREACH(layouts, l, lay)
+          {
+             fprintf(stdout, "Lay[%s] || Lang:[%s], Region:[%s] \n",lay->name, locale->lang, locale->region);
+
+             if (locale->region && (strcasecmp(lay->name, locale->region) == 0))
+               {
+                  eina_stringshare_del(kb);
+                  kb = eina_stringshare_add(lay->name);
+                  break;
+               }
+
+             if (locale->lang && (strcasecmp(lay->name, locale->lang) == 0))
+               {
+                  eina_stringshare_del(kb);
+                  kb = eina_stringshare_add(lay->name);
+                  break;
+               }
+          }
+     }
+   return kb;
 }
 
 static int
@@ -93,6 +294,10 @@ implement_layout(void)
    Eina_List *l;
    E_Config_XKB_Layout *nl;
    Eina_Bool found = EINA_FALSE;
+   XKB_Data *data;
+
+   data = _xkb_data_get();
+   _xkb_data_add_to_e_config(data);
 
    if (!layout) return;
 
@@ -136,7 +341,10 @@ wizard_page_show(E_Wizard_Page *pg)
 {
    Evas_Object *o, *of, *ob, *ic;
    Eina_List *l;
+   const char *kb;
    int i, sel = -1;
+
+   kb = locale_region_keyboard_get();
 
    o = e_widget_list_add(pg->evas, 1, 0);
    e_wizard_title_set(_("Keyboard"));
@@ -158,9 +366,11 @@ wizard_page_show(E_Wizard_Page *pg)
         e_widget_ilist_append(ob, ic, _(label), NULL, NULL, lay->name);
         if (lay->name)
           {
-             if (!strcmp(lay->name, "us")) sel = i;
+             fprintf(stdout, "Lay:[%s] Reg[%s]\n", lay->name, kb);
+             if (!strcasecmp(lay->name, kb)) sel = i;
           }
      }
+   eina_stringshare_del(kb);
 
    e_widget_ilist_go(ob);
    e_widget_ilist_thaw(ob);
@@ -193,4 +403,5 @@ wizard_page_apply(E_Wizard_Page *pg __UNUSED__)
    implement_layout();
    return 1;
 }
+#undef FREE_SPLIT
 
