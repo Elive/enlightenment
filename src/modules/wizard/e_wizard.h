@@ -2,6 +2,13 @@
 
 #include "e.h"
 
+# define TS(x)                                                    \
+  {                                                               \
+     t1 = ecore_time_unix_get();                                  \
+     printf("WIZARD: %1.5f [%1.5f] - %s\n", t1 - t0, t1 - t2, x); \
+     t2 = t1;                                                     \
+  }
+
 extern E_Module *wiz_module;
 
 typedef struct _E_Wizard_Page E_Wizard_Page;
@@ -27,6 +34,7 @@ struct _E_Wizard_Page
    E_Wizard_Page_State state;
 };
 
+EAPI double t0, t1, t2;
 EAPI int e_wizard_init(void);
 EAPI int e_wizard_shutdown(void);
 EAPI void e_wizard_go(void);

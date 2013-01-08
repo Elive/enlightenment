@@ -56,6 +56,7 @@ wizard_page_show(E_Wizard_Page *pg __UNUSED__)
 #else
    char *str, *p;
 
+   TS(__FILE__);
    str = read_file("/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies");
    if (str)
      {

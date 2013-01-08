@@ -32,6 +32,7 @@ wizard_page_show(E_Wizard_Page *pg)
 {
    Evas_Object *o;
 
+   TS(__FILE__);
    e_wizard_title_set(_("Enlightenment"));
    o = edje_object_add(pg->evas);
    e_theme_edje_object_set(o, "base/theme/wizard", "e/wizard/firstpage");

@@ -345,8 +345,8 @@ wizard_page_show(E_Wizard_Page *pg)
    const char *kb;
    int i, sel = -1;
 
+   TS(__FILE__);
    kb = locale_region_keyboard_get();
-
    o = e_widget_list_add(pg->evas, 1, 0);
    e_wizard_title_set(_("Keyboard"));
    of = e_widget_framelist_add(pg->evas, _("Select one"), 0);

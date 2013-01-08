@@ -65,6 +65,7 @@ wizard_page_show(E_Wizard_Page *pg)
    Ecore_Evas *ee;
    Ecore_X_Window_Attributes att;
 
+   TS(__FILE__);
    if (!ecore_x_composite_query()) return 0;
    if (!ecore_x_damage_query()) return 0;
 

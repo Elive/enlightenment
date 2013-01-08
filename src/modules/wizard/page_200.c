@@ -29,6 +29,7 @@ wizard_page_hide(E_Wizard_Page *pg __UNUSED__)
 EAPI int
 wizard_page_apply(E_Wizard_Page *pg __UNUSED__)
 {
+   TS(__FILE__);
    // setup post wizard init
    e_config->post_wizard = 1;
    // save the config now everyone has modified it
@@ -37,6 +38,7 @@ wizard_page_apply(E_Wizard_Page *pg __UNUSED__)
    e_util_env_set("E_RESTART", NULL);
    // restart e
    e_sys_action_do(E_SYS_RESTART, NULL);
+   TS("DONE");
    return 1;
 }
 
