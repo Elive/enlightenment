@@ -31,6 +31,7 @@ wizard_page_show(E_Wizard_Page *pg __UNUSED__)
 {
    Evas_Object *o;
 
+   TS(__FILE__);
    e_wizard_title_set(_("Enlightenment"));
    e_wizard_button_next_enable_set(0);
    o = edje_object_add(pg->evas);

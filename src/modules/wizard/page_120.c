@@ -46,6 +46,7 @@ EAPI int
 wizard_page_show(E_Wizard_Page *pg __UNUSED__)
 {
    int hav_temperature = 1;
+   TS(__FILE__);
 #ifdef __FreeBSD__
    // figure out on bsd if we have temp sensors
 #else

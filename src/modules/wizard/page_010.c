@@ -151,6 +151,7 @@ wizard_page_shutdown(E_Wizard_Page *pg __UNUSED__)
 EAPI int
 wizard_page_show(E_Wizard_Page *pg)
 {
+   TS(__FILE__);
    Evas_Object *o, *of, *ob, *ic;
    Eina_List *l;
    int i, sel = -1;

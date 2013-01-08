@@ -36,6 +36,8 @@ EAPI E_Module_Api e_modapi =
    "Wizard"
 };
 
+double t0, t1, t2;
+
 static int
 _cb_sort_files(char *f1, char *f2)
 {
@@ -48,6 +50,10 @@ e_modapi_init(E_Module *m)
    Eina_List *files;
    char buf[PATH_MAX];
    char *file;
+
+   t0 = ecore_time_unix_get();
+   t1 = t0;
+   t2 = t0;
 
    wiz_module = m;
    e_wizard_init();
@@ -68,6 +74,7 @@ e_modapi_init(E_Module *m)
              snprintf(buf, sizeof(buf), "%s/%s/%s",
                       e_module_dir_get(m), MODULE_ARCH, file);
              handle = dlopen(buf, RTLD_NOW | RTLD_GLOBAL);
+             TS(buf);
              if (handle)
                e_wizard_page_add(handle,
                                  dlsym(handle, "wizard_page_init"),

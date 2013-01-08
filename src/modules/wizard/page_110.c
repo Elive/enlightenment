@@ -115,6 +115,7 @@ wizard_page_show(E_Wizard_Page *pg)
 #ifdef HAVE_ECONNMAN
    E_DBus_Connection *c;
 
+   TS(__FILE__);
    c = e_dbus_bus_get(DBUS_BUS_SYSTEM);
    if (c)
      {

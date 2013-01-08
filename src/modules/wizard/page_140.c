@@ -16,6 +16,7 @@ wizard_page_shutdown(E_Wizard_Page *pg __UNUSED__)
 EAPI int
 wizard_page_show(E_Wizard_Page *pg __UNUSED__)
 {
+   TS(__FILE__);
    int hav_mixer = 0;
 #ifdef HAVE_ALSA
    hav_mixer = 1;

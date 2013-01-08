@@ -47,6 +47,7 @@ wizard_page_show(E_Wizard_Page *pg)
    int i, sel = -1;
    Evas_Object *ilist;
 
+   TS(__FILE__);
    o = e_widget_list_add(pg->evas, 1, 0);
    e_wizard_title_set(_("Profile"));
    of = e_widget_framelist_add(pg->evas, _("Select one"), 0);

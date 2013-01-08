@@ -18,6 +18,7 @@ wizard_page_show(E_Wizard_Page *pg __UNUSED__)
 {
    Eina_List *files;
    char buf[PATH_MAX], buf2[PATH_MAX], *file;
+   TS(__FILE__);
 
    // make desktop dir
    ecore_file_mkpath(efreet_desktop_dir_get());
