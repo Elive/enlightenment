@@ -740,6 +740,7 @@ wizard_page_hide(E_Wizard_Page *pg __UNUSED__)
    /* TODO:
     * This should be on lang select,
     * so if next page needs xdg we can't press next */
+
    e_wizard_xdg_desktops_reset();
    e_intl_language_set(e_config->language);
    e_wizard_labels_update();
