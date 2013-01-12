@@ -72,17 +72,21 @@ wizard_page_show(E_Wizard_Page *pg)
    ecore_x_window_attributes_get(ecore_x_window_root_first_get(), &att);
    if ((att.depth <= 8)) return 0;
 
-   ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 320, 240);
-   if (ee)
+   if(!ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_OPENGL_X11))
+     return 0;
+
+   if (
+      (match_xorg_log("*(II)*NVIDIA*: Creating default Display*")) ||
+      (match_xorg_log("*(II)*intel*: Creating default Display*")) ||
+      (match_xorg_log("*(II)*NOUVEAU*: Creating default Display*")) /*||
+      (match_xorg_log("*(II)*RADEON*: Creating default Display*"))*/
+      )
      {
-        ecore_evas_free(ee);
-        if (
-          (match_xorg_log("*(II)*NVIDIA*: Creating default Display*")) ||
-          (match_xorg_log("*(II)*intel*: Creating default Display*")) ||
-          (match_xorg_log("*(II)*NOUVEAU*: Creating default Display*")) ||
-          (match_xorg_log("*(II)*RADEON*: Creating default Display*"))
-          )
+        ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 320, 240);
+
+        if (ee)
           {
+             ecore_evas_free(ee);
              do_gl = 1;
              do_vsync = 1;
           }
