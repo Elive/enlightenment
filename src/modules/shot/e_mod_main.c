@@ -619,8 +619,7 @@ _shot_now(E_Zone *zone, E_Border *bd)
    Ecore_X_Screen *scr;
    Ecore_X_Window_Attributes watt;
    Ecore_X_Colormap colormap;
-   
-   watt.visual = 0;
+
    if ((!zone) && (!bd)) return;
    if (zone)
      {
