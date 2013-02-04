@@ -409,6 +409,7 @@ struct _E_Config
    
    unsigned char exe_always_single_instance;
    int           use_desktop_window_profile; // GUI
+   int post_wizard;
 };
 
 struct _E_Config_Desklock_Background

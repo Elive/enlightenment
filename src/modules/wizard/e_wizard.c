@@ -290,6 +290,15 @@ e_wizard_efreet_update(void)
    efreet_lang_reset();
 }
 
+EAPI void
+e_wizard_button_wait(void)
+{
+   next_can = 0;
+   next_prev = 0;
+   edje_object_part_text_set(o_bg, "e.text.label", _("Please Wait..."));
+   edje_object_signal_emit(o_bg, "e,state,next,disable", "e");
+}
+
 static void
 _e_wizard_next_eval(void)
 {

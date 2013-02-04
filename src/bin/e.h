@@ -325,5 +325,8 @@ EAPI void e_alert_composite_win(Ecore_X_Window root, Ecore_X_Window win);
  * @defgroup Optional_Mobile Mobile Specific Extensions
  * @}
  */
+extern EAPI void        e_pre_wizard_init(void);
+extern EAPI Eina_Bool   e_pre_wizard_done(void);
+extern EAPI void        e_post_wizard_init(void);
 
 #endif

@@ -99,7 +99,6 @@ static Eina_Bool _e_main_cb_x_flusher(void *data __UNUSED__);
 static Eina_Bool _e_main_cb_idle_before(void *data __UNUSED__);
 static Eina_Bool _e_main_cb_idle_after(void *data __UNUSED__);
 static Eina_Bool _e_main_cb_startup_fake_end(void *data __UNUSED__);
-
 /* local variables */
 static Eina_Bool really_know = EINA_FALSE;
 static Eina_Bool locked = EINA_FALSE;
@@ -123,6 +122,12 @@ EAPI Eina_Bool starting = EINA_TRUE;
 EAPI Eina_Bool stopping = EINA_FALSE;
 EAPI Eina_Bool restart = EINA_FALSE;
 EAPI Eina_Bool e_nopause = EINA_FALSE;
+
+#define E_WIZARD_TIMEOUT 30
+static Eina_List *e_wizard_script_list = NULL;
+static int        e_wizard_scripts = 0;
+static int        e_wizard_script_no = 0;
+static int        e_wizard_timeout = E_WIZARD_TIMEOUT;
 
 static void
 _xdg_data_dirs_augment(void)
@@ -995,6 +1000,7 @@ main(int argc, char **argv)
    e_managers_keys_grab();
    TS("E_Manager Keys Grab Done");
 
+
    if (e_config->show_splash)
      e_init_status_set(_("Load Modules"));
    TS("Load Modules");
@@ -1053,6 +1059,13 @@ main(int argc, char **argv)
 
    starting = EINA_FALSE;
    inloop = EINA_TRUE;
+
+   if (e_config->post_wizard)
+     {
+        e_post_wizard_init();
+        e_config->post_wizard = 0;
+        e_config_save_queue();
+     }
 
    e_util_env_set("E_RESTART", "1");
    
@@ -1925,4 +1938,131 @@ _e_main_cb_startup_fake_end(void *data __UNUSED__)
 {
    e_init_hide();
    return ECORE_CALLBACK_CANCEL;
+}
+
+/*-----------------POST-WIZARD--------------------------*/
+#define UM_PATH "/etc/user-manager/hooks.d/e17-config"
+
+static Eina_Bool
+_ee_wizard_handler(void *data __UNUSED__, int type __UNUSED__, void *event)
+{
+   Ecore_Exe_Event_Del *eed;
+   Eina_List *l;
+   Eina_Stringshare *script_cmd;
+   const char *cmd;
+
+   if (!(eed = event)) return ECORE_CALLBACK_CANCEL;
+   if (!eed->exe) return ECORE_CALLBACK_CANCEL;
+
+   cmd = ecore_exe_cmd_get(eed->exe);
+   if (!cmd) return ECORE_CALLBACK_CANCEL;
+
+   EINA_LIST_FOREACH(e_wizard_script_list, l, script_cmd)
+      if (strcmp(cmd, script_cmd) == 0)
+        e_wizard_script_no++;
+   //fprintf(stdout, "At Script:[%s] [%d]\n", cmd, e_wizard_script_no);
+   return ECORE_CALLBACK_DONE;
+}
+
+static void
+_e_wizard_user_manager_hooks_get(int preset)
+{
+   Eina_Strbuf *buf;
+   Eina_List *flist;
+   Eina_Stringshare *filename;
+   size_t base_len;
+
+   if (!ecore_file_exists(UM_PATH) || !ecore_file_is_dir(UM_PATH)) return;
+
+   flist = ecore_file_ls(UM_PATH);
+
+   base_len = strlen(UM_PATH) + 1;
+
+   buf = eina_strbuf_new();
+   eina_strbuf_append(buf, UM_PATH);
+   eina_strbuf_append_char(buf, '/');
+
+   EINA_LIST_FREE(flist, filename)
+     {
+        if (eina_str_has_extension(filename, !preset ? ".pre" : ".post"))
+          {
+             eina_strbuf_append(buf, filename);
+
+             if (ecore_file_exists(eina_strbuf_string_get(buf)) &&
+                 !ecore_file_is_dir(eina_strbuf_string_get(buf)))
+               {
+                  Ecore_Exe *child;
+                  pid_t pid;
+
+                  if (preset)
+                    eina_strbuf_append_char(buf, '&');
+
+                  e_wizard_scripts++;
+                  e_wizard_script_list = eina_list_append(e_wizard_script_list,
+                                                   strdup(eina_strbuf_string_get(buf)));
+                  child = ecore_exe_pipe_run(eina_strbuf_string_get(buf),
+                                             ECORE_EXE_PIPE_WRITE |
+                                             ECORE_EXE_PIPE_READ_LINE_BUFFERED |
+                                             ECORE_EXE_PIPE_ERROR_LINE_BUFFERED,
+                                             NULL);
+
+                  pid = ecore_exe_pid_get(child);
+
+                  if (pid == -1)
+                    TS("Unable to retreive PID");
+
+                  if (!preset)
+                    ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _ee_wizard_handler, NULL);
+               }
+             eina_strbuf_remove(buf, base_len, strlen(eina_strbuf_string_get(buf)));
+          }
+     }
+   eina_strbuf_string_free(buf);
+}
+
+
+static Eina_Bool
+_e_post_wizard_init(void *data __UNUSED__)
+{
+   TS("Executing Post Wizard");
+   _e_wizard_user_manager_hooks_get(1);
+   TS("Executing Post Wizard Done");
+   return ECORE_CALLBACK_DONE;
+}
+
+static Eina_Bool
+_e_pre_wizard_timeout(void *data __UNUSED__)
+{
+   if (e_wizard_timeout)
+     {
+        e_wizard_timeout--;
+        return ECORE_CALLBACK_RENEW;
+     }
+
+   e_wizard_timeout = E_WIZARD_TIMEOUT;
+   return ECORE_CALLBACK_DONE;
+}
+
+EAPI void
+e_pre_wizard_init(void)
+{
+   _e_wizard_user_manager_hooks_get(0);
+   ecore_timer_add(1.0, _e_pre_wizard_timeout, NULL);
+}
+
+EAPI void
+e_post_wizard_init(void)
+{
+   if (!e_config->post_wizard) return;
+   ecore_timer_add(4.0, _e_post_wizard_init, NULL);
+}
+
+EAPI Eina_Bool
+e_pre_wizard_done(void)
+{
+   if (!e_wizard_timeout) return EINA_TRUE;
+   if (e_wizard_script_no < e_wizard_scripts)
+     return EINA_FALSE;
+
+   return EINA_TRUE;
 }

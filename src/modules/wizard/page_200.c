@@ -29,6 +29,8 @@ wizard_page_hide(E_Wizard_Page *pg __UNUSED__)
 EAPI int
 wizard_page_apply(E_Wizard_Page *pg __UNUSED__)
 {
+   // setup post wizard init
+   e_config->post_wizard = 1;
    // save the config now everyone has modified it
    e_config_save();
    // diusable restart env so we actually start a whole new session properly
