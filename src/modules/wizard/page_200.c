@@ -30,6 +30,7 @@ EAPI int
 wizard_page_apply(E_Wizard_Page *pg __UNUSED__)
 {
    // save the config now everyone has modified it
+   e_config->wizard_after = 1;
    e_config_save();
    // diusable restart env so we actually start a whole new session properly
    e_util_env_set("E_RESTART", NULL);

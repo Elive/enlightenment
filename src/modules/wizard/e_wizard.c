@@ -11,6 +11,7 @@ static void      _e_wizard_next_xdg(void);
 static Eina_Bool _e_wizard_cb_next_page(void *data);
 static Eina_Bool _e_wizard_cb_desktops_update(void *data, int ev_type, void *ev);
 static Eina_Bool _e_wizard_cb_icons_update(void *data, int ev_type, void *ev);
+static Eina_Bool _e_wizard_cb_border_show(void *data, int ev_type, void *ev);
 
 static E_Popup *pop = NULL;
 static Eina_List *pops = NULL;
@@ -64,6 +65,10 @@ e_wizard_init(void)
 
    E_LIST_HANDLER_APPEND(handlers, EFREET_EVENT_ICON_CACHE_UPDATE,
                          _e_wizard_cb_icons_update, NULL);
+
+   E_LIST_HANDLER_APPEND(handlers, E_EVENT_BORDER_SHOW,
+                         _e_wizard_cb_border_show, NULL);
+
    return 1;
 }
 
@@ -214,6 +219,23 @@ e_wizard_page_del(E_Wizard_Page *pg)
 }
 
 EAPI void
+e_wizard_button_label_set(const char *label)
+{
+   next_can = 0;
+   next_prev = 0;
+   edje_object_part_text_set(o_bg, "e.text.label", _(label));
+}
+
+EAPI void
+e_wizard_button_wait(void)
+{
+   next_can = 0;
+   next_prev = 0;
+   edje_object_part_text_set(o_bg, "e.text.label", _("Please Wait..."));
+   edje_object_signal_emit(o_bg, "e,state,next,disable", "e");
+}
+
+EAPI void
 e_wizard_button_next_enable_set(int enable)
 {
    next_ok = enable;
@@ -279,7 +301,7 @@ _e_wizard_main_new(E_Zone *zone)
    Eina_Bool kg;
 
    popup = e_popup_new(zone, 0, 0, zone->w, zone->h);
-   e_popup_layer_set(popup, E_LAYER_TOP);
+   e_popup_layer_set(popup, E_LAYER_DESKTOP);
    o = edje_object_add(popup->evas);
 
    e_theme_edje_object_set(o, "base/theme/wizard", "e/wizard/main");
@@ -317,12 +339,12 @@ _e_wizard_main_new(E_Zone *zone)
 
    e_popup_edje_bg_object_set(popup, o_bg);
    e_popup_show(popup);
-   if (!e_grabinput_get(ecore_evas_software_x11_window_get(popup->ecore_evas),
+  /* if (!e_grabinput_get(ecore_evas_software_x11_window_get(popup->ecore_evas),
                         1, ecore_evas_software_x11_window_get(popup->ecore_evas)))
      {
         e_object_del(E_OBJECT(popup));
         popup = NULL;
-     }
+     }*/
    return popup;
 }
 
@@ -472,5 +494,32 @@ _e_wizard_cb_icons_update(void *data __UNUSED__, int ev_type __UNUSED__, void *e
    got_icons = EINA_TRUE;
    if (_e_wizard_check_xdg())
      _e_wizard_next_xdg();
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_e_wizard_cb_border_show(void *data __UNUSED__, int ev_type __UNUSED__, void *ev)
+{
+   E_Event_Border_Show *event = ev;
+   E_Border *bd;
+
+   bd = event->border;
+
+   if (strcmp(bd->client.icccm.name, "urxvt") == 0)
+     {
+        e_border_center(bd);
+        e_border_layer_set(bd, E_LAYER_BELOW);
+        bd->lock_user_location = 1;
+        bd->lock_client_location = 1;
+        eina_stringshare_replace(&bd->bordername, "borderless");
+        bd->changed = 1;
+     }
+   else
+     {
+        e_border_center(bd);
+        e_border_raise(event->border);
+        e_border_focus_set(event->border, 1, 1);
+     }
+
    return ECORE_CALLBACK_PASS_ON;
 }
