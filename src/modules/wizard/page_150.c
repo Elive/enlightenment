@@ -78,17 +78,23 @@ wizard_page_show(E_Wizard_Page *pg)
    if (
       (match_xorg_log("*(II)*NVIDIA*: Creating default Display*")) ||
       (match_xorg_log("*(II)*intel*: Creating default Display*")) ||
-      (match_xorg_log("*(II)*NOUVEAU*: Creating default Display*")) /*||
-      (match_xorg_log("*(II)*RADEON*: Creating default Display*"))*/
+      (match_xorg_log("*(II)*NOUVEAU*: Creating default Display*")) ||
+      (match_xorg_log("*(II)*RADEON*: Creating default Display*"))
       )
      {
         ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 320, 240);
 
         if (ee)
           {
+             const char *renderer;
+
+             renderer = e_glxinfo_renderer_get();
              ecore_evas_free(ee);
-             do_gl = 1;
-             do_vsync = 1;
+             if (!strstr(renderer, "llvmpipe"))
+               {
+                  do_gl = 1;
+                  do_vsync = 1;
+               }
           }
      }
 
