@@ -405,6 +405,7 @@ struct _E_Config
       const char *desklock_layout;
    } xkb;
    
+   Eina_List  *menu_applications;
    unsigned char exe_always_single_instance;
    int           use_desktop_window_profile; // GUI
 };
