@@ -505,6 +505,7 @@ struct _E_Border
    unsigned int       moving : 1;
    unsigned int       focused : 1;
    unsigned int       new_client : 1;
+   unsigned int       new_client_focus_set : 1;
    unsigned int       re_manage : 1;
    unsigned int       placed : 1;
    unsigned int       shading : 1;
@@ -668,6 +669,7 @@ struct _E_Border
 
    Eina_Bool                  argb;
 
+   int                        desk_set_focus;
    int                        tmp_input_hidden;
 };
 
@@ -740,6 +742,7 @@ EAPI void           e_border_raise(E_Border *bd);
 EAPI void           e_border_lower(E_Border *bd);
 EAPI void           e_border_stack_above(E_Border *bd, E_Border *above);
 EAPI void           e_border_stack_below(E_Border *bd, E_Border *below);
+EAPI void           e_border_focus_latest_delay_set(E_Border *bd);
 EAPI void           e_border_focus_latest_set(E_Border *bd);
 EAPI void           e_border_raise_latest_set(E_Border *bd);
 EAPI void           e_border_focus_set_with_pointer(E_Border *bd);

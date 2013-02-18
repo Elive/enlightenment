@@ -400,6 +400,23 @@ e_desk_deskshow(E_Zone *zone)
 EAPI void
 e_desk_last_focused_focus(E_Desk *desk)
 {
+   E_Border *bd;
+
+   bd = e_desk_last_focused_border_get(desk);
+   if (bd)
+     {
+        bd->desk_set_focus = 1;
+        e_border_focus_set_with_pointer(bd);
+     }
+}
+
+/*
+ * This functions gets the last focus border from a specific destkop,
+ * if it found the border, it will return E_Border, else return NULL
+ */
+EAPI E_Border *
+e_desk_last_focused_border_get(E_Desk *desk)
+{
    Eina_List *l = NULL;
    E_Border *bd;
 
@@ -416,12 +433,10 @@ e_desk_last_focused_focus(E_Desk *desk)
           {
              /* this was the window last focused in this desktop */
              if (!bd->lock_focus_out)
-               {
-                  e_border_focus_set_with_pointer(bd);
-                  break;
-               }
+               return bd;
           }
      }
+   return NULL;
 }
 
 EAPI void
