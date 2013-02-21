@@ -7425,7 +7425,9 @@ _e_border_eval0(E_Border *bd)
      }
    if (bd->client.icccm.fetch.title)
      {
+        char buf[PATH_MAX];
         char *title = ecore_x_icccm_title_get(bd->client.win);
+        snprintf(buf, sizeof(buf), "%s - [0x%08x]", title, bd->client.win);
         eina_stringshare_replace(&bd->client.icccm.title, title);
         free(title);
 
@@ -7437,9 +7439,10 @@ _e_border_eval0(E_Border *bd)
      }
    if (bd->client.netwm.fetch.name)
      {
-        char *name;
+        char *name, buf[PATH_MAX];
         ecore_x_netwm_name_get(bd->client.win, &name);
-        eina_stringshare_replace(&bd->client.netwm.name, name);
+        snprintf(buf, sizeof(buf), "%s - [0x%08x]", name, bd->client.win);
+        eina_stringshare_replace(&bd->client.netwm.name, buf);
         free(name);
 
         if (bd->bg_object)
