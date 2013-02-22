@@ -555,6 +555,11 @@ main(int argc, char **argv)
    TS("E_Pointer Init Done");
    _e_main_shutdown_push(e_pointer_shutdown);
 
+   TS("E_NightMode Init");
+   e_nightmode_init();
+   TS("E_NightMode Done");
+   _e_main_shutdown_push(e_nightmode_shutdown);
+
    TS("E Paths Init");
    if (!_e_main_path_init())
      {

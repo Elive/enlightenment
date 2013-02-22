@@ -322,6 +322,7 @@ struct _E_Config
    {
       unsigned char presentation; // INTERNAL
       unsigned char offline; // INTERNAL
+      unsigned char night; // INTERNAL
    } mode;
 
    struct
