@@ -126,6 +126,7 @@ e_mouse.h \
 e_moveresize.h \
 e_msgbus.h \
 e_msg.h \
+e_night_mode.h \
 e_obj_dialog.h \
 e_object.h \
 e_order.h \
@@ -278,6 +279,7 @@ e_mouse.c \
 e_moveresize.c \
 e_msgbus.c \
 e_msg.c \
+e_night_mode.c \
 e_obj_dialog.c \
 e_object.c \
 e_order.c \
@@ -363,7 +365,7 @@ e_main.c \
 $(enlightenment_src)
 
 enlightenment_LDFLAGS = -export-dynamic
-enlightenment_LDADD = @e_libs@ @ELM_LIBS@ @EMOTION_LIBS@ @dlopen_libs@ @cf_libs@ @VALGRIND_LIBS@ -lm
+enlightenment_LDADD = @e_libs@ @ELM_LIBS@ @EMOTION_LIBS@ @dlopen_libs@ @cf_libs@ @VALGRIND_LIBS@ -lm -lXxf86vm
 
 enlightenment_imc_SOURCES = \
 e.h \

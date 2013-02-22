@@ -535,6 +535,11 @@ main(int argc, char **argv)
    TS("E_Env Init Done");
    _e_main_shutdown_push(e_env_shutdown);
 
+   TS("E_NightMode Init");
+   e_nightmode_init();
+   TS("E_NightMode Done");
+   _e_main_shutdown_push(e_nightmode_shutdown);
+
    e_util_env_set("E_ICON_THEME", e_config->icon_theme);
    ecore_exe_run_priority_set(e_config->priority);
    locked |= e_config->desklock_start_locked;
@@ -1049,6 +1054,7 @@ main(int argc, char **argv)
    e_shelf_config_update();
    TS("E_Shelf Config Update Done");
 
+
    TS("Manage all windows");
    _e_main_manage_all();
 
@@ -1137,7 +1143,6 @@ _e_main_shutdown(int errcode)
    int i = 0;
 
    printf("E17: Begin Shutdown Procedure!\n");
-
    if (_idle_before) ecore_idle_enterer_del(_idle_before);
    _idle_before = NULL;
    if (_idle_after) ecore_idle_enterer_del(_idle_after);
