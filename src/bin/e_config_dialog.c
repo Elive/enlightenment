@@ -275,18 +275,29 @@ _e_config_dialog_go(E_Config_Dialog *cfd, E_Config_Dialog_CFData_Type type)
      {
         if (!cfd->hide_buttons)
           {
-             e_dialog_button_add(cfd->dia, _("OK"), NULL,
-                                 _e_config_dialog_cb_ok, cfd);
-             e_dialog_button_add(cfd->dia, _("Apply"), NULL,
-                                 _e_config_dialog_cb_apply, cfd);
+             if (cfd->view->ok_label)
+               e_dialog_button_add(cfd->dia, cfd->view->ok_label, NULL,
+                                   _e_config_dialog_cb_ok, cfd);
+             else
+               e_dialog_button_add(cfd->dia, _("OK"), NULL,
+                                   _e_config_dialog_cb_ok, cfd);
+
+             if (!cfd->view->hide_apply)
+               e_dialog_button_add(cfd->dia, _("Apply"), NULL,
+                                   _e_config_dialog_cb_apply, cfd);
+
              if (!cfd->cfg_changed)
                {
                   e_dialog_button_disable_num_set(cfd->dia, 0, 1);
                   e_dialog_button_disable_num_set(cfd->dia, 1, 1);
                }
           }
-        e_dialog_button_add(cfd->dia, _("Close"), NULL,
-                            _e_config_dialog_cb_close, cfd);
+        if (cfd->view->close_label)
+          e_dialog_button_add(cfd->dia, cfd->view->close_label, NULL,
+                              _e_config_dialog_cb_close, cfd);
+        else
+          e_dialog_button_add(cfd->dia, _("Close"), NULL,
+                              _e_config_dialog_cb_close, cfd);
      }
 
    if (cfdata && cfd->cfg_changed_auto)
