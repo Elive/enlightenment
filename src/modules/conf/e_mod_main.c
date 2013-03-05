@@ -27,6 +27,8 @@ static void             _cb_action_conf(void *data, Evas_Object *obj, const char
 
 static void             _conf_new(void);
 static void             _conf_free(void);
+static Eina_Bool        _e_mod_mode_sleep_countdown_timer(void *data);
+static Eina_Bool        _e_mod_mode_sleep_clockmode_timer(void *data);
 
 static E_Module *conf_module = NULL;
 static E_Action *act = NULL;
@@ -284,6 +286,8 @@ e_modapi_init(E_Module *m)
                                      NULL, "preferences-advanced");
    e_configure_registry_item_add("advanced/conf", 110, _("Configuration Panel"),
                                  NULL, buf, e_int_config_conf_module);
+   e_configure_registry_item_add("advanced/sleep", 120, _("Sleep Timeout Configuration"),
+                                 NULL, buf, e_int_config_sleep_module);
 
    conf_edd = E_CONFIG_DD_NEW("Config", Config);
 #undef T
@@ -292,6 +296,16 @@ e_modapi_init(E_Module *m)
 #define D conf_edd
    E_CONFIG_VAL(D, T, version, INT);
    E_CONFIG_VAL(D, T, menu_augmentation, INT);
+   E_CONFIG_VAL(D, T, countdown.hour, DOUBLE);
+   E_CONFIG_VAL(D, T, countdown.min, DOUBLE);
+   E_CONFIG_VAL(D, T, countdown.time, DOUBLE);
+   E_CONFIG_VAL(D, T, countdown.active, INT);
+   E_CONFIG_VAL(D, T, clockmode.hour, DOUBLE);
+   E_CONFIG_VAL(D, T, clockmode.min, DOUBLE);
+   E_CONFIG_VAL(D, T, clockmode.time, DOUBLE);
+   E_CONFIG_VAL(D, T, clockmode.active, INT);
+   E_CONFIG_VAL(D, T, clockmode.always, INT);
+   E_CONFIG_VAL(D, T, sleep_type, INT);
 
    conf = e_config_domain_load("module.conf", conf_edd);
    if (conf)
@@ -309,8 +323,13 @@ e_modapi_init(E_Module *m)
           e_int_menus_menu_augmentation_add
             ("config/2", e_mod_config_menu_add, NULL, NULL, NULL);
      }
+   conf->countdown_timer = NULL;
+   conf->clockmode_timer = NULL;
 
    e_gadcon_provider_register(&_gadcon_class);
+
+   e_mod_mode_sleep_countdown_timer_reset();
+   e_mod_mode_sleep_clockmode_timer_reset();
    return m;
 }
 
@@ -393,6 +412,13 @@ _e_mod_conf_cb(void *data __UNUSED__, E_Menu *m, E_Menu_Item *mi __UNUSED__)
 }
 
 static void
+_e_mod_mode_sleep_toggle(void *data __UNUSED__, E_Menu *m __UNUSED__, E_Menu_Item *mi __UNUSED__)
+{
+   E_Container *con = e_container_current_get(e_manager_current_get());
+   e_int_config_sleep_module(con, NULL);
+}
+
+static void
 _e_mod_mode_presentation_toggle(void *data __UNUSED__, E_Menu *m __UNUSED__, E_Menu_Item *mi)
 {
    e_config->mode.presentation = !e_config->mode.presentation;
@@ -426,6 +452,16 @@ _e_mod_submenu_modes_fill(void *data __UNUSED__, E_Menu *m)
    E_Glxinfo *eglx;
 
    eglx = e_glxinfo_get();
+   mi = e_menu_item_new(m);
+   e_menu_item_check_set(mi, 1);
+   if (conf->countdown.active || conf->clockmode.active)
+     e_menu_item_toggle_set(mi, 1);
+   else
+     e_menu_item_toggle_set(mi, 0);
+   e_menu_item_label_set(mi, _("Sleep Timeout"));
+   e_util_menu_item_theme_icon_set(mi, "preferences-modes-sleep");
+   e_menu_item_callback_set(mi, _e_mod_mode_sleep_toggle, NULL);
+
    mi = e_menu_item_new(m);
    e_menu_item_check_set(mi, 1);
    e_menu_item_toggle_set(mi, e_config->mode.presentation);
@@ -489,6 +525,7 @@ _conf_new(void)
 {
    conf = E_NEW(Config, 1);
    conf->menu_augmentation = 1;
+   conf->sleep_type = 2;
 
    conf->version = MOD_CONFIG_FILE_VERSION;
    e_config_save_queue();
@@ -499,3 +536,219 @@ _conf_free(void)
 {
    E_FREE(conf);
 }
+
+static void
+_e_mod_mode_sleep_interval_adjust(Ecore_Timer *timer, int seconds_left)
+{
+   int interval = 15;
+
+   if (seconds_left > 3600) interval = 1800;
+   else if ((seconds_left > 1800) && (seconds_left < 3600)) interval = 900;
+   else if ((seconds_left > 900) && (seconds_left < 1800))  interval = 450;
+   else if ((seconds_left > 450) && (seconds_left < 900))
+     {
+        interval = 225;
+
+        if (!conf->alert_message)
+          {
+             E_Container *con = e_container_current_get(e_manager_current_get());
+             e_int_config_sleep_alert(con, NULL);
+             conf->alert_message = EINA_TRUE;
+          }
+     }
+   else if ((seconds_left > 225) && (seconds_left < 450))   interval = 115;
+   else if ((seconds_left > 115) && (seconds_left < 225))   interval = 60;
+   else if ((seconds_left >55 ) && (seconds_left < 115))   interval = 30;
+   else if (seconds_left < 55) interval = 5;
+
+ fprintf(stdout, "Changing Ecore_Timer Interval to: %d \n", interval);
+ ecore_timer_interval_set(timer, interval);
+}
+
+double
+e_mod_mode_sleep_time_left_calc(void)
+{
+   double hour_to_sec = 0 , min_to_sec = 0;
+
+   if (conf->countdown.hour)
+     hour_to_sec = (conf->countdown.hour * 3600);
+
+   if (conf->countdown.min)
+     min_to_sec = (conf->countdown.min * 60);
+
+   if (hour_to_sec)
+     return ((hour_to_sec + min_to_sec) + conf->countdown.time) - ecore_time_unix_get();
+   else
+     return (min_to_sec + conf->countdown.time) - ecore_time_unix_get();
+}
+
+void
+e_mod_mode_sleep_countdown_timer_reset(void)
+{
+   if (conf->countdown_timer)
+     ecore_timer_del(conf->countdown_timer);
+   conf->countdown_timer = NULL;
+
+   if (conf->countdown.active)
+     conf->countdown_timer = ecore_timer_loop_add(5.0, _e_mod_mode_sleep_countdown_timer, NULL);
+}
+
+static Eina_Bool
+_e_mod_mode_sleep_countdown_timer(void *data __UNUSED__)
+{
+   double seconds_left;
+
+   if ((!conf->countdown.hour && !conf->countdown.min) || !conf->countdown.active)
+     {
+        if (conf->countdown_timer) ecore_timer_del(conf->countdown_timer);
+        conf->countdown_timer = NULL;
+
+     return ECORE_CALLBACK_CANCEL;
+     }
+
+   seconds_left = e_mod_mode_sleep_time_left_calc();
+
+   fprintf(stdout, "Countdown: Time left in seconds:%0.0f \n", seconds_left);
+   _e_mod_mode_sleep_interval_adjust(conf->countdown_timer, seconds_left);
+
+   if (seconds_left <= 0 )
+     {
+        fprintf(stdout, "Action: %d \n", conf->sleep_type);
+
+        conf->countdown.active = 0;
+        e_config_save_queue();
+
+
+        if ((int) seconds_left < (-5))
+          {
+             fprintf(stdout, "Seems you just turned on the pc... ignoring old sleep time\n");
+
+             if (conf->countdown_timer) ecore_timer_del(conf->countdown_timer);
+             conf->countdown_timer = NULL;
+
+             return ECORE_CALLBACK_DONE;
+          }
+
+        if (conf->sleep_type == 2)
+          e_sys_action_do(E_SYS_SUSPEND, NULL);
+        else if (conf->sleep_type == 1)
+          e_sys_action_do(E_SYS_HIBERNATE, NULL);
+        else if (conf->sleep_type == 0)
+          e_sys_action_do(E_SYS_HALT_NOW, NULL);
+
+        if (conf->countdown_timer) ecore_timer_del(conf->countdown_timer);
+        conf->countdown_timer = NULL;
+
+        return ECORE_CALLBACK_DONE;
+     }
+
+   return ECORE_CALLBACK_RENEW;
+}
+
+void
+e_mod_mode_sleep_clockmode_timer_reset(void)
+{
+   if (conf->clockmode_timer)
+     ecore_timer_del(conf->clockmode_timer);
+   conf->clockmode_timer = NULL;
+
+   if (conf->clockmode.active)
+     conf->clockmode_timer = ecore_timer_loop_add(5.0, _e_mod_mode_sleep_clockmode_timer, NULL);
+}
+
+
+double
+e_mod_mode_sleep_clockmode_epoch_time_get(void)
+{
+   struct tm ts;
+   struct tm *ts_today;
+   time_t t;
+   double epoch;
+
+   t = time(NULL);
+   ts_today = localtime(&t);
+
+   localtime_r(&t, &ts);
+   ts.tm_sec = 0;
+   ts.tm_min = (int) conf->clockmode.min;
+   ts.tm_hour = (int) conf->clockmode.hour;
+   ts.tm_mday = ts_today->tm_mday;
+   ts.tm_mon = ts_today->tm_mon;
+   ts.tm_year = ts_today->tm_year;
+   epoch = (double)mktime(&ts);
+
+   if (epoch < ecore_time_unix_get())
+     epoch += 3600*24;
+
+   return epoch;
+}
+
+static Eina_Bool
+_e_mod_mode_sleep_clockmode_timer(void *data __UNUSED__)
+{
+   double seconds_left;
+
+   if (!conf->clockmode.active)
+     {
+        if (conf->clockmode_timer) ecore_timer_del(conf->clockmode_timer);
+        conf->clockmode_timer = NULL;
+
+     return ECORE_CALLBACK_CANCEL;
+     }
+
+   seconds_left = conf->clockmode.time - ecore_time_unix_get();
+   fprintf(stdout, "ClockMode: Time left in seconds:%0.0f \n", seconds_left);
+   _e_mod_mode_sleep_interval_adjust(conf->clockmode_timer, seconds_left);
+
+   if ((int) seconds_left <= 0 )
+     {
+        fprintf(stdout, "Action: %d \n", conf->sleep_type);
+
+        if (conf->clockmode.always)
+          conf->clockmode.time = e_mod_mode_sleep_clockmode_epoch_time_get();
+        else
+          conf->clockmode.active = 0;
+
+        e_config_save_queue();
+        if ((int) seconds_left < (-5))
+          {
+             fprintf(stdout, "Seems you just turned on the pc... ignoring old sleep time\n");
+
+             if (conf->clockmode.always)
+               {
+                  conf->clockmode.time = e_mod_mode_sleep_clockmode_epoch_time_get();
+                  e_config_save_queue();
+
+                  return ECORE_CALLBACK_RENEW;
+               }
+             else
+               {
+                  conf->clockmode.active = 0;
+                  e_config_save_queue();
+
+                  if (conf->clockmode_timer) ecore_timer_del(conf->clockmode_timer);
+                  conf->clockmode_timer = NULL;
+                  return ECORE_CALLBACK_DONE;
+               }
+          }
+
+
+        if (conf->sleep_type == 2)
+          e_sys_action_do(E_SYS_SUSPEND, NULL);
+        else if (conf->sleep_type == 1)
+          e_sys_action_do(E_SYS_HIBERNATE, NULL);
+        else if (conf->sleep_type == 0)
+          e_sys_action_do(E_SYS_HALT_NOW, NULL);
+
+        if (conf->clockmode.active)
+          return ECORE_CALLBACK_RENEW;
+
+        if (conf->clockmode_timer) ecore_timer_del(conf->clockmode_timer);
+        conf->clockmode_timer = NULL;
+
+        return ECORE_CALLBACK_DONE;
+     }
+
+   return ECORE_CALLBACK_RENEW;
+}
+
