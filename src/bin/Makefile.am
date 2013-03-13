@@ -91,6 +91,7 @@ e_focus.h \
 e_font.h \
 e_gadcon.h \
 e_gadcon_popup.h \
+e_glxinfo.h \
 e_grabinput.h \
 e_grab_dialog.h \
 e.h \
@@ -246,6 +247,7 @@ e_focus.c \
 e_font.c \
 e_gadcon.c \
 e_gadcon_popup.c \
+e_glxinfo.c \
 e_grabinput.c \
 e_grab_dialog.c \
 e_hints.c \
