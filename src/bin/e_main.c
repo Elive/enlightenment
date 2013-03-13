@@ -540,6 +540,11 @@ main(int argc, char **argv)
    TS("E_NightMode Done");
    _e_main_shutdown_push(e_nightmode_shutdown);
 
+   TS("E_Glxinfo Init");
+   e_glxinfo_init();
+   TS("E_Glxinfo Init Done");
+   _e_main_shutdown_push(e_glxinfo_shutdown);
+
    e_util_env_set("E_ICON_THEME", e_config->icon_theme);
    ecore_exe_run_priority_set(e_config->priority);
    locked |= e_config->desklock_start_locked;
