@@ -135,8 +135,9 @@ _xkb_update_icon(int cur_group)
           {
              if (!e_config_xkb_layout_eq(e_config->xkb.current_layout, inst->layout))
                {
-                  e_config_xkb_layout_free(inst->layout);
-                  inst->layout = e_config->xkb.current_layout;
+                  eina_stringshare_replace(&(inst->layout->name), e_config->xkb.current_layout->name);
+                  eina_stringshare_replace(&(inst->layout->model), e_config->xkb.current_layout->model);
+                  eina_stringshare_replace(&(inst->layout->variant), e_config->xkb.current_layout->variant);
                }
              E_FN_DEL(evas_object_del, inst->o_xkbflag);
              e_theme_edje_object_set(inst->o_xkbswitch,
@@ -152,8 +153,9 @@ _xkb_update_icon(int cur_group)
           {
              if (!e_config_xkb_layout_eq(e_config->xkb.current_layout, inst->layout))
                {
-                  e_config_xkb_layout_free(inst->layout);
-                  inst->layout = e_config->xkb.current_layout;
+                  eina_stringshare_replace(&(inst->layout->name), e_config->xkb.current_layout->name);
+                  eina_stringshare_replace(&(inst->layout->model), e_config->xkb.current_layout->model);
+                  eina_stringshare_replace(&(inst->layout->variant), e_config->xkb.current_layout->variant);
                }
              if (!inst->o_xkbflag)
                inst->o_xkbflag = e_icon_add(inst->gcc->gadcon->evas);
