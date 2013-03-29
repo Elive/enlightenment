@@ -133,6 +133,10 @@ wizard_page_show(E_Wizard_Page *pg)
                   do_gl = 1;
                   do_vsync = 1;
                }
+
+             //Disable opengl on intel gpu
+             if (match_xorg_log("*(II)*intel*: Creating default Display*"))
+               do_gl = 0;
           }
      }
 
@@ -241,6 +245,10 @@ wizard_page_hide(E_Wizard_Page *pg __UNUSED__)
              cfg->engine = ENGINE_GL;
              cfg->smooth_windows = 1;
              cfg->vsync = do_vsync;
+
+             //Disable blanking if opengl is enabled on intel gpu!
+             if (match_xorg_log("*(II)*intel*: Creating default Display*"))
+               e_config->screensaver_enable = 0;
           }
         else
           {
