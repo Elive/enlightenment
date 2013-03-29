@@ -5,6 +5,9 @@
 #define ENGINE_SW 1
 #define ENGINE_GL 2
 
+static Evas_Object *ob_comp;
+static Evas_Object *ob_comp_gl;
+static Evas_Object *ob_comp_vsync;
 static int do_comp = 1;
 static int do_gl = 0;
 static int do_vsync = 0;
@@ -45,6 +48,41 @@ match_xorg_log(const char *globbing)
      }
    return 0;
 }
+
+static void
+_e_config_dialog_cb_changed(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
+{
+   if (e_widget_check_checked_get(ob_comp))
+     {
+        e_widget_disabled_set(ob_comp_gl, 0);
+        e_widget_disabled_set(ob_comp_vsync, 0);
+     }
+   else
+     {
+        if (e_widget_check_checked_get(ob_comp_gl))
+          e_widget_check_checked_set(ob_comp_gl, 0);
+
+        if (e_widget_check_checked_get(ob_comp_vsync))
+          e_widget_check_checked_set(ob_comp_vsync, 0);
+
+        e_widget_disabled_set(ob_comp_gl, 1);
+        e_widget_disabled_set(ob_comp_vsync, 1);
+     }
+
+   if (e_widget_check_checked_get(ob_comp_gl))
+     {
+        if (!e_widget_disabled_get(ob_comp_gl))
+          e_widget_disabled_set(ob_comp_vsync, 0);
+     }
+   else
+     {
+        if (e_widget_check_checked_get(ob_comp_vsync))
+          e_widget_check_checked_set(ob_comp_vsync, 0);
+
+        e_widget_disabled_set(ob_comp_vsync, 1);
+     }
+}
+
 /*
 EAPI int
 wizard_page_init(E_Wizard_Page *pg __UNUSED__, Eina_Bool *need_xdg_desktops __UNUSED__, Eina_Bool *need_xdg_icons __UNUSED__)
@@ -126,18 +164,23 @@ wizard_page_show(E_Wizard_Page *pg)
    e_widget_framelist_object_append(of, ob);
 
    ob = e_widget_check_add(pg->evas, _("Enable Compositing"), &(do_comp));
+   ob_comp = ob;
    e_widget_framelist_object_append(of, ob);
 
    if (ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_OPENGL_X11))
      {
         ob = e_widget_check_add(pg->evas, _("Hardware Accelerated (OpenGL)"), &(do_gl));
+        ob_comp_gl = ob;
         e_widget_framelist_object_append(of, ob);
 
         ob = e_widget_check_add(pg->evas, _("Tear-free Rendering (OpenGL only)"), &(do_vsync));
+        ob_comp_vsync = ob;
         e_widget_framelist_object_append(of, ob);
      }
 
    e_widget_list_object_append(o, of, 0, 0, 0.5);
+   _e_config_dialog_cb_changed(NULL, NULL);
+   e_widget_on_change_hook_set(o, _e_config_dialog_cb_changed, NULL);
 
    evas_object_show(of);
 
