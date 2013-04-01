@@ -540,6 +540,11 @@ main(int argc, char **argv)
    TS("E_NightMode Done");
    _e_main_shutdown_push(e_nightmode_shutdown);
 
+   TS("E_COMP_DETECT Init");
+   e_comp_detect_init();
+   TS("E_COMP_DETECT Init Done");
+   _e_main_shutdown_push(e_comp_detect_shutdown);
+
    TS("E_Glxinfo Init");
    e_glxinfo_init();
    TS("E_Glxinfo Init Done");
