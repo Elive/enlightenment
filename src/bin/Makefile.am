@@ -55,6 +55,7 @@ e_canvas.h \
 e_color_class.h \
 e_color_dialog.h  \
 e_color.h \
+e_comp_detect.h \
 e_config_data.h \
 e_config_dialog.h \
 e_config.h \
@@ -212,6 +213,7 @@ e_canvas.c \
 e_color.c \
 e_color_class.c \
 e_color_dialog.c \
+e_comp_detect.c \
 e_config.c \
 e_config_data.c \
 e_config_dialog.c \

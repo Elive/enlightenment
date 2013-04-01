@@ -23,6 +23,7 @@
 #include "e_atoms.h"
 #include "e_utils.h"
 #include "e_canvas.h"
+#include "e_comp_detect.h"
 #include "e_focus.h"
 #include "e_place.h"
 #include "e_resist.h"
