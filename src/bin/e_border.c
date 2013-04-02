@@ -216,6 +216,9 @@ static void      _e_border_hide(E_Border *bd);
 
 static void       _e_border_move_lost_window_to_center(E_Border *bd);
 static void      _e_border_reset_lost_window(E_Border *bd);
+static void      _e_border_stay_within_container(E_Border *bd, int x, int y, int *new_x, int *new_y);
+static void      _e_border_screen_limits_update(E_Border *bd);
+
 static Eina_Bool _e_border_pointer_warp_to_center_timer(void *data);
 /* local subsystem globals */
 static Eina_List *handlers = NULL;
@@ -1038,6 +1041,7 @@ e_border_show(E_Border *bd)
    e_object_ref(E_OBJECT(bd));
 //   e_object_breadcrumb_add(E_OBJECT(bd), "border_show_event");
    ecore_event_add(E_EVENT_BORDER_SHOW, ev, _e_border_event_border_show_free, NULL);
+   e_border_screen_limits_update();
 }
 
 EAPI void
@@ -3640,6 +3644,12 @@ e_border_idler_before(void)
                        if (e_config->screen_limits != E_SCREEN_LIMITS_COMPLETELY)
                           _e_border_move_lost_window_to_center(bd);
                      }
+
+                   if (bd->zone && (!bd->new_client) &&
+                       (e_config->screen_limits == E_SCREEN_LIMITS_WITHIN))
+                     {
+                        _e_border_screen_limits_update(bd);
+                     }
                }
              e_container_border_list_free(bl);
 
@@ -4859,6 +4869,42 @@ e_border_signal_resize_end(E_Border *bd,
    _e_border_resize_end(bd);
    bd->changes.reset_gravity = 1;
    bd->changed = 1;
+}
+
+static void
+_e_border_screen_limits_update(E_Border *bd)
+{
+   int new_x = -1, new_y = -1;
+
+   if (!E_CONTAINS(bd->zone->x, bd->zone->y,
+                   bd->zone->w, bd->zone->h,
+                   bd->x, bd->y, bd->w, bd->h))
+     {
+        _e_border_stay_within_container(bd, bd->x, bd->y, &new_x, &new_y);
+
+        if (new_y < 0) new_y = bd->y;
+        if (new_x < 0) new_x = bd->x;
+        if (new_y > bd->zone->h) new_y = bd->y;
+        if (new_x > bd->zone->w) new_x = bd->x;
+
+        e_border_move(bd, new_x, new_y);
+     }
+}
+
+
+EAPI void
+e_border_screen_limits_update(void)
+{
+   E_Border *bd;
+   Eina_List *l, *bdl;
+
+   bdl = e_border_client_list();
+
+   if (e_config->screen_limits != E_SCREEN_LIMITS_WITHIN)
+     return;
+
+   EINA_LIST_FOREACH(bdl, l, bd)
+      _e_border_screen_limits_update(bd);
 }
 
 EAPI void
