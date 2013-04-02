@@ -814,7 +814,7 @@ EAPI void           e_border_tmp_input_hidden_push(E_Border *bd);
 EAPI void           e_border_tmp_input_hidden_pop(E_Border *bd);
 
 EAPI void           e_border_activate(E_Border *bd, Eina_Bool just_do_it);
-
+EAPI void           e_border_screen_limits_update(void);
 EAPI void           e_border_focus_lock_set(Eina_Bool lock);
 EAPI Eina_Bool     e_border_focus_lock_get(void);
 

@@ -100,6 +100,7 @@ _basic_apply(E_Config_Dialog *cfd __UNUSED__, E_Config_Dialog_Data *cfdata)
 
    e_config->desk_auto_switch = cfdata->desk_auto_switch;
    e_config->screen_limits = cfdata->screen_limits;
+   e_border_screen_limits_update();
    e_config_save_queue();
    return 1;
 }
