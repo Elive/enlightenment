@@ -63,12 +63,12 @@ wizard_page_hide(E_Wizard_Page *pg __UNUSED__)
    else
      {
         e_config->focus_policy = E_FOCUS_SLOPPY;
-        e_config->focus_setting = E_FOCUS_NEW_DIALOG_IF_OWNER_FOCUSED;
+        e_config->focus_setting = E_FOCUS_NEW_WINDOW;
         e_config->pass_click_on = 1;
-        e_config->always_click_to_raise = 0;
-        e_config->always_click_to_focus = 0;
+        e_config->always_click_to_raise = 1;
+        e_config->always_click_to_focus = 1;
         e_config->focus_last_focused_per_desktop = 1;
-        e_config->pointer_slide = 1;
+        e_config->pointer_slide = 0;
      }
 //   evas_object_del(pg->data);
    return 1;
