@@ -18,7 +18,7 @@ wizard_page_show(E_Wizard_Page *pg __UNUSED__)
 {
    int hav_backlight = 0;
 
-   if (e_backlight_exists()) hav_backlight = 1;
+   /*if (e_backlight_exists()) hav_backlight = 1;*/
    if (!hav_backlight)
      {
         E_Config_Module *em;

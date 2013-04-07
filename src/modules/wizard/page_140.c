@@ -18,7 +18,7 @@ wizard_page_show(E_Wizard_Page *pg __UNUSED__)
 {
    int hav_mixer = 0;
 #ifdef HAVE_ALSA
-   hav_mixer = 1;
+   hav_mixer = 0;
 #endif
    if (!hav_mixer)
      {
