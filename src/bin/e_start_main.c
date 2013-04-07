@@ -263,12 +263,14 @@ main(int argc, char **argv)
      {
         char **dbus_argv;
 
-        dbus_argv = alloca((argc + 3) * sizeof (char *));
-        dbus_argv[0] = "dbus-launch";
-        dbus_argv[1] = "--exit-with-session";
-        copy_args(dbus_argv + 2, argv, argc);
-        dbus_argv[2 + argc] = NULL;
-        execvp("dbus-launch", dbus_argv);
+        dbus_argv = alloca((argc + 4) * sizeof (char *));
+        dbus_argv[0] = "ck-launch-session";
+        dbus_argv[1] = "dbus-launch";
+        dbus_argv[2] = "--exit-with-session";
+        copy_args(dbus_argv + 3, argv, argc);
+        dbus_argv[3 + argc] = NULL;
+
+        execvp(dbus_argv[0], dbus_argv);
      }
 
    prefix_determine(argv[0]);
