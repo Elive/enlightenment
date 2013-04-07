@@ -2,11 +2,37 @@
 # each line is 1 entry in ibar and it is a list of desktop files to
 # look for in order of preference - first found is put in to ibar
 
-terminology xterm rxvt urxvt gnome-terminal konsole xfce4-terminal exo-terminal-emulator lxde-x-terminal-emulator lxterminal mlterm roxterm Terminal terminator vala-terminal
-sylpheed claws-mail thunderbird evolution KMail
-firefox iceweasel chromium-browser chromium eve epiphany midori konqueror opera rekonq dooble
-xchat pidgin konversation kvirc loqui lostirc quassel qutim
-enjoy banshee rhythmbox amarok listen audacious xmms2
+terminology rxvt urxvt rxvt-unicode gnome-terminal xterm konsole xfce4-terminal exo-terminal-emulator lxde-x-terminal-emulator lxterminal mlterm roxterm Terminal terminator vala-terminal
+xchat
+Thunar thunar nautilus pcmanfm dolphin
+chromium firefox iceweasel chromium-browser google-chrome eve epiphany midori konqueror opera rekonq dooble
+icedove sylpheed claws-mail thunderbird evolution KMail
+shotwell
+audacious
+songbird
+clementine xmms2 enjoy banshee rhythmbox amarok listen
+vlc
 gimp
 inkscape
+rawtherapee
+blender
+scribus
+skype
+pidgin gajim konversation kvirc loqui lostirc quassel qutim
 libreoffice-startcenter openoffice.org-startcenter koffice
+brasero
+ogmrip
+codeblocks eclipse gvim
+virtualbox
+transmission
+gtk-recordmydesktop
+demo-1
+demo-2
+demo-3
+demo-4
+demo-5
+demo-6
+demo-7
+demo-8
+demo-9
+eliveinstaller
