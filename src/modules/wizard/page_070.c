@@ -23,6 +23,7 @@ wizard_page_show(E_Wizard_Page *pg __UNUSED__)
    const char *selected = NULL;
    const char *search[] =
    {
+      "Elive",
       "gnome",
       "Humanity",
       "Humanity-Dark",
