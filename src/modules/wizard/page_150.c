@@ -5,6 +5,8 @@
 #define ENGINE_SW 1
 #define ENGINE_GL 2
 
+static Eina_Bool _wizard_is_gl_supported(void);
+
 static Evas_Object *ob_comp;
 static Evas_Object *ob_comp_gl;
 static Evas_Object *ob_comp_vsync;
@@ -52,6 +54,15 @@ match_xorg_log(const char *globbing)
 static void
 _e_config_dialog_cb_changed(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
 {
+   if ((match_xorg_log("*(II)*intel*: Creating default Display*")) ||
+      (match_xorg_log("*(II)*NOUVEAU*: Creating default Display*")) ||
+      (match_xorg_log("*(II)*NVIDIA*: Creating default Display*")) ||
+      (match_xorg_log("*(II)*RADEON*: Creating default Display*")))
+       {
+          if (!_wizard_is_gl_supported())
+            return;
+       }
+
    if (e_widget_check_checked_get(ob_comp))
      {
         e_widget_disabled_set(ob_comp_gl, 0);
@@ -96,11 +107,53 @@ wizard_page_shutdown(E_Wizard_Page *pg __UNUSED__)
    return 1;
 }
 */
+
+//Function used to detect gl support.
+static Eina_Bool
+_wizard_is_gl_supported(void)
+{
+   const char *renderer;
+   Ecore_Evas *ee = NULL;
+   ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 320, 240);
+
+   //If ee is still null perminently disable opengl and vsync
+   if (!ee)
+     {
+        if (ob_comp_gl)
+          {
+             e_widget_check_checked_set(ob_comp_gl, 0);
+             e_widget_disabled_set(ob_comp_gl, 1);
+          }
+
+        if (ob_comp_vsync)
+          {
+             e_widget_check_checked_set(ob_comp_vsync, 0);
+             e_widget_disabled_set(ob_comp_vsync, 1);
+          }
+
+        return EINA_FALSE;
+     }
+   ecore_evas_free(ee);
+
+   renderer = e_glxinfo_renderer_get();
+   /*
+    * llvmpipe is slow, but it is detected as a proper OpenGL, so by default
+    * we should disable it.
+    */
+   if (!strstr(renderer, "llvmpipe"))
+     {
+        do_gl = 1;
+        do_vsync = 1;
+     }
+
+   return EINA_TRUE;
+}
+
+
 EAPI int
 wizard_page_show(E_Wizard_Page *pg)
 {
    Evas_Object *o, *of, *ob;
-   Ecore_Evas *ee;
    Ecore_X_Window_Attributes att;
 
    TS(__FILE__);
@@ -114,32 +167,8 @@ wizard_page_show(E_Wizard_Page *pg)
    if(!ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_OPENGL_X11))
      return 0;
 
-   if (
-      (match_xorg_log("*(II)*NVIDIA*: Creating default Display*")) ||
-      (match_xorg_log("*(II)*intel*: Creating default Display*")) ||
-      (match_xorg_log("*(II)*NOUVEAU*: Creating default Display*")) ||
-      (match_xorg_log("*(II)*RADEON*: Creating default Display*"))
-      )
-     {
-        ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 320, 240);
-
-        if (ee)
-          {
-             const char *renderer;
-
-             renderer = e_glxinfo_renderer_get();
-             ecore_evas_free(ee);
-             if (!strstr(renderer, "llvmpipe"))
-               {
-                  do_gl = 1;
-                  do_vsync = 1;
-               }
-
-             //Disable opengl on intel gpu
-             if (match_xorg_log("*(II)*intel*: Creating default Display*"))
-               do_gl = 0;
-          }
-     }
+   if (match_xorg_log("*(II)*NVIDIA*: Creating default Display*"))
+     _wizard_is_gl_supported();
 
    o = e_widget_list_add(pg->evas, 1, 0);
    e_wizard_title_set(_("Compositing"));
