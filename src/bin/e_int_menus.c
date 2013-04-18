@@ -721,12 +721,12 @@ static Eina_Bool
 _e_int_menus_app_config_append(Efreet_Desktop *desktop)
 {
    E_Int_Menu_Applications *ma, *cma;
-   Eina_List *l;
+   Eina_List *l, *l_next;
 
    if (!desktop) return EINA_TRUE;
 
    cma = _e_int_menus_app_config_set(desktop);
-   EINA_LIST_FOREACH(e_config->menu_applications, l, ma)
+   EINA_LIST_FOREACH_SAFE(e_config->menu_applications, l, l_next, ma)
      {
         if ((!strcmp(ma->orig_path, cma->orig_path)) && (ma->load_time == cma->load_time))
           return ma->exec_valid;
