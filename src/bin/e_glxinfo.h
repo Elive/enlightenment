@@ -26,10 +26,10 @@ struct _E_Glxinfo
 
 EAPI int e_glxinfo_init(void);
 EAPI int e_glxinfo_shutdown(void);
-EAPI const char* e_glxinfo_renderer_get(void);
-EAPI const char* e_glxinfo_gl_extensions_get(void);
-EAPI const char* e_glxinfo_gl_extensions_server_get(void);
-EAPI const char* e_glxinfo_gl_extensions_client_get(void);
-
+EAPI const char *e_glxinfo_renderer_get(void);
+EAPI const char *e_glxinfo_gl_extensions_get(void);
+EAPI const char *e_glxinfo_gl_extensions_server_get(void);
+EAPI const char *e_glxinfo_gl_extensions_client_get(void);
+EAPI E_Glxinfo  *e_glxinfo_get(void);
 #endif
 #endif
