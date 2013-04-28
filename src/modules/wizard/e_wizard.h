@@ -56,6 +56,17 @@ EAPI const char *e_wizard_dir_get(void);
 EAPI void e_wizard_xdg_desktops_reset(void);
 EAPI void e_wizard_efreet_update(void);
 EAPI void e_wizard_button_wait(void);
+EAPI void e_wizard_button_label_set(const char *label);
+
+
+EAPI void e_wizard_pre_run(void);
+EAPI void e_wizard_post_run(void);
+
+EAPI Eina_Bool e_wizard_pre_done(void);
+EAPI Eina_Bool e_wizard_post_done(void);
+
+EAPI const char* e_wizard_pre_label_get(void);
+
 /**
  * @addtogroup Optional_Conf
  * @{

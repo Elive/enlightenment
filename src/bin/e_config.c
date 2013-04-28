@@ -803,6 +803,8 @@ _e_config_edd_init(Eina_Bool old)
    E_CONFIG_VAL(D, T, menu_favorites_show, INT);
    E_CONFIG_VAL(D, T, menu_apps_show, INT);
    E_CONFIG_VAL(D, T, menu_gadcon_client_toplevel, INT);
+   
+   E_CONFIG_VAL(D, T, wizard_after, INT);
 
    E_CONFIG_VAL(D, T, ping_clients_interval, INT);
    E_CONFIG_VAL(D, T, cache_flush_poll_interval, INT);
@@ -917,7 +919,6 @@ _e_config_edd_init(Eina_Bool old)
    E_CONFIG_VAL(D, T, exe_always_single_instance, UCHAR);
 
    E_CONFIG_VAL(D, T, use_desktop_window_profile, INT);
-   E_CONFIG_VAL(D, T, post_wizard, INT);
 }
 
 static void
@@ -1336,7 +1337,7 @@ while (!e_config)
      E_CONFIG_LIMIT(e_config->border_keyboard.resize.dy, 1, 255);
 
      E_CONFIG_LIMIT(e_config->multiscreen_flip, 0, 1);
-     E_CONFIG_LIMIT(e_config->post_wizard, 0, 1);
+     E_CONFIG_LIMIT(e_config->wizard_after, 0, 1);
 
      if (!e_config->icon_theme)
        e_config->icon_theme = eina_stringshare_add("hicolor"); // FDO default

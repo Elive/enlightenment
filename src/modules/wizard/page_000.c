@@ -3,11 +3,10 @@
 #include "e_wizard.h"
 
 static Ecore_Timer *_next_timer = NULL;
-
 EAPI int
 wizard_page_init(E_Wizard_Page *pg __UNUSED__, Eina_Bool *need_xdg_desktops __UNUSED__, Eina_Bool *need_xdg_icons __UNUSED__)
 {
-   e_pre_wizard_init();
+   e_wizard_pre_run();
    return 1;
 }
 
@@ -21,7 +20,12 @@ wizard_page_shutdown(E_Wizard_Page *pg __UNUSED__)
 static Eina_Bool
 _next_page(void *data __UNUSED__)
 {
-   if(!e_pre_wizard_done()) return ECORE_CALLBACK_RENEW;
+   if (e_wizard_pre_label_get())
+     e_wizard_button_label_set(e_wizard_pre_label_get());
+   else
+     e_wizard_button_wait();
+
+   if(!e_wizard_pre_done()) return ECORE_CALLBACK_RENEW;
    e_wizard_button_next_enable_set(1);
    e_wizard_next();
    return ECORE_CALLBACK_CANCEL;
@@ -39,9 +43,9 @@ wizard_page_show(E_Wizard_Page *pg)
    e_wizard_page_show(o);
    e_wizard_button_wait();
 
-   /* advance in 1 sec */
+   /* advance in 0.5 sec */
    if (!_next_timer)
-     _next_timer = ecore_timer_add(1.0, _next_page, NULL);
+     _next_timer = ecore_timer_add(0.5, _next_page, NULL);
    return 1;
 }
 

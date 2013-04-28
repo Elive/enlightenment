@@ -328,8 +328,5 @@ EAPI int E_EVENT_FINISH_LOADING;
  * @defgroup Optional_Mobile Mobile Specific Extensions
  * @}
  */
-extern EAPI void        e_pre_wizard_init(void);
-extern EAPI Eina_Bool   e_pre_wizard_done(void);
-extern EAPI void        e_post_wizard_init(void);
 
 #endif
