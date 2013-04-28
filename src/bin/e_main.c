@@ -1976,5 +1976,13 @@ _e_main_cb_finished_loading(void *data __UNUSED__, int ev_type __UNUSED__, void 
 {
    TS("E Loading Complete.");
 
+ if (e_config->wizard_after)
+   {
+      TS("E_Wizard After");
+      e_wizard_after_run();
+      e_config->wizard_after = 0;
+      e_config_save_queue();
+   }
+
    return ECORE_CALLBACK_DONE;
 }
