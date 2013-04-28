@@ -302,7 +302,7 @@ extern EAPI Eina_Bool x_fatal;
 EAPI void e_alert_composite_win(Ecore_X_Window root, Ecore_X_Window win);
 
 //Event handler to get when e17 has finished loading.
-EAPI E_EVENT_FINISH_LOADING;
+EAPI int E_EVENT_FINISH_LOADING;
 
 //#define SMARTERR(args...) abort()
 #define SMARTERRNR() return
