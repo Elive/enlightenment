@@ -1,0 +1,110 @@
+#!/usr/bin/make -f
+
+DEB_SOURCE_PACKAGE := $(shell dpkg-parsechangelog | grep '^Source:' | cut -f 2 -d ' ')
+DEB_HOST_ARCH_CPU := $(shell dpkg-architecture -qDEB_HOST_ARCH_CPU)
+
+export DEB_BUILD_HARDENING=1
+
+%:
+	dh $@
+
+#--disable-notification \
+
+configure_flags := \
+	--enable-emotion \
+	--enable-install-sysactions \
+	--enable-conf-wallpaper2 \
+	--enable-elementary \
+	--disable-wayland-clients \
+	--enable-doc \
+	--disable-access \
+	$(NULL)
+
+# optimize for the stable version of Elive
+ifneq (, $(findstring yes, $(ELIVE_STABLE)))
+configure_flags += \
+	$(NULL)
+
+CXXFLAGS += -fvisibility=hidden -Wshadow -ffunction-sections -fdata-sections -ffast-math -flto
+CFLAGS += -fvisibility=hidden -Wshadow -ffunction-sections -fdata-sections -ffast-math -fPIC -flto -funswitch-loops -fpredictive-commoning -fgcse-after-reload -ftree-vectorize -fipa-cp-clone
+#LDFLAGS += -fvisibility=hidden -fdata-sections -Wl,--as-needed -Wl,--gc-sections -Wl,-z,defs -Wl,-O1 -flto
+LDFLAGS += -fvisibility=hidden -fdata-sections -Wl,--as-needed -Wl,--gc-sections -Wl,-O1 -flto
+
+else
+configure_flags += \
+	$(NULL)
+
+DEB_BUILD_OPTIONS += noopt
+CFLAGS += -ggdb3
+CXXFLAGS += -ggdb3
+endif
+
+
+
+override_dh_auto_configure:
+	NOCONFIGURE=1  ./autogen.sh
+ifeq ($(DEB_HOST_ARCH_CPU),i386)
+	dh_auto_configure -- $(configure_flags) --host=i686-gnu-linux --build=i686-gnu-linux
+else
+	dh_auto_configure -- $(configure_flags)
+endif
+PACKAGE_VERSION = $(shell grep "^PACKAGE_VERSION='" configure | cut -f 2 -d "'" | head -1 )
+
+
+override_dh_auto_build:
+	-sed -i "0,/(.*)/s|0\.17+|$(PACKAGE_VERSION)+|" debian/changelog
+	dh_auto_build
+	$(MAKE) doc
+
+override_dh_install:
+	# The .la file(s) are entirely useless; kill them with fire.
+	find debian/tmp -name '*.la' -delete
+	# nice ctags for editors
+	ctags -R -h ".h.H.hh.hxx" -f $(DEB_SOURCE_PACKAGE).tags --fields=+iaS --c-kinds=+pcdgstue --excmd=number \
+		-I EINA_MALLOC \
+		-I EINA_CONST \
+		-I EINA_CONST \
+		-I EINA_PURE \
+		-I EINA_NOINSTRUMENT \
+		-I EINA_WARN_UNUSED_RESULT \
+		-I EINA_ARG_NONNULL+ \
+		-I EINA_PRINTF+ \
+		debian/tmp/usr/include
+	sed -i 's|debian/tmp||g' $(DEB_SOURCE_PACKAGE).tags
+	mkdir -p debian/tmp/usr/share/editor-ctags
+	mv $(DEB_SOURCE_PACKAGE).tags debian/tmp/usr/share/editor-ctags/
+	# end ctags construction code
+	-rm -f debian/tmp/usr/share/enlightenment/AUTHORS
+	-rm -f debian/tmp/usr/share/enlightenment/COPYING
+	# disable config files, provided by e17-conf
+	-rm -rf debian/tmp/usr/share/enlightenment/data/config/
+	# remove backgrounds
+	-rm -rf debian/tmp/usr/share/enlightenment/data/backgrounds/
+	-mkdir -p debian/tmp/usr/share/enlightenment/data/backgrounds
+	# copy all the debian/tmp files in their respective directories
+	dh_install --fail-missing
+
+override_dh_fixperms:
+	dh_fixperms
+	chmod 4755 debian/e17/usr/lib/*/enlightenment/utils/enlightenment_sys
+	chmod 4755 debian/e17/usr/lib/*/enlightenment/modules/cpufreq/*/freqset
+
+override_dh_strip:
+	dh_strip --dbg-package=$(DEB_SOURCE_PACKAGE)-dbg
+
+#override_dh_builddeb:
+#	chmod 4755 debian/e17/usr/lib/*/enlightenment/modules/cpufreq/*/freqset
+#	dh_builddeb
+
+override_dh_auto_clean:
+	dh_auto_clean
+	true
+
+override_dh_compress:
+	# do not compress some files
+	dh_compress -X.c -X.eps -XMakefile -XMakefile.in -XMakefile.am -X.xml
+
+#override_dh_shlibdeps:
+
+
+

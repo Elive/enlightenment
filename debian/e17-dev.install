@@ -1,0 +1,6 @@
+debian/tmp/usr/lib/*/pkgconfig/enlightenment.pc
+debian/tmp/usr/lib/*/pkgconfig/everything.pc
+debian/tmp/usr/include/enlightenment/*.h
+debian/tmp/usr/share/editor-ctags/*
+#x-ui.sh  usr/share/doc/e17/tools/
+#xdebug.sh  usr/share/doc/e17/tools/

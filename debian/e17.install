@@ -1,0 +1,13 @@
+debian/tmp/usr/bin/*
+debian/tmp/usr/lib/*/enlightenment/utils/*
+debian/tmp/usr/lib/*/enlightenment/modules/*/*/*.so
+#debian/tmp/usr/lib/*/enlightenment/modules/*/*.so
+debian/tmp/usr/lib/*/enlightenment/modules/battery/*/batget
+debian/tmp/usr/lib/*/enlightenment/modules/cpufreq/*/freqset
+debian/tmp/usr/lib/*/enlightenment/modules/temperature/*/tempget
+
+#debian/tmp/usr/lib/*/enlightenment/modules/comp/*
+#debian/tmp/usr/lib/*/enlightenment/modules/wizard/*.so
+#debian/tmp/usr/lib/*/enlightenment/modules/illume*/*.so
+#debian/tmp/usr/lib/*/enlightenment/preload/*
+

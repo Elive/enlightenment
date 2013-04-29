@@ -1,0 +1,25 @@
+e17 0.16.999.55225 upgrade notes
+---------------------------------
+This version of e17 uses a new format to store themes and backgrounds.
+If your usual themes or background no longer work correctly, you need to update
+them. To do this, please run the 'edje_convert' command (from the 'libedje-bin'
+package) on all themes and backgrounds that need converting.
+
+Usually, user-supplied themes and backgrounds are located in ~/.e/e/themes
+and ~/.e/e/backgrounds, respectively. A simple 'find ~/.e -name \*.edj'
+should be enough to find all themes and background.
+
+  -- Albin Tonnerre <lutin@debian.org>  Sun, 03 Apr 2011 18:34:21 +0200
+
+
+Enlightenment DR0.17
+--------------------
+About the menu files
+  Enlightenment handles the menus according to the FDO menu specification.
+  In order to have an 'Applications' menu, you need to use a .menu file.
+  Please see http://wiki.enlightenment.org/index.php/E17_and_Efreet for further
+  information.
+  If no menu is found, then /etc/xdg/menus/enlightenment-applications.menu,
+  provided by the 'e17-data', package, will be used as a fallback
+
+  -- Albin Tonnerre <albin.tonnerre@gmail.com>  Thu, 01 May 2008 12:58:45 +0200

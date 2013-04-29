@@ -1,0 +1,5 @@
+doc/html usr/share/doc/e17-dev/
+debian/tmp/usr/share/enlightenment/doc/documentation.html usr/share/doc/e17/html
+debian/tmp/usr/share/enlightenment/doc/enlightenment.png usr/share/doc/e17/html
+debian/tmp/usr/share/enlightenment/doc/*.txt usr/share/doc/e17
+debian/tmp/usr/share/enlightenment/doc/illume* usr/share/doc/e17
