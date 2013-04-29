@@ -94,6 +94,7 @@ static int       _e_main_screens_shutdown(void);
 static void      _e_main_desk_save(void);
 static void      _e_main_desk_restore(E_Manager *man, E_Container *con);
 static void      _e_main_efreet_paths_init(void);
+static void      _e_main_efreet_update_menu_cache(Efreet_Menu *menu);
 static void      _e_main_modules_load(Eina_Bool safe_mode);
 static void      _e_main_manage_all(void);
 static Eina_Bool _e_main_cb_x_flusher(void *data __UNUSED__);
@@ -1988,9 +1989,20 @@ _e_main_event_cb_timer(void *data __UNUSED__)
 static Eina_Bool
 _e_main_cb_finished_loading(void *data __UNUSED__, int ev_type __UNUSED__, void *ev __UNUSED__)
 {
+   Efreet_Menu *menu = NULL;
    TS("E Loading Complete.");
 
- if (e_config->wizard_after)
+   if (!e_config->wizard_after && (_e_main_restart_count == 1))
+     {
+        menu = efreet_menu_get();
+        if (menu)
+          {
+             TS("E Refreshing Menu Cache");
+             _e_main_efreet_update_menu_cache(menu);
+          }
+     }
+
+   if (e_config->wizard_after)
    {
       TS("E_Wizard After");
       e_wizard_after_run();
@@ -2000,3 +2012,23 @@ _e_main_cb_finished_loading(void *data __UNUSED__, int ev_type __UNUSED__, void 
 
    return ECORE_CALLBACK_DONE;
 }
+
+static void
+_e_main_efreet_update_menu_cache(Efreet_Menu *menu)
+{
+   Eina_List *l;
+
+   if (menu->entries)
+     {
+        Efreet_Menu *entry;
+
+        EINA_LIST_FOREACH(menu->entries, l, entry)
+          {
+             if (entry->type == EFREET_MENU_ENTRY_DESKTOP)
+               e_int_menus_cache_update(entry->desktop);
+             else if (entry->type == EFREET_MENU_ENTRY_MENU)
+               _e_main_efreet_update_menu_cache(entry);
+          }
+     }
+}
+
