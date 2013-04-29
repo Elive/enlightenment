@@ -1,0 +1,236 @@
+Source: e17
+Section: x11
+Priority: optional
+Maintainer: Thanatermesis - <thanatermesis@elivecd.org>
+Build-Depends: debhelper (>= 9), ctags, 
+ libefl-dev | libevas-dev,
+ libefl-dev | libecore-dev,
+ libefl-dev | libeio-dev,
+ libefl-dev | libembryo-dev,
+ libefl-dev | libedje-dev,
+ libefl-dev | libefreet-dev,
+ libedbus-dev | libledbus-dev,
+ libelementary-dev,
+ libemotion-generic-players1,
+ libevas-generic-loaders1,
+ libasound2-dev [linux-any], libxext-dev, libpam0g-dev,
+ libgl1-mesa-dev, libxxf86vm-dev,
+ libxcb-shape0-dev, connman-dev, libxcb-keysyms1-dev
+Standards-Version: 3.9.2
+Vcs-Git: git://git.debian.org/pkg-e/apps/e.git
+Vcs-Browser: http://git.debian.org/?p=pkg-e/apps/e.git
+Homepage: http://www.enlightenment.org
+
+Package: e17
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, xinit, xserver-xorg, 
+ e17-data (= ${source:Version}), e17-conf,
+ libevas-generic-loaders1, libemotion-generic-players1,
+ dbus-x11, consolekit, libpam-ck-connector, libgl1-mesa-dri
+Conflicts: enlightenment, e17-plain, e17-stable
+Replaces: e17-plain, e17-stable
+Provides: x-window-manager
+Description: The Enlightenment DR17 Window Manager
+ Enlightenment is an advanced window manager for X11. Unique
+ features include: a fully animated background, nice drop shadows
+ around windows, backed by an extremely clean and optimized
+ foundation of APIs.
+ .
+ This package contains the core files for Enlightenment DR17.
+ .
+ Note: this version of e17 includes last Elive development and
+ can be used for any minimally adventurous user, should be enough stable
+
+Package: e17-data
+Architecture: all
+Enhances: e17
+Depends: ${misc:Depends}, e17
+Conflicts: enlightenment-data, e17-plain-data, e17-stable-data
+Replaces: e17-plain-data, e17-stable-data
+Description: Enlightenment Window Manager Run Time Data Files
+ Enlightenment is an advanced window manager for X11. Unique
+ features include: a fully animated background, nice drop shadows
+ around windows, backed by an extremely clean and optimized
+ foundation of APIs.
+ .
+ These are the architecture independent runtime support files for the
+ Enlightenment DR17 Window Manager.
+
+Package: e17-dev
+Architecture: any
+Section: devel
+Suggests: e17-doc
+Depends: ${misc:Depends}, libefl-dev
+Description: Enlightenment headers, static libraries and documentation
+ Enlightenment is an advanced window manager for X11. Unique
+ features include: a fully animated background, nice drop shadows
+ around windows, backed by an extremely clean and optimized
+ foundation of APIs.
+ .
+ This package contains headers, static libraries and documentation for
+ enlightenment.
+
+#Package: efl-dbg
+#Architecture: any
+#Section: devel
+#Depends: ${misc:Depends}, 
+# libeina1-dbg | libefl1-dbg,
+# libeet1-dbg | libefl1-dbg,
+# libevas1-dbg | libefl1-dbg,
+# libecore1-dbg | libefl1-dbg,
+# libeio1-dbg | libefl1-dbg,
+# libembryo1-dbg | libefl1-dbg,
+# libedje1-dbg,
+# libefreet1-dbg,
+# libeeze1-dbg,
+# libedbus1-dbg | libledbus-dbg,
+# libemotion1-dbg,
+# libelementary1-dbg,
+# libefx1-dbg,
+# libeweather1-dbg,
+#  libethumb1-dbg
+#Description: EFL debug symbols, virtual package
+# Enlightenment is an advanced window manager for X11. Unique
+# features include: a fully animated background, nice drop shadows
+# around windows, backed by an extremely clean and optimized
+# foundation of APIs.
+# .
+# This package contains headers, static libraries and documentation for
+# the enlightenment foundation librairies.
+#
+#Package: libefl1
+#Architecture: any
+#Section: devel
+#Depends: ${misc:Depends},
+# libedje-bin,
+# libeeze-bin,
+# libefreet-bin,
+# libedbus-bin | libledbus-bin,
+# libeina1,
+# libeet1,
+# libevas1,
+# libecore1,
+# libembryo1,
+# libeio1,
+# libedje1,
+# libefreet1,
+# libeeze1,
+# libedbus1 | libledbus,
+# libemotion1,
+# libelementary1,
+# libefx1,
+# libeweather1,
+# libepdf1,
+#  libethumb1
+#Description: EFL headers, static libraries and documentation
+# Enlightenment is an advanced window manager for X11. Unique
+# features include: a fully animated background, nice drop shadows
+# around windows, backed by an extremely clean and optimized
+# foundation of APIs.
+# .
+# This package contains headers, static libraries and documentation for
+# the enlightenment foundation librairies.
+#
+#Package: efl-dev
+#Architecture: any
+#Section: devel
+#Depends: ${misc:Depends}, m4, autogen, autoconf, automake, autopoint, libtool, make, gcc, g++,
+# libedje-bin,
+# libeeze-bin,
+# libefreet-bin,
+# libedbus-bin | libledbus-bin,
+# libeina-dev | libefl-dev,
+# libeet-dev | libefl-dev,
+# libevas-dev | libefl-dev,
+# libecore-dev | libefl-dev,
+# libembryo-dev | libefl-dev,
+# libeio-dev | libefl-dev,
+# libedje-dev,
+# libefreet-dev,
+# libeeze-dev,
+# libedbus-dev | libledbus-dev,
+# libemotion-dev,
+# libelementary-dev,
+# libefx-dev,
+# libeweather-dev,
+# libepdf-dev,
+#  libethumb-dev
+#Description: EFL headers, static libraries and documentation
+# Enlightenment is an advanced window manager for X11. Unique
+# features include: a fully animated background, nice drop shadows
+# around windows, backed by an extremely clean and optimized
+# foundation of APIs.
+# .
+# This package contains headers, static libraries and documentation for
+# the enlightenment foundation librairies.
+#
+#Package: efl-doc
+#Architecture: any
+#Section: devel
+#Conflicts: efl-dev-doc
+#Replaces: efl-dev-doc
+#Depends: ${misc:Depends}, dhelp,
+# libedje-doc,
+# libefreet-doc,
+# libeeze-doc,
+# libedbus-doc | libeldbus-doc,
+# libemotion-doc,
+#  libethumb-doc
+#Description: EFL documentation virtual package
+# Enlightenment is an advanced window manager for X11. Unique
+# features include: a fully animated background, nice drop shadows
+# around windows, backed by an extremely clean and optimized
+# foundation of APIs.
+# .
+# This package contains documentation for
+# the enlightenment foundation librairies.
+#
+#Package: efl-all
+#Architecture: any
+#Section: devel
+#Depends: ${misc:Depends},
+# efl-dev,
+# efl-dbg,
+# e17-dev | e17-stable-dev | e17-plain-dev,
+#  e17-dbg | e17-plain-dbg | e17-stable-dbg
+#Description: EFL virtual package which includes everything
+# Enlightenment is an advanced window manager for X11. Unique
+# features include: a fully animated background, nice drop shadows
+# around windows, backed by an extremely clean and optimized
+# foundation of APIs.
+# This package includes E17 and EFL dev, doc, and dbg packages
+# .
+# This package contains documentation for
+# the enlightenment foundation librairies.
+
+Package: e17-doc
+Architecture: all
+Depends: ${misc:Depends}, e17
+Enhances: e17-dev
+Suggests: dhelp
+Section: doc
+Description: EFL documentation virtual package
+ Enlightenment is an advanced window manager for X11. Unique
+ features include: a fully animated background, nice drop shadows
+ around windows, backed by an extremely clean and optimized
+ foundation of APIs.
+ .
+ This package contains documentation for e17.
+
+Package: e17-dbg
+Architecture: any
+Section: debug
+Depends: ${misc:Depends}, e17 (= ${binary:Version}), gdb
+Conflicts: e17-plain-dbg, e17-stable-dbg
+Replaces: e17-plain-dbg, e17-stable-dbg
+Priority: extra
+Description: The Enlightenment DR17 Window Manager - debugging symbols
+ Enlightenment is an advanced window manager for X11. Unique
+ features include: a fully animated background, nice drop shadows
+ around windows, backed by an extremely clean and optimized
+ foundation of APIs
+ .
+ This package contains unstripped shared libraries. It is provided primarily
+ to provide a backtrace with names in a debugger, this makes it somewhat
+ easier to interpret core dumps. The libraries are installed in
+ /usr/lib/debug and are automatically used by gdb.

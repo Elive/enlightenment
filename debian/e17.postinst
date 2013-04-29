@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -e
+
+wm=enlightenment_start
+
+case "$1" in
+	configure)
+		update-alternatives --install /usr/bin/x-window-manager \
+			x-window-manager /usr/bin/$wm 9999
+		update-alternatives --install /usr/bin/x-session-manager \
+			x-session-manager /usr/bin/$wm 9999
+
+		if [ -x /usr/bin/update-menus ]; then
+			update-menus;
+		fi
+		;;
+esac
+
+
+#DEBHELPER#

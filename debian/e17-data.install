@@ -1,0 +1,15 @@
+debian/tmp/usr/share/enlightenment/data
+debian/tmp/usr/share/locale
+debian/tmp/usr/share/xsessions
+debian/enlightenment-applications.menu etc/xdg/menus
+debian/tmp/usr/share/applications/*.desktop
+debian/tmp/etc/xdg/menus
+debian/tmp/etc/enlightenment/sysactions.conf
+debian/tmp/usr/lib/*/enlightenment/modules/*/module.desktop
+debian/tmp/usr/lib/*/enlightenment/modules/*/*.edj
+debian/tmp/usr/lib/*/enlightenment/modules/wizard/*.txt
+debian/tmp/usr/lib/*/enlightenment/modules/wizard/*/*.desktop
+# debian/tmp/usr/lib/*/enlightenment/modules/wizard/*/.order
+debian/tmp/usr/lib/*/enlightenment/modules/illume-keyboard/keyboards/*
+debian/tmp/usr/lib/*/enlightenment/modules/illume-keyboard/dicts/*
+debian/tmp/usr/lib/*/enlightenment/modules/illume2/keyboards/*

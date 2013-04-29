@@ -1,0 +1,11 @@
+Document: enlightenment-dev
+Title: Enlightenment DR17 API
+Author: Carsten Haitzler
+Abstract: This document describes E17 API
+ and provides sample C code.
+Section: Programming/C
+
+Format: HTML
+Index: /usr/share/doc/e17-dev/html/index.html
+Files: /usr/share/doc/e17-dev/html/*.html
+
