@@ -767,6 +767,7 @@ _e_int_menus_apps_scan(E_Menu *m, Efreet_Menu *menu)
 
         EINA_LIST_FOREACH(menu->entries, l, entry)
           {
+             if (!entry) continue;
              if ((entry->type == EFREET_MENU_ENTRY_DESKTOP) &&
                  (!_e_int_menus_app_config_append(entry->desktop)))
                continue;
