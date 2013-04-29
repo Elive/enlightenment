@@ -93,6 +93,7 @@ static int       _e_main_screens_shutdown(void);
 static void      _e_main_desk_save(void);
 static void      _e_main_desk_restore(E_Manager *man, E_Container *con);
 static void      _e_main_efreet_paths_init(void);
+static void      _e_main_efreet_update_menu_cache(Efreet_Menu *menu);
 static void      _e_main_modules_load(Eina_Bool safe_mode);
 static void      _e_main_manage_all(void);
 static Eina_Bool _e_main_cb_x_flusher(void *data __UNUSED__);
@@ -1926,3 +1927,23 @@ _e_main_cb_startup_fake_end(void *data __UNUSED__)
    e_init_hide();
    return ECORE_CALLBACK_CANCEL;
 }
+
+static void
+_e_main_efreet_update_menu_cache(Efreet_Menu *menu)
+{
+   Eina_List *l;
+
+   if (menu->entries)
+     {
+        Efreet_Menu *entry;
+
+        EINA_LIST_FOREACH(menu->entries, l, entry)
+          {
+             if (entry->type == EFREET_MENU_ENTRY_DESKTOP)
+               e_int_menus_cache_update(entry->desktop);
+             else if (entry->type == EFREET_MENU_ENTRY_MENU)
+               _e_main_efreet_update_menu_cache(entry);
+          }
+     }
+}
+
