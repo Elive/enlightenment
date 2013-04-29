@@ -664,7 +664,7 @@ _e_module_whitelist_check(void)
         "conf_menus",
         "conf_paths",
         "conf_performance",
-        "conf_randr",
+        //"conf_randr", //This module is crap!
         "conf_shelves",
         "conf_theme",
         "conf_wallpaper2",
