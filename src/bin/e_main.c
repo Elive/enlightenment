@@ -110,6 +110,7 @@ static jmp_buf x_fatal_buff;
 int E_EVENT_FINISH_LOADING = 0;
 
 static int _e_main_lvl = 0;
+static int _e_main_restart_count = 0;
 static int(*_e_main_shutdown_func[MAX_LEVEL]) (void);
 
 static Eina_List *_idle_before_list = NULL;
@@ -270,6 +271,19 @@ main(int argc, char **argv)
    e_util_env_set("PANTS", "ON");
    e_util_env_set("DESKTOP", "Enlightenment-0.17.0");
    TS("Environment Variables Done");
+
+   s = getenv("E_RESTART_COUNT");
+   if (s)
+     {
+        _e_main_restart_count = (atoi(s))+1;
+        snprintf(buff, sizeof(buff), "%d", _e_main_restart_count);
+        e_env_set("E_RESTART_COUNT", buff);
+     }
+   else
+     {
+        e_env_set("E_RESTART_COUNT", "1");
+        _e_main_restart_count = 1;
+     }
 
    TS("Parse Arguments");
    _e_main_parse_arguments(argc, argv);
