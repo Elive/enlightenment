@@ -33,6 +33,7 @@ wizard_page_apply(E_Wizard_Page *pg __UNUSED__)
    e_config_save();
    // diusable restart env so we actually start a whole new session properly
    e_util_env_set("E_RESTART", NULL);
+   e_env_unset("E_RESTART_COUNT"); 
    // restart e
    e_sys_action_do(E_SYS_RESTART, NULL);
    return 1;
