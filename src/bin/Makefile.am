@@ -149,6 +149,7 @@ e_sha1.h \
 e_shelf.h \
 e_signals.h \
 e_slidecore.h \
+e_screenshot.h \
 e_slider.h \
 e_slidesel.h \
 e_spectrum.h \
@@ -313,6 +314,7 @@ e_sha1.c \
 e_shelf.c \
 e_signals.c \
 e_slidecore.c \
+e_screenshot.c \
 e_slider.c \
 e_slidesel.c \
 e_spectrum.c \
