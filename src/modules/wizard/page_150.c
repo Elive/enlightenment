@@ -169,7 +169,7 @@ wizard_page_show(E_Wizard_Page *pg)
 
    gl_renderer = e_glxinfo_renderer_get();
 
-   if (strstr(gl_renderer, "llvmpipe"))
+   if (gl_renderer && (strstr(gl_renderer, "llvmpipe")))
      llvmpipe = EINA_TRUE;
 
    if (match_xorg_log("*(II)*NVIDIA*: Creating default Display*") &&

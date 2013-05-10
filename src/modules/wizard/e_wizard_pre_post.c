@@ -204,7 +204,7 @@ _e_wizard_script_name_clean(const char *name)
    char **split;
    char buf[1024];
 
-   if (strstr(name, "-"))
+   if (name && (strstr(name, "-")))
      {
         split = eina_str_split(name, "-", 2);
 
