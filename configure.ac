@@ -552,6 +552,7 @@ PKG_CHECK_MODULES(E, [
   eina >= ${efl_version}
   dbus-1
   edbus >= ${efl_version}
+  edbus2 >= 1.7.99.0
   eio >= ${efl_version}
   $hal_mount
   $eeze_mount

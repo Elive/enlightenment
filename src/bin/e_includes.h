@@ -152,3 +152,4 @@
 #include "e_grab_dialog.h"
 #include "e_widget_filepreview.h"
 #include "e_night_mode.h"
+#include "e_screenshot_edbus.h"
