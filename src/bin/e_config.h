@@ -271,6 +271,9 @@ struct _E_Config
    double                    thumbscroll_momentum_threshhold; // GUI
    double                    thumbscroll_friction; // GUI
 
+   int                       reload_xkb_on_erestart;
+   int                       reload_deskenv_on_erestart;
+
    unsigned char             filemanager_single_click; // GUI
    int                       device_desktop; // GUI
    int                       device_auto_mount; // GUI

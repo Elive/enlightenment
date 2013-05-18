@@ -5,6 +5,8 @@ e_deskenv_init(void)
 {
    char buf[PATH_MAX], buf2[PATH_MAX + sizeof("xrdb -load ")];
 
+   if ((!e_config->reload_deskenv_on_erestart) &&
+       (e_config->enlightenment_restart_count > 1)) return 1;
    // run xdrb -load .Xdefaults & .Xresources
    // NOTE: one day we should replace this with an e based config + service
    if (e_config->deskenv.load_xrdb)
@@ -23,7 +25,9 @@ e_deskenv_init(void)
           }
      }
 
-   e_deskenv_xmodmap_run();
+   //FIXME: e_xkb_update runs e_deskenv_xmodmap_run, so why do we run it here?
+   //e_deskenv_xmodmap_run();
+
    // make gnome apps happy
    // NOTE: one day we should replace this with an e based config + service
    if (e_config->deskenv.load_gnome)

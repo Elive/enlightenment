@@ -809,6 +809,9 @@ _e_config_edd_init(Eina_Bool old)
    E_CONFIG_VAL(D, T, ping_clients_interval, INT);
    E_CONFIG_VAL(D, T, cache_flush_poll_interval, INT);
 
+   E_CONFIG_VAL(D, T, reload_xkb_on_erestart, INT);
+   E_CONFIG_VAL(D, T, reload_deskenv_on_erestart, INT);
+
    E_CONFIG_VAL(D, T, thumbscroll_enable, INT);
    E_CONFIG_VAL(D, T, thumbscroll_threshhold, INT);
    E_CONFIG_VAL(D, T, thumbscroll_momentum_threshhold, DOUBLE);
@@ -1316,6 +1319,9 @@ while (!e_config)
      E_CONFIG_LIMIT(e_config->mode.presentation, 0, 1);
      E_CONFIG_LIMIT(e_config->mode.offline, 0, 1);
      E_CONFIG_LIMIT(e_config->mode.night, 0, 1);
+
+     E_CONFIG_LIMIT(e_config->reload_xkb_on_erestart, 0, 1);
+     E_CONFIG_LIMIT(e_config->reload_deskenv_on_erestart, 0, 1);
 
      E_CONFIG_LIMIT(e_config->exec.expire_timeout, 0.1, 1000);
      E_CONFIG_LIMIT(e_config->exec.show_run_dialog, 0, 1);
