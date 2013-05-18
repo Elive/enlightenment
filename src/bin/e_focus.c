@@ -275,7 +275,6 @@ _e_focus_event_mouse_in_update_mouse_focus(void *data)
 
         x = pointer_position_x - pointer_curr_x;
         y = pointer_position_y - pointer_curr_y;
-        ERR("Mouse: X:[%d] Y:[%d]", x, y);
 
         if (((x > 0) && (x >=  offset))   || ((y > 0) && (y >=  offset)) ||
             ((x < 0) && (x <= ~offset+1)) || ((y < 0) && (y <= ~offset+1)))
