@@ -45,6 +45,7 @@ _end_page(void *data __UNUSED__)
 
    if(!e_wizard_pre_done()) return ECORE_CALLBACK_RENEW;
    e_util_env_set("E_RESTART", NULL);
+   e_env_unset("E_RESTART_COUNT"); 
    // restart e
    e_sys_action_do(E_SYS_RESTART, NULL);
    TS("DONE");
