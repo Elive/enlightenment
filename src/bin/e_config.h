@@ -212,6 +212,8 @@ struct _E_Config
    unsigned char             screensaver_suspend_on_ac; // GUI
    double                    screensaver_suspend_delay; // GUI
 
+   int                       enlightenment_restart_count;
+
    int                       dpms_enable; // GUI
    int                       dpms_standby_enable; // GUI
    int                       dpms_standby_timeout; // GUI
