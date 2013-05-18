@@ -999,6 +999,7 @@ main(int argc, char **argv)
    TS("E_XSettings Init Done");
    _e_main_shutdown_push(e_xsettings_shutdown);
 
+   /*
    TS("E_Update Init");
    if (!e_update_init())
      {
@@ -1007,7 +1008,7 @@ main(int argc, char **argv)
      }
    TS("E_Update Init Done");
    _e_main_shutdown_push(e_update_shutdown);
-
+   */
    if (e_config->show_splash)
      e_init_status_set(_("Setup Desktop Environment"));
    TS("E_Deskenv Init");
