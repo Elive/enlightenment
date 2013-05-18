@@ -13,6 +13,7 @@ EAPI void e_xkb_layout_set(const E_Config_XKB_Layout *cl);
 EAPI const char *e_xkb_layout_name_reduce(const char *name);
 EAPI void e_xkb_e_icon_flag_setup(Evas_Object *eicon, const char *name);
 EAPI void e_xkb_flag_file_get(char *buf, size_t bufsize, const char *name);
+EAPI Eina_Bool e_xkb_setxkbmap_ran_get(void);
 
 EAPI Eina_Bool e_config_xkb_layout_eq(const E_Config_XKB_Layout *a, const E_Config_XKB_Layout *b);
 EAPI void e_config_xkb_layout_free(E_Config_XKB_Layout *cl);

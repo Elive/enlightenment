@@ -738,7 +738,9 @@ _e_config_edd_init(Eina_Bool old)
    E_CONFIG_VAL(D, T, backlight.idle_dim, UCHAR);
 
    E_CONFIG_VAL(D, T, deskenv.load_xrdb, UCHAR);
+   E_CONFIG_VAL(D, T, deskenv.load_xrdb_always, UCHAR);
    E_CONFIG_VAL(D, T, deskenv.load_xmodmap, UCHAR);
+   E_CONFIG_VAL(D, T, deskenv.load_xmodmap_always, UCHAR);
    E_CONFIG_VAL(D, T, deskenv.load_gnome, UCHAR);
    E_CONFIG_VAL(D, T, deskenv.load_kde, UCHAR);
 

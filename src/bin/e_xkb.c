@@ -1,8 +1,11 @@
 #include "e.h"
 
 static void _e_xkb_update_event(int);
+static void _e_xkb_setxkbmap_run(const char *command);
 
+static Eina_Bool _e_xkb_setxkbmap_ran = EINA_FALSE;
 static int _e_xkb_cur_group = -1;
+static Ecore_Event_Handler *eeh = NULL;
 
 EAPI int E_EVENT_XKB_CHANGED = 0;
 
@@ -31,7 +34,17 @@ _e_xkb_init_timer(void *data)
 EAPI int
 e_xkb_init(void)
 {
+   Eina_Bool run_xkb = EINA_FALSE;
    E_EVENT_XKB_CHANGED = ecore_event_type_new();
+
+   if ((e_config->deskenv.load_xmodmap_always) ||
+       (!e_config->deskenv.load_xmodmap_always &&
+        (e_config->enlightenment_restart_count == 1)))
+     {
+        run_xkb = EINA_TRUE;
+     }
+   if (!run_xkb) return 1;
+
    e_xkb_update(-1);
    if (e_config->xkb.cur_layout)
      ecore_timer_add(1.5, _e_xkb_init_timer, e_config->xkb.current_layout);
@@ -143,7 +156,7 @@ e_xkb_update(int cur_group)
           }
      }
    INF("SET XKB RUN: %s", eina_strbuf_string_get(buf));
-   ecore_exe_run(eina_strbuf_string_get(buf), NULL);
+   _e_xkb_setxkbmap_run(eina_strbuf_string_get(buf));
    eina_strbuf_free(buf);
 }
 
@@ -294,9 +307,51 @@ e_config_xkb_layout_dup(const E_Config_XKB_Layout *cl)
    return cl2;
 }
 
+EAPI Eina_Bool
+e_xkb_setxkbmap_ran_get(void)
+{
+   return _e_xkb_setxkbmap_ran;
+}
+
 static void
 _e_xkb_update_event(int cur_group)
 {
    ecore_event_add(E_EVENT_XKB_CHANGED, NULL, NULL, (intptr_t *)(long)cur_group);
 }
 
+
+static Eina_Bool
+_e_xkb_setxkbmap_handler(void *data, int type EINA_UNUSED, void *event)
+{
+   Ecore_Exe_Event_Del *eed;
+   pid_t pid = (pid_t) data;
+
+   if(!(eed = event)) return ECORE_CALLBACK_CANCEL;
+   if(!eed->exe) return ECORE_CALLBACK_CANCEL;
+
+   if (pid == eed->pid)
+     {
+        INF ("Finish running setxkbmap");
+        _e_xkb_setxkbmap_ran = EINA_TRUE;
+        ecore_event_handler_del(eeh);
+     }
+
+   return ECORE_CALLBACK_DONE;
+}
+
+
+static void
+_e_xkb_setxkbmap_run(const char *command)
+{
+   Ecore_Exe *exe;
+   pid_t pid;
+   if (!command) return;
+
+   exe = ecore_exe_pipe_run(command, ECORE_EXE_PIPE_WRITE | ECORE_EXE_PIPE_READ_LINE_BUFFERED |
+                      ECORE_EXE_PIPE_ERROR_LINE_BUFFERED, NULL);
+
+   pid = ecore_exe_pid_get(exe);
+   if (pid == -1) return;
+
+   eeh = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _e_xkb_setxkbmap_handler, (void *) pid);
+}
