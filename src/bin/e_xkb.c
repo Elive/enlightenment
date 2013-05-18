@@ -32,6 +32,10 @@ EAPI int
 e_xkb_init(void)
 {
    E_EVENT_XKB_CHANGED = ecore_event_type_new();
+
+   if ((!e_config->reload_xkb_on_erestart) &&
+       (e_config->enlightenment_restart_count > 1)) return 1;
+
    e_xkb_update(-1);
    if (e_config->xkb.cur_layout)
      ecore_timer_add(1.5, _e_xkb_init_timer, e_config->xkb.current_layout);
