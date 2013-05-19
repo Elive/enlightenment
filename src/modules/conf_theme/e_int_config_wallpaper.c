@@ -445,6 +445,9 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
       E_Fm2_Config *cfg;
       cfg = e_widget_flist_config_get(ow);
       cfg->view.no_click_rename = 1;
+      cfg->view.mode = E_FM2_VIEW_MODE_GRID_ICONS;
+      cfg->icon.icon.w = 128;
+      cfg->icon.icon.h = 128;
    }
    cfdata->o_fm = ow;
    evas_object_smart_callback_add(ow, "dir_changed",
@@ -595,6 +598,15 @@ _adv_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
      e_user_dir_concat_static(path, "backgrounds");
 
    ow = e_widget_flist_add(evas);
+   {
+      E_Fm2_Config *cfg;
+      cfg = e_widget_flist_config_get(ow);
+      cfg->view.no_click_rename = 1;
+      cfg->view.mode = E_FM2_VIEW_MODE_GRID_ICONS;
+      cfg->icon.icon.w = 128;
+      cfg->icon.icon.h = 128;
+   }
+
    cfdata->o_fm = ow;
    evas_object_smart_callback_add(ow, "dir_changed",
                                   _cb_files_changed, cfdata);
