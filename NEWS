@@ -1,3 +1,23 @@
+Changes since 0.17.2:
+---------------------
+
+Additions:
+
+Deprecations:
+
+Changes:
+
+Removed:
+
+Improvements:
+    * improve efm mouse movement detection for icons
+    * add check for vmware window in another spot to disable key remapping
+
+Fixes:
+    * fixed theme bug which prevented windows from unshading correctly when animations were disabled
+
+
+
 Changes since 0.17.1:
 ---------------------
 
