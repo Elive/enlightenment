@@ -1,4 +1,5 @@
 #include "e.h"
+#include <EDBus.h>
 
 #define BUS "org.enlightenment.Screenshot"
 #define PATH "/org/enlightenment/Screenshot"
