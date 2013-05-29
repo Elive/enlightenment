@@ -2592,7 +2592,7 @@ _e_mod_comp_win_damage(E_Comp_Win *cw,
         cw->dmg_updates++;
      }
    if (cw->nocomp) return;
-   if (cw->c->nocomp)
+   if (cw->c && (cw->c->nocomp))
      {
         cw->nocomp_need_update = EINA_TRUE;
         return;
@@ -2921,6 +2921,7 @@ _e_mod_comp_damage(void *data __UNUSED__,
    Ecore_X_Event_Damage *ev = event;
    E_Comp_Win *cw = _e_mod_comp_win_damage_find(ev->damage);
    if (!cw) return ECORE_CALLBACK_PASS_ON;
+   if (!cw->c) return ECORE_CALLBACK_PASS_ON;
    _e_mod_comp_win_damage(cw,
                           ev->area.x, ev->area.y,
                           ev->area.width, ev->area.height, 1);
