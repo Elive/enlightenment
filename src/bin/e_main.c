@@ -102,6 +102,7 @@ static Eina_Bool _e_main_cb_idle_before(void *data __UNUSED__);
 static Eina_Bool _e_main_cb_idle_after(void *data __UNUSED__);
 static Eina_Bool _e_main_cb_startup_fake_end(void *data __UNUSED__);
 static Eina_Bool _e_main_event_cb_timer(void *data __UNUSED__);
+static void      _e_main_efreet_cache_update(void);
 /* local variables */
 static Eina_Bool really_know = EINA_FALSE;
 static Eina_Bool locked = EINA_FALSE;
@@ -681,6 +682,11 @@ main(int argc, char **argv)
      }
    TS("Efreet Init Done");
    _e_main_shutdown_push(efreet_shutdown);
+
+   if (!e_config->wizard_after && (e_config->enlightenment_restart_count == 1))
+     {
+        _e_main_efreet_cache_update();
+     }
 
    if (!really_know)
      {
@@ -2038,3 +2044,67 @@ _e_main_efreet_update_menu_cache(Efreet_Menu *menu)
      }
 }
 
+static void
+_e_main_efreet_cache_update(void)
+{
+   char file[PATH_MAX], buf[PATH_MAX];
+   Eina_Bool dcc, icc;
+   const char *dir = "/usr/lib/i386-linux-gnu";
+
+   snprintf(file, sizeof(file), "%s/efreet/efreet_desktop_cache_create", dir);
+   if ((ecore_file_exists(file)) && (ecore_file_can_exec(file)))
+     {
+        snprintf(buf, sizeof(buf), "Efreet Running: %s", file);
+        TS(buf);
+        ecore_exe_run(file, NULL);
+        dcc = EINA_TRUE;
+     }
+   else
+     {
+        snprintf(buf, sizeof(buf), "Efreet Unable to find/exec %s", file);
+        TS(buf);
+     }
+
+   snprintf(file, sizeof(file), "%s/efreet/efreet_icon_cache_create", dir);
+   if ((ecore_file_exists(file)) && (ecore_file_can_exec(file)))
+     {
+        snprintf(buf, sizeof(buf), "Efreet Running: %s", file);
+        TS(buf);
+        ecore_exe_run(file, NULL);
+        icc = EINA_TRUE;
+     }
+   else
+     {
+        snprintf(buf, sizeof(buf), "Efreet Unable to find/exec %s", file);
+        TS(buf);
+     }
+
+   if ((dcc) || (icc))
+     {
+        snprintf(file, sizeof(file), "%s/efreet/desktop_data.update", efreet_cache_home_get());
+        if ((ecore_file_exists(file)) && (ecore_file_can_write(file)))
+          {
+             FILE *f;
+             f = fopen(file, "w+");
+             if (f) fputs("1", f);
+             snprintf(buf, sizeof(buf), "Efreet UPDATE: %s", file);
+             TS(buf);
+             fclose(f);
+          }
+
+        snprintf(file, sizeof(file), "%s/efreet/icon_data.update", efreet_cache_home_get());
+        if ((ecore_file_exists(file)) && (ecore_file_can_write(file)))
+          {
+             FILE *f;
+             f = fopen(file, "w+");
+             if (f) fputs("1", f);
+             snprintf(buf, sizeof(buf), "Efreet UPDATE: %s", file);
+             TS(buf);
+             fclose(f);
+          }
+     }
+   else
+      ERR("unable to find efreet_icon_cache_create & efreet_desktop_cache_create");
+
+   efreet_lang_reset();
+}
