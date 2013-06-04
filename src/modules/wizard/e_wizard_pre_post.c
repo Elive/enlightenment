@@ -149,6 +149,13 @@ e_wizard_pre_label_get(void)
    return ewp->btn_label;
 }
 
+EAPI const char*
+e_wizard_post_label_get(void)
+{
+   if (!ewp) return NULL;
+   if (!ewp->btn_label) return NULL;
+   return ewp->btn_label;
+}
 /* This function looks in "/proc/cmdline" for "boot=live" if it is
  * found it will return LIVE_SYSTEM{first/last} else USER_SYSTEM{first/last}
  */
