@@ -767,11 +767,6 @@ _e_int_menus_apps_scan(E_Menu *m, Efreet_Menu *menu)
 
         EINA_LIST_FOREACH(menu->entries, l, entry)
           {
-             if (!entry) continue;
-             if ((entry->type == EFREET_MENU_ENTRY_DESKTOP) &&
-                 (!_e_int_menus_app_config_append(entry->desktop)))
-               continue;
-
              mi = e_menu_item_new(m);
              _e_int_menus_item_label_set(entry, mi);
 
@@ -833,6 +828,31 @@ _e_int_menus_apps_menu_del(void *data)
 }
 
 static Efreet_Menu *
+_e_int_menus_apps_menu_remove_invalid_desktops(Efreet_Menu *menu)
+{
+   Efreet_Menu *entry;
+   Eina_List *l;
+
+   if (!menu->entries) return NULL;
+
+   EINA_LIST_FOREACH(menu->entries, l, entry)
+     {
+        if (entry->type == EFREET_MENU_ENTRY_DESKTOP)
+          {
+             if (!e_int_menus_cache_update(entry->desktop))
+               {
+                  ERR("EFREET_MENU - Remove: %s", entry->desktop->orig_path);
+                  menu->entries = eina_list_remove_list(menu->entries, l);
+               }
+          }
+        else if (entry->type == EFREET_MENU_ENTRY_MENU)
+          _e_int_menus_apps_menu_remove_invalid_desktops(entry);
+     }
+   return menu;
+}
+
+
+static Efreet_Menu *
 _e_int_menus_apps_thread_new(E_Menu *m, const char *dir)
 {
    Efreet_Menu *menu = NULL;
@@ -850,7 +870,10 @@ _e_int_menus_apps_thread_new(E_Menu *m, const char *dir)
      {
         menu = _e_int_menus_app_menu_default;
         if (!menu)
-          menu = _e_int_menus_app_menu_default = efreet_menu_get();
+          {
+             menu = _e_int_menus_app_menu_default = 
+                _e_int_menus_apps_menu_remove_invalid_desktops(efreet_menu_get());
+          }
      }
 
    if (menu) return menu;
