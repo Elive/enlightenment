@@ -66,6 +66,7 @@ EAPI Eina_Bool e_wizard_pre_done(void);
 EAPI Eina_Bool e_wizard_post_done(void);
 
 EAPI const char* e_wizard_pre_label_get(void);
+EAPI const char* e_wizard_post_label_get(void);
 
 /**
  * @addtogroup Optional_Conf
