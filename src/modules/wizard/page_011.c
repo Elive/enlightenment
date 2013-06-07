@@ -368,7 +368,12 @@ wizard_page_show(E_Wizard_Page *pg)
         if (lay->name)
           {
              fprintf(stdout, "Lay:[%s] Reg[%s]\n", lay->name, kb);
-             if (!strcasecmp(lay->name, kb)) sel = i;
+             if (!strcasecmp(lay->name, kb))
+               {
+                  e_widget_ilist_selected_set(ob, i);
+                  e_widget_ilist_nth_show(ob, i, 0);
+                  sel = --i;
+               }
           }
      }
    eina_stringshare_del(kb);
@@ -377,7 +382,6 @@ wizard_page_show(E_Wizard_Page *pg)
    e_widget_ilist_thaw(ob);
    if (sel >= 0)
      {
-        e_widget_ilist_selected_set(ob, sel);
         e_widget_ilist_nth_show(ob, sel, 0);
      }
 
