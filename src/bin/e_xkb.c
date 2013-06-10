@@ -31,11 +31,22 @@ _e_xkb_init_timer(void *data)
 EAPI int
 e_xkb_init(void)
 {
+   Eina_Bool run_xkb = EINA_FALSE;
    E_EVENT_XKB_CHANGED = ecore_event_type_new();
 
-   if ((!e_config->reload_xkb_on_erestart) &&
-       (e_config->enlightenment_restart_count > 1)) return 1;
+   if (e_config->reload_xkb_on_erestart)
+     run_xkb = EINA_TRUE;
+   else if (!e_config->reload_xkb_on_erestart)
+     {
+        if (e_config->enlightenment_restart_count == 1)
+          run_xkb = EINA_TRUE;
+        else
+          run_xkb = EINA_FALSE;
+     }
 
+   if (!run_xkb) return 1;
+
+   INF("Running XKB!!!!");
    e_xkb_update(-1);
    if (e_config->xkb.cur_layout)
      ecore_timer_add(1.5, _e_xkb_init_timer, e_config->xkb.current_layout);
