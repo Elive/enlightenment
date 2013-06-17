@@ -2111,7 +2111,7 @@ e_border_stack_below(E_Border *bd,
 Eina_Bool
 _e_border_focus_latest_delay_set(void *data)
 {
-   E_Border *bd, *_under_pointer;
+   E_Border *bd, *_under_pointer = NULL;
 
    if (!(bd = data)) return ECORE_CALLBACK_CANCEL;
 
