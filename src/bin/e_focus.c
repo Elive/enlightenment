@@ -238,6 +238,7 @@ _e_focus_raise_timer(void *data)
 static void
 _e_focus_event_mouse_in_set_focus(E_Border *bd, int desk_set_focus)
 {
+   /*
    if (!desk_set_focus)
      {
         Eina_List *l;
@@ -258,7 +259,7 @@ _e_focus_event_mouse_in_set_focus(E_Border *bd, int desk_set_focus)
                     }
                }
           }
-     }
+     }*/
 
    if (desk_set_focus)
     {
