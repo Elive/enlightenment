@@ -16,5 +16,6 @@ EAPI void e_focus_event_focus_out(E_Border *bd);
 EAPI void e_focus_setup(E_Border *bd);
 EAPI void e_focus_setdown(E_Border *bd);
 
+EAPI void e_focus_pager_geometry_set(int x, int y, int w, int h, Eina_Bool set);
 #endif
 #endif
