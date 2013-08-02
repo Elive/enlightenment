@@ -701,6 +701,7 @@ e_border_new(E_Container *con,
    bd->w = bd->client.w;
    bd->h = bd->client.h;
 
+
    bd->resize_mode = RESIZE_NONE;
    bd->layer = 100;
    bd->saved.layer = bd->layer;
@@ -7520,6 +7521,7 @@ _e_border_eval0(E_Border *bd)
              if ((bd->new_client) &&
                  (bd->client.icccm.initial_state == ECORE_X_WINDOW_STATE_HINT_ICONIC))
                {
+                  ERR("Func: %s Line:%d", __func__, __LINE__);
                   e_border_iconify(bd);
                   e_border_hide(bd, 1);
                }
@@ -8115,6 +8117,7 @@ _e_border_eval0(E_Border *bd)
 #endif
    if (bd->new_client)
      {
+        ERR("Func: %s Line:%d", __func__, __LINE__);
         E_Event_Border_Add *ev;
         E_Exec_Instance *inst;
 
@@ -8468,8 +8471,9 @@ _e_border_eval(E_Border *bd)
 
    if (bd->new_client)
      {
-        int zx = 0, zy = 0, zw = 0, zh = 0;
+        int zx = 0, zy = 0, zw = 0, zh = 0, rw = 0, rh = 0;
 
+        ERR("Func: %s Line:%d", __func__, __LINE__);
         if (bd->zone)
           e_zone_useful_geometry_get(bd->zone, &zx, &zy, &zw, &zh);
 
@@ -8478,7 +8482,7 @@ _e_border_eval(E_Border *bd)
          */
         // TODO: temoporary limited maximize algorithm
         // ->
-        /*if (bd->w > zw)
+        if (bd->w > zw)
            rw = zw;
            else
            rw = bd->w;
@@ -8493,8 +8497,11 @@ _e_border_eval(E_Border *bd)
            bd->w = rw;
            bd->h = rh;
            e_border_resize (bd, bd->w, bd->h);
-           }*/
+           }
         // <-
+
+        ERR("Name: %s Size: %dx%d Zone Size: %dx%d", bd->client.icccm.name,
+            bd->w, bd->h, zw, zh);
 
         if (bd->re_manage)
           {
