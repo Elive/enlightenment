@@ -20,12 +20,9 @@ scribus
 skype
 pidgin gajim konversation kvirc loqui lostirc quassel qutim
 libreoffice-startcenter openoffice.org-startcenter koffice
-brasero
-ogmrip
 codeblocks eclipse gvim
 virtualbox
 transmission
-gtk-recordmydesktop
 demo-1
 demo-2
 demo-3
