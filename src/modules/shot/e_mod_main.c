@@ -924,6 +924,7 @@ _bd_hook(void *d __UNUSED__, E_Border *bd)
    E_Menu *m;
    Eina_List *l;
    if (!bd->border_menu) return;
+   if (bd->iconic || (bd->desk != e_desk_current_get(bd->zone))) return;
    m = bd->border_menu;
 
    /* position menu item just before first separator */
