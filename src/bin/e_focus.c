@@ -273,7 +273,7 @@ _e_focus_pager_interconnect(E_Border *bd)
         E_Border *bdf = NULL;
 
         bdf = e_border_focused_get();
-        if (bdu->client.win == bdf->client.win) return EINA_FALSE;
+        if ((bdf) && (bdu->client.win == bdf->client.win)) return EINA_FALSE;
 
         e_focus_pager_geometry_set(0, 0, 0, 0, EINA_FALSE);
         return EINA_TRUE;
