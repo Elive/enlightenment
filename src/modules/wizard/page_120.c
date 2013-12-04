@@ -46,12 +46,12 @@ EAPI int
 wizard_page_show(E_Wizard_Page *pg __UNUSED__)
 {
    int hav_temperature = 1;
-   TS(__FILE__);
 #ifdef __FreeBSD__
    // figure out on bsd if we have temp sensors
 #else
    // figure out on linux if we have temp sensors
 #endif
+   TS(__FILE__);
    if (!hav_temperature)
      {
         E_Config_Module *em;
