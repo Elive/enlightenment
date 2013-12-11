@@ -707,6 +707,7 @@ e_border_new(E_Container *con,
    bd->w = bd->client.w;
    bd->h = bd->client.h;
 
+
    bd->resize_mode = RESIZE_NONE;
    bd->layer = 100;
    bd->saved.layer = bd->layer;
@@ -7657,6 +7658,7 @@ _e_border_eval0(E_Border *bd)
              if ((bd->new_client) &&
                  (bd->client.icccm.initial_state == ECORE_X_WINDOW_STATE_HINT_ICONIC))
                {
+                  ERR("Func: %s Line:%d", __func__, __LINE__);
                   e_border_iconify(bd);
                   e_border_hide(bd, 1);
                }
@@ -8252,6 +8254,7 @@ _e_border_eval0(E_Border *bd)
 #endif
    if (bd->new_client)
      {
+        ERR("Func: %s Line:%d", __func__, __LINE__);
         E_Event_Border_Add *ev;
         E_Exec_Instance *inst;
 
@@ -8586,6 +8589,38 @@ _e_border_eval0(E_Border *bd)
    _e_border_hook_call(E_BORDER_HOOK_EVAL_POST_BORDER_ASSIGN, bd);
 }
 
+static void 
+_e_border_geometry_resize(E_Border *bd, int zw, int zh)
+{
+   Eina_Bool oversize_width = EINA_FALSE, oversize_height = EINA_FALSE;
+
+   if (!bd->zone) return;
+
+   if (bd->w > zw)
+     oversize_width = EINA_TRUE;
+
+   if (bd->h > zh)
+     oversize_height = EINA_TRUE;
+
+   if (oversize_width || oversize_height)
+     {
+        ERR("Before_Resize: %s Size: %dx%d Zone Size: %dx%d", bd->client.icccm.name,
+            bd->w, bd->h, zw, zh);
+
+        if (oversize_width)
+          bd->w = (zw * 0.95);
+
+        if (oversize_height)
+          bd->h = (zh * 0.95);
+
+        e_border_resize(bd, bd->w, bd->h);
+        e_border_center(bd);
+
+        ERR("After_Resize: %s Size: %dx%d Zone Size: %dx%d", bd->client.icccm.name,
+            bd->w, bd->h, zw, zh);
+     }
+  }
+
 static void
 _e_border_eval(E_Border *bd)
 {
@@ -8607,15 +8642,20 @@ _e_border_eval(E_Border *bd)
      {
         int zx = 0, zy = 0, zw = 0, zh = 0;
 
+        ERR("Func: %s Line:%d", __func__, __LINE__);
         if (bd->zone)
-          e_zone_useful_geometry_get(bd->zone, &zx, &zy, &zw, &zh);
+          {
+             e_zone_useful_geometry_get(bd->zone, &zx, &zy, &zw, &zh);
+             _e_border_geometry_resize(bd, zw, zh);
+          };
 
         /*
          * Limit maximum size of windows to useful geometry
          */
         // TODO: temoporary limited maximize algorithm
         // ->
-        /*if (bd->w > zw)
+        /*
+        if (bd->w > zw)
            rw = zw;
            else
            rw = bd->w;
@@ -8630,9 +8670,11 @@ _e_border_eval(E_Border *bd)
            bd->w = rw;
            bd->h = rh;
            e_border_resize (bd, bd->w, bd->h);
-           }*/
+           }
+           */
         // <-
 
+     
         if (bd->re_manage)
           {
              bd->x -= bd->client_inset.l;
