@@ -51,6 +51,7 @@ wizard_page_show(E_Wizard_Page *pg __UNUSED__)
 #else
    // figure out on linux if we have temp sensors
 #endif
+   TS(__FILE__);
    if (!hav_temperature)
      {
         E_Config_Module *em;

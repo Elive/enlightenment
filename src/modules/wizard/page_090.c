@@ -50,6 +50,7 @@ wizard_page_show(E_Wizard_Page *pg __UNUSED__)
    Eina_List *dir;
    char buf[PATH_MAX], *file, *dname, *str;
 
+   TS(__FILE__);
    dname = "/sys/class/power_supply";
    dir = ecore_file_ls(dname);
    if (dir)

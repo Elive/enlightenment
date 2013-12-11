@@ -21,6 +21,7 @@ wizard_page_show(E_Wizard_Page *pg)
    Evas_Object *o, *of, *ob;
    E_Radio_Group *rg;
 
+   TS(__FILE__);
    if (e_config->focus_policy == E_FOCUS_CLICK) focus_mode = 0;
 
    o = e_widget_list_add(pg->evas, 1, 0);

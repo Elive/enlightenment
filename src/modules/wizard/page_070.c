@@ -34,6 +34,7 @@ wizard_page_show(E_Wizard_Page *pg __UNUSED__)
       NULL
    };
 
+   TS(__FILE__);
    if (!themes) return 0;
    for (i = 0; search[i]; i++)
      {

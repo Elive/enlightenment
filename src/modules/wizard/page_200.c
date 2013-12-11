@@ -29,12 +29,14 @@ wizard_page_hide(E_Wizard_Page *pg __UNUSED__)
 EAPI int
 wizard_page_apply(E_Wizard_Page *pg __UNUSED__)
 {
+   TS(__FILE__);
    // save the config now everyone has modified it
    e_config_save();
    // diusable restart env so we actually start a whole new session properly
    e_util_env_set("E_RESTART", NULL);
    // restart e
    e_sys_action_do(E_SYS_RESTART, NULL);
+   TS("DONE");
    return 1;
 }
 

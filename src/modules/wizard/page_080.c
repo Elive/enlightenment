@@ -20,6 +20,7 @@ wizard_page_show(E_Wizard_Page *pg __UNUSED__)
    FILE *f, *fin;
    char buf[PATH_MAX];
 
+   TS(__FILE__);
    snprintf(buf, sizeof(buf), "%s/def-ibar.txt", e_wizard_dir_get());
    fin = fopen(buf, "r");
    if (!fin) return 0;
