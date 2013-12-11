@@ -360,7 +360,9 @@ struct _E_Config
    struct
    {
       unsigned char load_xrdb; // GUI
+      unsigned char load_xrdb_always; //GUI
       unsigned char load_xmodmap; // GUI
+      unsigned char load_xmodmap_always; //GUI
       unsigned char load_gnome; // GUI
       unsigned char load_kde; // GUI
    } deskenv;
