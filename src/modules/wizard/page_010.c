@@ -679,7 +679,7 @@ wizard_page_show(E_Wizard_Page *pg)
         else
           ic = NULL;
 
-        if (e_intl_language_get())
+        if ((pair->locale_key) && e_intl_language_get())
           {
              if (!strcmp(pair->locale_key, e_intl_language_get()))
                {
