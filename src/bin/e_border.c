@@ -8459,17 +8459,17 @@ _e_border_geometry_resize(E_Border *bd, int zw, int zh)
 
    if (!bd->zone) return;
 
-   if (bd->w > (zw * 0.98))
+   if (bd->w > zw)
      oversize_width = EINA_TRUE;
 
-   if (bd->h > (zh * 0.98))
+   if (bd->h > zh)
      oversize_height = EINA_TRUE;
-
-   ERR("Before_Name: %s Size: %dx%d Zone Size: %dx%d", bd->client.icccm.name,
-            bd->w, bd->h, zw, zh);
 
    if (oversize_width || oversize_height)
      {
+        ERR("Before_Resize: %s Size: %dx%d Zone Size: %dx%d", bd->client.icccm.name,
+            bd->w, bd->h, zw, zh);
+
         if (oversize_width)
           bd->w = (zw * 0.95);
 
@@ -8478,12 +8478,11 @@ _e_border_geometry_resize(E_Border *bd, int zw, int zh)
 
         e_border_resize(bd, bd->w, bd->h);
         e_border_center(bd);
-        ERR("Resizing Border!");
-        //TODO: if border intersect with zone, smart position the window.
-     }
-   ERR("Name: %s Size: %dx%d Zone Size: %dx%d", bd->client.icccm.name,
+
+        ERR("After_Resize: %s Size: %dx%d Zone Size: %dx%d", bd->client.icccm.name,
             bd->w, bd->h, zw, zh);
-}
+     }
+  }
 
 static void
 _e_border_eval(E_Border *bd)
