@@ -19,6 +19,9 @@ typedef struct _E_Config_Dialog_Data E_Config_Dialog_Data;
 
 struct _E_Config_Dialog_View
 {
+   const char *ok_label;
+   const char *close_label;
+   unsigned char hide_apply : 1;
    unsigned char override_auto_apply : 1;
    unsigned char basic_only : 1;
    unsigned char normal_win : 1;
