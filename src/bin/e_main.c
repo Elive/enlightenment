@@ -1023,7 +1023,7 @@ main(int argc, char **argv)
      {
         if (after_restart)
           e_startup(E_STARTUP_RESTART);
-        else
+        else if (!e_config->wizard_after)
           e_startup(E_STARTUP_START);
      }
    TS("Run Startup Apps Done");
