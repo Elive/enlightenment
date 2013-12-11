@@ -82,6 +82,7 @@ static void      _e_main_cb_x_fatal(void *data __UNUSED__);
 static Eina_Bool _e_main_cb_signal_exit(void *data __UNUSED__, int ev_type __UNUSED__, void *ev __UNUSED__);
 static Eina_Bool _e_main_cb_signal_hup(void *data __UNUSED__, int ev_type __UNUSED__, void *ev __UNUSED__);
 static Eina_Bool _e_main_cb_signal_user(void *data __UNUSED__, int ev_type __UNUSED__, void *ev);
+static Eina_Bool _e_main_cb_finished_loading(void *data __UNUSED__, int ev_type __UNUSED__, void *ev __UNUSED__);
 static int       _e_main_x_shutdown(void);
 static int       _e_main_dirs_init(void);
 static int       _e_main_dirs_shutdown(void);
@@ -100,12 +101,14 @@ static Eina_Bool _e_main_cb_x_flusher(void *data __UNUSED__);
 static Eina_Bool _e_main_cb_idle_before(void *data __UNUSED__);
 static Eina_Bool _e_main_cb_idle_after(void *data __UNUSED__);
 static Eina_Bool _e_main_cb_startup_fake_end(void *data __UNUSED__);
-
+static Eina_Bool _e_main_event_cb_timer(void *data __UNUSED__);
 /* local variables */
 static Eina_Bool really_know = EINA_FALSE;
 static Eina_Bool locked = EINA_FALSE;
 static Eina_Bool inloop = EINA_FALSE;
 static jmp_buf x_fatal_buff;
+
+int E_EVENT_FINISH_LOADING = 0;
 
 static int _e_main_lvl = 0;
 static int(*_e_main_shutdown_func[MAX_LEVEL]) (void);
@@ -114,6 +117,8 @@ static Eina_List *_idle_before_list = NULL;
 static Ecore_Idle_Enterer *_idle_before = NULL;
 static Ecore_Idle_Enterer *_idle_after = NULL;
 static Ecore_Idle_Enterer *_idle_flush = NULL;
+
+static Ecore_Timer *_finish_timer = NULL;
 
 /* external variables */
 EAPI Eina_Bool e_precache_end = EINA_FALSE;
@@ -302,6 +307,9 @@ main(int argc, char **argv)
 
    ecore_app_args_set(argc, (const char **)argv);
 
+   E_EVENT_FINISH_LOADING = ecore_event_type_new();
+
+   ecore_event_handler_add(E_EVENT_FINISH_LOADING, _e_main_cb_finished_loading, NULL);
    TS("Ecore Event Handlers");
    if (!ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT,
                                 _e_main_cb_signal_exit, NULL))
@@ -1903,6 +1911,25 @@ _e_main_cb_idle_before(void *data __UNUSED__)
 }
 
 static Eina_Bool
+_e_main_event_cb_timer(void *data __UNUSED__)
+{
+   ecore_event_add(E_EVENT_FINISH_LOADING, NULL, NULL, NULL);
+
+   if (_finish_timer) ecore_timer_del(_finish_timer);
+   _finish_timer = NULL;
+
+   return ECORE_CALLBACK_DONE;
+}
+
+static Eina_Bool
+_e_main_cb_finished_loading(void *data __UNUSED__, int ev_type __UNUSED__, void *ev __UNUSED__)
+{
+   TS("E Loading Complete.");
+
+   return ECORE_CALLBACK_DONE;
+}
+
+static Eina_Bool
 _e_main_cb_idle_after(void *data __UNUSED__)
 {
    static int first_idle;
@@ -1914,6 +1941,10 @@ _e_main_cb_idle_after(void *data __UNUSED__)
    if (first_idle)
      {
         TS("SLEEP");
+
+        if (_finish_timer) ecore_timer_del(_finish_timer);
+        _finish_timer = ecore_timer_add(1.25, _e_main_event_cb_timer, NULL);
+
         first_idle = 0;
         e_precache_end = EINA_TRUE;
      }
@@ -1921,6 +1952,10 @@ _e_main_cb_idle_after(void *data __UNUSED__)
    if (first_idle++ < 60)
      {
         TS("SLEEP");
+
+        if (_finish_timer) ecore_timer_del(_finish_timer);
+        _finish_timer = ecore_timer_add(1.25, _e_main_event_cb_timer, NULL);
+
         if (!first_idle)
           e_precache_end = EINA_TRUE;
      }
