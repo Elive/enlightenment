@@ -1,7 +1,7 @@
 /* Setup if we need connman? */
 #include "e_wizard.h"
 
-static int do_tasks = 1;
+static int do_tasks = 0;
 /*
 EAPI int
 wizard_page_init(E_Wizard_Page *pg __UNUSED__, Eina_Bool *need_xdg_desktops __UNUSED__, Eina_Bool *need_xdg_icons __UNUSED__)
@@ -44,7 +44,7 @@ wizard_page_show(E_Wizard_Page *pg)
    evas_object_show(of);
 
    e_wizard_page_show(o);
-   return 1; /* 1 == show ui, and wait for user, 0 == just continue */
+   return 0; /* 1 == show ui, and wait for user, 0 == just continue */
 }
 /*
 EAPI int
