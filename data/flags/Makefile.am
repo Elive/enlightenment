@@ -98,6 +98,11 @@ unknown_flag.png \
 us_flag.png \
 uz_flag.png \
 vn_flag.png \
-za_flag.png
+za_flag.png \
+au_flag.png \
+eg_flag.png \
+id_flag.png \
+mg_flag.png \
+so_flag.png
 
 EXTRA_DIST = $(files_DATA)
