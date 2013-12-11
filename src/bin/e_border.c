@@ -7658,7 +7658,6 @@ _e_border_eval0(E_Border *bd)
              if ((bd->new_client) &&
                  (bd->client.icccm.initial_state == ECORE_X_WINDOW_STATE_HINT_ICONIC))
                {
-                  ERR("Func: %s Line:%d", __func__, __LINE__);
                   e_border_iconify(bd);
                   e_border_hide(bd, 1);
                }
@@ -8642,7 +8641,6 @@ _e_border_eval(E_Border *bd)
      {
         int zx = 0, zy = 0, zw = 0, zh = 0;
 
-        ERR("Func: %s Line:%d", __func__, __LINE__);
         if (bd->zone)
           {
              e_zone_useful_geometry_get(bd->zone, &zx, &zy, &zw, &zh);
