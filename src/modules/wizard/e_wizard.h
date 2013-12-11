@@ -54,7 +54,7 @@ EAPI void e_wizard_title_set(const char *title);
 EAPI void e_wizard_labels_update(void);
 EAPI const char *e_wizard_dir_get(void);
 EAPI void e_wizard_xdg_desktops_reset(void);
-
+EAPI void e_wizard_efreet_update(void);
 /**
  * @addtogroup Optional_Conf
  * @{

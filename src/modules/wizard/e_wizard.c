@@ -247,6 +247,49 @@ e_wizard_xdg_desktops_reset(void)
    got_desktops = EINA_FALSE;
 }
 
+EAPI void
+e_wizard_efreet_update(void)
+{
+   char file[PATH_MAX];
+   Eina_Bool dcc, icc;
+
+   snprintf(file, sizeof(file), "%s/efreet/efreet_desktop_cache_create", e_prefix_lib_get());
+   if ((ecore_file_exists(file)) && (ecore_file_can_exec(file)))
+     {
+        ecore_exe_run(file, NULL);
+        dcc = EINA_TRUE;
+     }
+
+   snprintf(file, sizeof(file), "%s/efreet/efreet_icon_cache_create", e_prefix_lib_get());
+   if ((ecore_file_exists(file)) && (ecore_file_can_exec(file)))
+     {
+        ecore_exe_run(file, NULL);
+        icc = EINA_TRUE;
+     }
+
+   if ((dcc) || (icc))
+     {
+        snprintf(file, sizeof(file), "%s/efreet/desktop_data.update", efreet_cache_home_get());
+        if ((ecore_file_exists(file)) && (ecore_file_can_write(file)))
+          {
+             FILE *f;
+             f = fopen(file, "w+");
+             if (f) fputs("1", f);
+             fclose(f);
+          }
+
+        snprintf(file, sizeof(file), "%s/efreet/icon_data.update", efreet_cache_home_get());
+        if ((ecore_file_exists(file)) && (ecore_file_can_write(file)))
+          {
+             FILE *f;
+             f = fopen(file, "w+");
+             if (f) fputs("1", f);
+             fclose(f);
+          }
+     }
+   efreet_lang_reset();
+}
+
 static void
 _e_wizard_next_eval(void)
 {
