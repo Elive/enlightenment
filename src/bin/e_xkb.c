@@ -221,6 +221,7 @@ e_xkb_layout_set(const E_Config_XKB_Layout *cl)
           {
              INF("Setting keyboard layout: %s|%s|%s", cl2->name, cl2->model, cl2->variant);
              e_xkb_update(cur_group);
+             eina_stringshare_replace(&(e_config->xkb.selected_layout), cl->name);
              break;
           }
      }
