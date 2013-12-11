@@ -6,6 +6,9 @@
 # include <sys/sysctl.h>
 #endif
 
+#ifdef HAVE_EEZE
+# include <Eeze.h>
+#endif
 /*
    static char *
    read_file(const char *file)
@@ -29,6 +32,50 @@
    return strdup(buf);
    }
  */
+
+static Eina_List *
+_wizard_temperature_get_bus_files(const char *bus)
+{
+   Eina_List *result;
+   Eina_List *therms;
+   char path[PATH_MAX];
+   char busdir[PATH_MAX];
+   char *name;
+
+   result = NULL;
+
+   snprintf(busdir, sizeof(busdir), "/sys/bus/%s/devices", bus);
+   /* Look through all the devices for the given bus. */
+   therms = ecore_file_ls(busdir);
+
+   EINA_LIST_FREE(therms, name)
+     {
+        Eina_List *files;
+        char *file;
+
+        /* Search each device for temp*_input, these should be
+         * temperature devices. */
+        snprintf(path, sizeof(path), "%s/%s", busdir, name);
+        files = ecore_file_ls(path);
+        EINA_LIST_FREE(files, file)
+          {
+             if ((!strncmp("temp", file, 4)) &&
+                 (!strcmp("_input", &file[strlen(file) - 6])))
+               {
+                  char *f;
+
+                  snprintf(path, sizeof(path),
+                           "%s/%s/%s", busdir, name, file);
+                  f = strdup(path);
+                  if (f) result = eina_list_append(result, f);
+               }
+             free(file);
+          }
+        free(name);
+     }
+   return result;
+}
+
 /*
 EAPI int
 wizard_page_init(E_Wizard_Page *pg __UNUSED__, Eina_Bool *need_xdg_desktops __UNUSED__, Eina_Bool *need_xdg_icons __UNUSED__)
@@ -42,14 +89,142 @@ wizard_page_shutdown(E_Wizard_Page *pg __UNUSED__)
    return 1;
 }
 */
+
+static int
+_wizard_thermal_find(const char *path, int depth)
+{
+   Eina_List *l, *ls;
+   int hav_temperature = 0;
+   char buf[PATH_MAX];
+   char *file;
+
+   if (!path) return 0;
+
+   ls = ecore_file_ls(path);
+   if (eina_list_count(ls) && depth)
+     {
+        depth--;
+        EINA_LIST_FOREACH(ls, l, file)
+          {
+             snprintf(buf, sizeof(buf), "%s/%s", path, file);
+             if (!ecore_file_exists(buf)) continue;
+
+             fprintf(stdout, "realpath: [%s] - DIR\n", buf);
+             if (!ecore_file_is_dir(buf))
+               {
+                  if (file && (strstr(file, "temp") || strstr(file, "temperature")))
+                    {
+                       fprintf(stdout, "sensor_path: [%s] - DIR+FILE\n", file);
+                       hav_temperature = 1;
+                       break;
+                    }
+               }
+             else if (_wizard_thermal_find(buf, depth))
+               {
+                  hav_temperature = 1;
+                  break;
+               }
+          }
+        eina_list_free(ls);
+     }
+   return hav_temperature;
+}
+
+
 EAPI int
 wizard_page_show(E_Wizard_Page *pg __UNUSED__)
 {
-   int hav_temperature = 1;
-#ifdef __FreeBSD__
+   int hav_temperature = 0;
+
+#if defined (__FreeBSD__) || defined (__OpenBSD__)
    // figure out on bsd if we have temp sensors
 #else
-   // figure out on linux if we have temp sensors
+   Eina_List *tempdevs = NULL;
+#ifdef HAVE_EEZE
+   tempdevs = eeze_udev_find_by_type(EEZE_UDEV_TYPE_IS_IT_HOT_OR_IS_IT_COLD_SENSOR, NULL);
+#endif
+
+   const char *sensor_path[] = {
+      "/proc/omnibook/temperature",
+      "/proc/acpi/thermal_zone",    //LINUX_ACPI Directory
+      "/sys/class/thermal",         //LINUX_SYS Directory
+      "/sys/devices/temperatures/cpu_temperature",
+      "/sys/devices/temperatures/sensor1_temperature",
+      "/sys/devices/platform/coretemp.0/temp1_input",
+      "/sys/devices/platform/thinkpad_hwmon/temp1_input",
+      NULL
+   };
+
+   if (tempdevs && (eina_list_count(tempdevs)))
+     {
+        char *syspath;
+
+        EINA_LIST_FREE(tempdevs, syspath)
+           fprintf(stdout, "sensor_path: [%s] - UDEV\n", syspath);
+
+        hav_temperature = 1;
+     }
+   else
+     {
+        int i = 0;
+
+        while(sensor_path[i] != NULL)
+          {
+             if ((ecore_file_exists(sensor_path[i])) && (!ecore_file_is_dir(sensor_path[i])))
+               {
+                  fprintf(stdout, "sensor_path: [%s] - FILE\n", sensor_path[i]);
+                  hav_temperature = 1;
+                  break;
+               }
+             else if (ecore_file_is_dir(sensor_path[i]))
+               {
+                  fprintf(stdout, "sensor_path: [%s] - DIR\n", sensor_path[i]);
+                  hav_temperature = _wizard_thermal_find(sensor_path[i], 2);
+               }
+
+             i++;
+          }
+
+        if (!hav_temperature)
+          {
+             Eina_List *therms;
+
+             therms = _wizard_temperature_get_bus_files("i2c");
+             if (therms)
+               {
+                  char *name;
+                  if ((name = eina_list_data_get(therms)))
+                    {
+                       if (ecore_file_exists(name))
+                         {
+                            fprintf(stdout, "sensor_path: [%s] - I2C\n", name);
+                            hav_temperature = 1;
+                         }
+                    }
+                  eina_list_free(therms);
+               }
+          }
+
+        if (!hav_temperature)
+          {
+             Eina_List *therms;
+
+             therms = _wizard_temperature_get_bus_files("pci");
+             if (therms)
+               {
+                  char *name;
+                  if ((name = eina_list_data_get(therms)))
+                    {
+                       if (ecore_file_exists(name))
+                         {
+                            fprintf(stdout, "sensor_path: [%s] - PCI\n", name);
+                            hav_temperature = 1;
+                         }
+                    }
+                  eina_list_free(therms);
+               }
+          }
+     }
 #endif
    TS(__FILE__);
    if (!hav_temperature)
