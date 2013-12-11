@@ -215,7 +215,22 @@ e_winlist_show(E_Zone *zone, E_Winlist_Filter filter)
    if (_last_border)
      {
         if (!_last_border->lock_focus_out)
-          e_border_focus_set(_last_border, 0, 0);
+          {
+             E_Winlist_Win *ww;
+
+             e_border_focus_set(_last_border, 0, 0);
+             if (eina_list_count(_wins) > 1)
+               {
+                  l = eina_list_nth_list(_wins, 1);
+                  ww = eina_list_data_get(l);
+
+                  if (ww && (ww->border->client.win == _last_border->client.win))
+                    {
+                       _wins = eina_list_promote_list(_wins, l);
+                       e_winlist_next();
+                    }
+               }
+          }
         else
           _last_border = NULL;
      }
@@ -1139,7 +1154,7 @@ _e_winlist_activate(void)
              ecore_x_pointer_xy_get(_winlist->zone->container->win,
                                     &_warp_x, &_warp_y);
              _win = &_winlist->zone->container->win;
-             e_border_focus_latest_set(ww->border);
+             //e_border_focus_latest_set(ww->border);
              _warp_to = 1;
              if (!_warp_timer)
                _warp_timer = ecore_timer_add(0.01, _e_winlist_warp_timer, NULL);
@@ -1581,7 +1596,7 @@ _e_winlist_animator(void *data __UNUSED__)
         if (!_bd_next->lock_focus_out)
           {
              e_border_focus_set(_bd_next, 1, 1);
-             e_border_focus_latest_set(_bd_next);
+             //e_border_focus_latest_set(_bd_next);
           }
         if ((e_config->focus_policy != E_FOCUS_CLICK) ||
             (e_config->winlist_warp_at_end) ||

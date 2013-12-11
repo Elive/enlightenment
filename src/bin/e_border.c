@@ -254,6 +254,9 @@ static int warp_y[2] = {0}; //{cur,prev}
 static Ecore_X_Window warp_to_win;
 static Ecore_Timer *warp_timer = NULL;
 
+static int  _focus_latest_delay_count = 0;
+static Ecore_Timer *_focus_latest_delay_timer;
+
 EAPI int E_EVENT_BORDER_ADD = 0;
 EAPI int E_EVENT_BORDER_REMOVE = 0;
 EAPI int E_EVENT_BORDER_ZONE_SET = 0;
@@ -728,6 +731,9 @@ e_border_new(E_Container *con,
    bd->take_focus = 1;
    bd->new_client = 1;
    bd->changed = 1;
+
+   if (e_config->focus_setting == E_FOCUS_NEW_WINDOW)
+     bd->new_client_focus_set = 1;
 
 //   bd->zone = e_zone_current_get(con);
    bd->desk = e_desk_current_get(bd->zone);
@@ -2094,11 +2100,83 @@ e_border_stack_below(E_Border *bd,
    e_remember_update(bd);
 }
 
+/*
+ * This functions is a ecore_timer_loop, when E decides to give
+ * focus to a window, this function poll the mouse x,y and store
+ * it in pointer_move_x[ARRAY] & pointer_move_y[ARRAY].
+ * If all the array elements match, we know the mouse have stopped
+ * and we set focus _REMEMBER_ and return ECORE_CALLBACK_DONE.
+ * If the pointer elements do not match, we loop until it does.
+ */
+Eina_Bool
+_e_border_focus_latest_delay_set(void *data)
+{
+   E_Border *bd, *_under_pointer = NULL;
+
+   if (!(bd = data)) return ECORE_CALLBACK_CANCEL;
+
+   _focus_latest_delay_count++;
+   if (bd && (bd->desk))
+     _under_pointer = e_border_under_pointer_get(bd->desk, NULL);
+
+   if ((!_under_pointer && _focus_latest_delay_timer) || bd->iconic)
+     {
+        ecore_timer_del(_focus_latest_delay_timer);
+        _focus_latest_delay_timer = NULL;
+        return ECORE_CALLBACK_CANCEL;
+     }
+
+   if (_focus_latest_delay_count == 100)
+     {
+        _focus_latest_delay_count = 0;
+
+        if ((bd->client.win == _under_pointer->client.win) && bd->focused)
+          {
+             E_Border *_last_focused;
+             Eina_List *l;
+
+             l = eina_list_nth_list(focus_stack, 0);
+             _last_focused = eina_list_data_get(l);
+
+            if (_last_focused && (_last_focused->client.win == bd->client.win))
+              {
+                 if (_focus_latest_delay_timer) ecore_timer_del(_focus_latest_delay_timer);
+                 _focus_latest_delay_timer = NULL;
+                 return ECORE_CALLBACK_DONE;
+              }
+             e_border_focus_latest_set(bd);
+          }
+
+        if (_focus_latest_delay_timer) ecore_timer_del(_focus_latest_delay_timer);
+        _focus_latest_delay_timer = NULL;
+
+        return ECORE_CALLBACK_DONE;
+     }
+
+   return ECORE_CALLBACK_RENEW;
+}
+
+/*
+ * This function sets up ecore_timer_loop to check when the
+ * mouse has stopped moving.
+ */
+EAPI void
+e_border_focus_latest_delay_set(E_Border *bd)
+{
+   if (_focus_latest_delay_timer) ecore_timer_del(_focus_latest_delay_timer);
+   _focus_latest_delay_count = 0;
+   _focus_latest_delay_timer = ecore_timer_loop_add(0.025, _e_border_focus_latest_delay_set, bd);
+}
+
 EAPI void
 e_border_focus_latest_set(E_Border *bd)
 {
+   if (_focus_latest_delay_timer) ecore_timer_del(_focus_latest_delay_timer);
+   _focus_latest_delay_timer = NULL;
+
    focus_stack = eina_list_remove(focus_stack, bd);
    focus_stack = eina_list_prepend(focus_stack, bd);
+   bd->new_client_focus_set = 0;
 }
 
 EAPI void
@@ -2136,6 +2214,7 @@ e_border_raise_latest_set(E_Border *bd)
 EAPI void
 e_border_focus_set_with_pointer(E_Border *bd)
 {
+   E_Border *_last_focused;
 #ifdef PRINT_LOTS_OF_DEBUG
    E_PRINT_BORDER_INFO(bd);
 #endif
@@ -2151,6 +2230,10 @@ e_border_focus_set_with_pointer(E_Border *bd)
 
    if (e_config->focus_policy == E_FOCUS_CLICK) return;
    if (!bd->visible) return;
+
+   _last_focused = e_desk_last_focused_border_get(bd->desk);
+   if (_last_focused && (!e_border_under_pointer_get(bd->desk, bd)))
+     _last_focused->desk_set_focus = 0;
 
    if (e_config->focus_policy == E_FOCUS_SLOPPY)
      {
@@ -2401,7 +2484,12 @@ e_border_focus_set(E_Border *bd,
         e_focus_event_focus_in(bd);
 
         if (!focus_track_frozen)
-          e_border_focus_latest_set(bd);
+          {
+             if (bd->new_client_focus_set)
+               e_border_focus_latest_set(bd);
+             else
+               e_border_focus_latest_delay_set(bd);
+          }
 
         e_hints_active_window_set(bd->zone->container->manager, bd);
 
@@ -3544,6 +3632,9 @@ e_border_idler_before(void)
                        _e_border_show(bd);
                        bd->changes.visible = 0;
                     }
+
+                  if (bd->desk_set_focus && bd->focused)
+                    bd->desk_set_focus = 0;
 
                    if (bd->zone && (!bd->new_client) &&
                      (!E_INSIDE(bd->x, bd->y, 0, 0, bd->zone->w - 5, bd->zone->h - 5)) &&
@@ -10218,12 +10309,9 @@ e_border_under_pointer_get(E_Desk *desk,
    /* We need to ensure that we can get the container window for the
     * zone of either the given desk or the desk of the excluded
     * window, so return if neither is given */
-   if (desk)
-     ecore_x_pointer_xy_get(desk->zone->container->win, &x, &y);
-   else if (exclude)
+   ecore_x_pointer_root_xy_get(&x, &y);
+   if (exclude)
      ecore_x_pointer_xy_get(exclude->desk->zone->container->win, &x, &y);
-   else
-     return NULL;
 
    return _e_border_under_pointer_helper(desk, exclude, x, y);
 }
