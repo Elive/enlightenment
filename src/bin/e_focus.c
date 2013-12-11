@@ -7,8 +7,17 @@ static Ecore_Timer *_focus_timer = NULL;
 static Eina_Bool _e_focus_raise_timer(void *data);
 static void      _e_focus_event_mouse_in_set_focus(E_Border *bd, int desk_set_focus);
 static Eina_Bool _e_focus_event_mouse_in_update_mouse_focus(void *data);
-
+static Eina_Bool _e_focus_pager_interconnect(E_Border *bd);
 /* local subsystem globals */
+
+typedef struct _E_Focus_Pager_Geometry E_Focus_Pager_Geometry;
+struct _E_Focus_Pager_Geometry
+{
+   int x, y, w, h;
+   Eina_Bool set;
+};
+
+E_Focus_Pager_Geometry _focus_pager_geometry;
 
 /* externally accessible functions */
 EINTERN int
@@ -27,6 +36,17 @@ EAPI void
 e_focus_idler_before(void)
 {
    return;
+}
+
+EAPI void
+e_focus_pager_geometry_set(int x, int y, int w, int h, Eina_Bool set)
+{
+   _focus_pager_geometry.w = _focus_pager_geometry.h = _focus_pager_geometry.x = _focus_pager_geometry.y = 0;
+   _focus_pager_geometry.w = w;
+   _focus_pager_geometry.h = h;
+   _focus_pager_geometry.x = x;
+   _focus_pager_geometry.y = y;
+   _focus_pager_geometry.set = set;
 }
 
 EAPI void
@@ -220,7 +240,47 @@ _e_focus_raise_timer(void *data)
    bd->raise_timer = NULL;
    return ECORE_CALLBACK_CANCEL;
 }
+/*
+ * This function checks if pager sets it's popup geometry
+ * it then checks if the mouse is within the geometry of pager
+ * if it is and the mouse is also over a border ((AND)) focus
+ * was already set by the desktop, do not update focus unless
+ * the user moves the mouse.
+ */
+static Eina_Bool
+_e_focus_pager_interconnect(E_Border *bd)
+{
+   E_Border *bdu = NULL;
+   int pointer_x, pointer_y, zw, zh;
+   int pager_x, pager_y, pager_w, pager_h;
 
+   if (!_focus_pager_geometry.set) return EINA_FALSE;
+
+   bdu = e_border_under_pointer_get(bd->desk, NULL);
+   if (!bdu) return EINA_FALSE;
+
+   ecore_x_pointer_root_xy_get(&pointer_x, &pointer_y);
+   e_zone_useful_geometry_get(bd->zone, NULL, NULL, &zw, &zh);
+
+   pager_x = _focus_pager_geometry.x;
+   pager_y = _focus_pager_geometry.y;
+   pager_w = _focus_pager_geometry.w;
+   pager_h = _focus_pager_geometry.h;
+
+   if (((pointer_x > pager_x) && (pointer_x < (pager_x + pager_w))) &&
+       ((pointer_y > pager_y) && (pointer_y < (pager_y + pager_h))))
+     {
+        E_Border *bdf = NULL;
+
+        bdf = e_border_focused_get();
+        if ((bdf) && (bdu->client.win == bdf->client.win)) return EINA_FALSE;
+
+        e_focus_pager_geometry_set(0, 0, 0, 0, EINA_FALSE);
+        return EINA_TRUE;
+     }
+   return EINA_FALSE;
+}
+   
 /*
  * If "Refocus last window on desktop switch" is Enabled and the user
  * switched desktop and the mouse pointer is above another window that
@@ -228,38 +288,11 @@ _e_focus_raise_timer(void *data)
  * wait for mouse movement, if the mouse moves 10 pixels in any direction
  * in the window we will then update focus.
 */
-
-/*
- * If !desk_set_focus is not  TRUE, list all borders and search for one 
- * that might have focus, if we found one with focus and the mouse is not
- * within that window, set desk_set_focus to TRUE
- */
-
 static void
 _e_focus_event_mouse_in_set_focus(E_Border *bd, int desk_set_focus)
 {
-   /*
-   if (!desk_set_focus)
-     {
-        Eina_List *l;
-        E_Border *bd_l, *bd_f = NULL, *bd_u = NULL;
-
-        bd_f = e_border_focused_get();
-        bd_u = e_border_under_pointer_get(bd->desk, NULL);
-
-        if (bd_f && bd_u)
-          {
-             EINA_LIST_FOREACH(e_border_client_list(), l, bd_l)
-               {
-                  if ((bd_l == bd_f) && (bd_l != bd_u))
-                    {
-                       ERR ("Pointer under foreign border!");
-                       desk_set_focus = 1;
-                       break;
-                    }
-               }
-          }
-     }*/
+   if (!desk_set_focus && _e_focus_pager_interconnect(bd))
+     desk_set_focus = 1;
 
    if (desk_set_focus)
     {

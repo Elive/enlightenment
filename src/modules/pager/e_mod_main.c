@@ -812,6 +812,7 @@ _pager_popup_new(E_Zone *zone, int keyaction)
    e_zone_useful_geometry_get(zone, &zx, &zy, &zw, &zh);
    zx -= zone->x;
    zy -= zone->y;
+   e_focus_pager_geometry_set(zx + ((zw - w) / 2), zy + ((zh - h) / 2), w, h, EINA_TRUE);
    e_popup_move_resize(pp->popup,
                        zx + ((zw - w) / 2), zy + ((zh - h) / 2), w, h);
    e_bindings_mouse_grab(E_BINDING_CONTEXT_POPUP, pp->popup->evas_win);
@@ -2412,7 +2413,6 @@ _pager_popup_cb_timeout(void *data)
         e_grabinput_release(input_window, input_window);
         input_window = 0;
      }
-
    return ECORE_CALLBACK_CANCEL;
 }
 
