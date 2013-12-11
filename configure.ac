@@ -649,9 +649,16 @@ PKG_CHECK_MODULES(E_OPEN, [
   efreet-mime >= ${efl_version}
 ])
 
+AC_MSG_RESULT($GL_CFLAGS)
+AC_MSG_CHECKING(for GL_LIBS)
+AC_ARG_WITH(gl-libs, [  --with-gl-libs=LIBS ],
+		     [GL_LIBS="$withval"],
+		     [GL_LIBS="-lGL"])
+AC_MSG_RESULT($GL_LIBS)
+
 AC_E_CHECK_PKG(ECORE_IMF, [ ecore-imf >= ${efl_version} ecore-imf-evas >= ${efl_version} ], [], [:])
 
-e_libs=$E_LIBS" "$LIBINTL" "$fnmatch_libs" "$ECORE_IMF_LIBS" "$execinfo_libs
+e_libs=$E_LIBS" "$LIBINTL" "$fnmatch_libs" "$ECORE_IMF_LIBS" "$execinfo_libs" "$GL_LIBS
 e_cflags="-DUSE_E_CONFIG_H "$E_CFLAGS" "$ECORE_IMF_CFLAGS
 e_configflags="-DUSE_E_CONFIG_H"
 
