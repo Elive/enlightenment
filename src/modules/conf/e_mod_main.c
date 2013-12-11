@@ -437,10 +437,21 @@ _e_mod_mode_offline_toggle(void *data __UNUSED__, E_Menu *m __UNUSED__, E_Menu_I
 }
 
 static void
+_e_mod_mode_night_toggle(void *data __UNUSED__, E_Menu *m __UNUSED__, E_Menu_Item *mi)
+{
+   e_config->mode.night = !e_config->mode.night;
+   e_menu_item_toggle_set(mi, e_config->mode.night);
+   e_nightmode_init();
+   e_config_save_queue();
+}
+
+static void
 _e_mod_submenu_modes_fill(void *data __UNUSED__, E_Menu *m)
 {
    E_Menu_Item *mi;
+   E_Glxinfo *eglx;
 
+   eglx = e_glxinfo_get();
    mi = e_menu_item_new(m);
    e_menu_item_check_set(mi, 1);
    if (conf->countdown.active || conf->clockmode.active)
@@ -464,6 +475,19 @@ _e_mod_submenu_modes_fill(void *data __UNUSED__, E_Menu *m)
    e_menu_item_label_set(mi, _("Offline"));
    e_util_menu_item_theme_icon_set(mi, "preferences-modes-offline");
    e_menu_item_callback_set(mi, _e_mod_mode_offline_toggle, NULL);
+
+   /* Do not display this entry if we are in VirtualBox, VirtualBox
+    * GPU Renderer name is "Chromium", dont confuse it with your browser :)
+    */
+   if (eglx->gl_renderer && (strcmp(eglx->gl_renderer, "Chromium") != 0))
+     {
+        mi = e_menu_item_new(m);
+        e_menu_item_check_set(mi, 1);
+        e_menu_item_toggle_set(mi, e_config->mode.night);
+        e_menu_item_label_set(mi, _("Night Reading"));
+        e_util_menu_item_theme_icon_set(mi, "preferences-modes-night");
+        e_menu_item_callback_set(mi, _e_mod_mode_night_toggle, NULL);
+     }
 
    e_menu_pre_activate_callback_set(m, NULL, NULL);
 }

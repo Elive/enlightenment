@@ -735,6 +735,7 @@ _e_config_edd_init(Eina_Bool old)
 
    E_CONFIG_VAL(D, T, mode.presentation, UCHAR);
    E_CONFIG_VAL(D, T, mode.offline, UCHAR);
+   E_CONFIG_VAL(D, T, mode.night, UCHAR);
 
    E_CONFIG_VAL(D, T, exec.expire_timeout, DOUBLE);
    E_CONFIG_VAL(D, T, exec.show_run_dialog, UCHAR);
@@ -1200,6 +1201,7 @@ while (!e_config)
 
      E_CONFIG_LIMIT(e_config->mode.presentation, 0, 1);
      E_CONFIG_LIMIT(e_config->mode.offline, 0, 1);
+     E_CONFIG_LIMIT(e_config->mode.night, 0, 1);
 
      E_CONFIG_LIMIT(e_config->exec.expire_timeout, 0.1, 1000);
      E_CONFIG_LIMIT(e_config->exec.show_run_dialog, 0, 1);
