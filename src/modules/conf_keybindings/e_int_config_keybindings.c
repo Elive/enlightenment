@@ -33,8 +33,8 @@ static void         _delete_all_key_binding_cb(void *data,
                                                void *data2);
 static void         _delete_key_binding_cb(void *data,
                                            void *data2);
-static void         _restore_key_binding_defaults_cb(void *data,
-                                                     void *data2);
+//static void         _restore_key_binding_defaults_cb(void *data,
+//                                                     void *data2);
 static void         _add_key_binding_cb(void *data,
                                         void *data2);
 static void         _modify_key_binding_cb(void *data,
@@ -256,8 +256,8 @@ _basic_create_widgets(E_Config_Dialog *cfd,
    cfdata->gui.o_del_all = ob;
    e_widget_disabled_set(ob, 1);
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_button_add(evas, _("Restore Default Bindings"), "enlightenment", _restore_key_binding_defaults_cb, cfdata, NULL);
-   e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 0, 1, 0);
+   //ob = e_widget_button_add(evas, _("Restore Default Bindings"), "enlightenment", _restore_key_binding_defaults_cb, cfdata, NULL);
+   //e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 0, 1, 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    ot = e_widget_table_add(evas, 0);
@@ -465,6 +465,7 @@ _delete_key_binding_cb(void *data,
      }
 }
 
+/*
 static void
 _restore_key_binding_defaults_cb(void *data,
                                  void *data2 __UNUSED__)
@@ -698,6 +699,7 @@ _restore_key_binding_defaults_cb(void *data,
    e_widget_entry_clear(cfdata->gui.o_params);
    e_widget_disabled_set(cfdata->gui.o_params, 1);
 }
+*/
 
 /**************** Updates ***********/
 static void
