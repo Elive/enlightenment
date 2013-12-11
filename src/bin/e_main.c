@@ -429,6 +429,11 @@ main(int argc, char **argv)
         _e_main_shutdown(-1);
      }
    TS("Ecore_Evas Engine Check Done");
+ 
+   TS("E_COMP_DETECT Init");
+   e_comp_detect_init();
+   TS("E_COMP_DETECT Init Done");
+   _e_main_shutdown_push(e_comp_detect_shutdown);
 
    TS("Edje Init");
    if (!edje_init())
