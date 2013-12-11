@@ -1,6 +1,7 @@
 #ifdef E_TYPEDEFS
 
 typedef struct _E_Int_Menu_Augmentation E_Int_Menu_Augmentation;
+typedef struct _E_Int_Menu_Applications E_Int_Menu_Applications;
 
 #else
 #ifndef E_INT_MENUS_H
@@ -24,6 +25,15 @@ typedef struct _E_Int_Menu_Augmentation E_Int_Menu_Augmentation;
 #define E_CLIENTLIST_GROUPICONS_SEP 2
 
 #define E_CLIENTLIST_MAX_CAPTION_LEN 256
+
+struct _E_Int_Menu_Applications
+{
+   const char *orig_path;
+   const char *try_exec;
+   const char *exec;
+   long long load_time;
+   int exec_valid;
+};
 
 struct _E_Int_Menu_Augmentation
 {
@@ -64,5 +74,6 @@ EAPI void                     e_int_menus_menu_augmentation_point_disabled_set(c
 
 EINTERN void e_int_menus_init(void);
 EINTERN void e_int_menus_shutdown(void);
+EAPI Eina_Bool e_int_menus_cache_update(Efreet_Desktop *desktop);
 #endif
 #endif

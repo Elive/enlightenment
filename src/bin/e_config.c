@@ -38,6 +38,7 @@ static E_Config_DD *_e_config_desklock_bg_edd = NULL;
 static E_Config_DD *_e_config_desktop_name_edd = NULL;
 static E_Config_DD *_e_config_desktop_window_profile_edd = NULL;
 static E_Config_DD *_e_config_remember_edd = NULL;
+static E_Config_DD *_e_config_menu_applications_edd = NULL;
 static E_Config_DD *_e_config_color_class_edd = NULL;
 static E_Config_DD *_e_config_gadcon_edd = NULL;
 static E_Config_DD *_e_config_gadcon_client_edd = NULL;
@@ -324,6 +325,18 @@ _e_config_edd_init(Eina_Bool old)
    E_CONFIG_VAL(D, T, action, STR);
    E_CONFIG_VAL(D, T, params, STR);
 
+   _e_config_menu_applications_edd = E_CONFIG_DD_NEW("E_Int_Menu_Applications",
+                                                     E_Int_Menu_Applications);
+#undef T
+#undef D
+#define T E_Int_Menu_Applications
+#define D _e_config_menu_applications_edd
+   E_CONFIG_VAL(D, T, orig_path, STR);
+   E_CONFIG_VAL(D, T, try_exec, STR);
+   E_CONFIG_VAL(D, T, exec, STR);
+   E_CONFIG_VAL(D, T, load_time, LL);
+   E_CONFIG_VAL(D, T, exec_valid, INT);
+
    _e_config_remember_edd = E_CONFIG_DD_NEW("E_Remember", E_Remember);
 #undef T
 #undef D
@@ -562,6 +575,7 @@ _e_config_edd_init(Eina_Bool old)
    E_CONFIG_VAL(D, T, transition_desk, STR); /**/
    E_CONFIG_VAL(D, T, transition_change, STR); /**/
    E_CONFIG_LIST(D, T, remembers, _e_config_remember_edd);
+   E_CONFIG_LIST(D, T, menu_applications, _e_config_menu_applications_edd);
    E_CONFIG_VAL(D, T, remember_internal_windows, INT);
    E_CONFIG_VAL(D, T, move_info_follows, INT); /**/
    E_CONFIG_VAL(D, T, resize_info_follows, INT); /**/
@@ -811,6 +825,7 @@ _e_config_edd_shutdown(void)
    E_CONFIG_DD_FREE(_e_config_desktop_name_edd);
    E_CONFIG_DD_FREE(_e_config_desktop_window_profile_edd);
    E_CONFIG_DD_FREE(_e_config_remember_edd);
+   E_CONFIG_DD_FREE(_e_config_menu_applications_edd);
    E_CONFIG_DD_FREE(_e_config_gadcon_edd);
    E_CONFIG_DD_FREE(_e_config_gadcon_client_edd);
    E_CONFIG_DD_FREE(_e_config_shelf_edd);
@@ -1787,6 +1802,7 @@ _e_config_free(E_Config *ecf)
    E_Config_Env_Var *evr;
    E_Config_XKB_Option *op;
    E_Config_Desktop_Window_Profile *wp;
+   E_Int_Menu_Applications *ema;
 
    if (!ecf) return;
 
@@ -1920,6 +1936,13 @@ _e_config_free(E_Config *ecf)
         if (rem->prop.border) eina_stringshare_del(rem->prop.border);
         if (rem->prop.command) eina_stringshare_del(rem->prop.command);
         E_FREE(rem);
+     }
+   EINA_LIST_FREE(ecf->menu_applications, ema)
+     {
+        if (ema->orig_path) eina_stringshare_del(ema->orig_path);
+        if (ema->try_exec) eina_stringshare_del(ema->try_exec);
+        if (ema->exec) eina_stringshare_del(ema->exec);
+        E_FREE(ema);
      }
    EINA_LIST_FREE(ecf->color_classes, cc)
      {
