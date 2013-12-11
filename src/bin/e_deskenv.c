@@ -58,8 +58,6 @@ _e_deskenv_xmodmap_run(EINA_UNUSED void *data)
 {
    if (!e_xkb_setxkbmap_ran_get()) return ECORE_CALLBACK_RENEW;
 
-   if (xmodmap_ran) return ECORE_CALLBACK_CANCEL;
-
    if ((e_config->deskenv.load_xmodmap && (e_config->enlightenment_restart_count == 1)) ||
         e_config->deskenv.load_xmodmap_always)
      {
@@ -76,6 +74,7 @@ _e_deskenv_xmodmap_run(EINA_UNUSED void *data)
         return ECORE_CALLBACK_DONE;
      }
 
+   xmodmap_timer = NULL;
    return ECORE_CALLBACK_DONE;
 }
 
@@ -88,6 +87,7 @@ e_deskenv_xmodmap_run(void)
    // NOTE: one day we should replace this with an e based config + service
    e_user_homedir_concat(buf, sizeof(buf), ".Xmodmap");
    if (!ecore_file_exists(buf)) return;
+   if (xmodmap_ran) return;
 
    if (xmodmap_timer) ecore_timer_del(xmodmap_timer);
    xmodmap_timer = ecore_timer_add(0.150, _e_deskenv_xmodmap_run, strdup(buf));
