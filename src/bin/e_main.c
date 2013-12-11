@@ -271,7 +271,7 @@ main(int argc, char **argv)
    e_util_env_set("PANTS", "ON");
    e_util_env_set("DESKTOP", "Enlightenment-0.17.0");
    TS("Environment Variables Done");
-
+ 
    TS("Parse Arguments");
    _e_main_parse_arguments(argc, argv);
    TS("Parse Arguments Done");
@@ -516,6 +516,19 @@ main(int argc, char **argv)
    _xdg_data_dirs_augment();
    
    _fix_user_default_edj();
+
+   s = getenv("E_RESTART_COUNT");
+   if (s)
+     {
+        e_config->enlightenment_restart_count = (atoi(s))+1;
+        snprintf(buff, sizeof(buff), "%d", e_config->enlightenment_restart_count);
+        e_env_set("E_RESTART_COUNT", buff);
+     }
+   else
+     {
+        e_env_set("E_RESTART_COUNT", "1");
+        e_config->enlightenment_restart_count = 1;
+     }
 
    TS("E_Randr Init");
    if (!e_randr_init())
@@ -1925,6 +1938,26 @@ static Eina_Bool
 _e_main_cb_finished_loading(void *data __UNUSED__, int ev_type __UNUSED__, void *ev __UNUSED__)
 {
    TS("E Loading Complete.");
+
+   if (!e_config->wizard_after &&
+       (e_config->enlightenment_restart_count == 1))
+     {
+        Efreet_Menu *menu = NULL;
+        menu = efreet_menu_get();
+        if (menu)
+          {
+             TS("E Refreshing Menu Cache");
+             _e_main_efreet_update_menu_cache(menu);
+          }
+     }
+
+   if (e_config->wizard_after)
+   {
+      TS("E_Wizard After");
+      e_wizard_after_run();
+      e_config->wizard_after = 0;
+      e_config_save_queue();
+   }
 
    return ECORE_CALLBACK_DONE;
 }
