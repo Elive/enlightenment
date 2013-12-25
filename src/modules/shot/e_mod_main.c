@@ -222,7 +222,7 @@ _file_select_ok_cb(void *data __UNUSED__, E_Dialog *dia)
 
    dia = fsel_dia;
    file = e_widget_fsel_selection_path_get(o_fsel);
-   if ((!file) || (!file[0]) || ((!eina_str_has_extension(file, "jpg")) && (!eina_str_has_extension(file, "png"))))
+   if ((!file) || (!file[0]) || ((!eina_str_has_extension(file, ".jpg")) && (!eina_str_has_extension(file, ".png"))))
      {
         e_util_dialog_show
            (_("Error - Unknown format"),
