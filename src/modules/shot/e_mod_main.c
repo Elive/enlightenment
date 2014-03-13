@@ -163,10 +163,9 @@ _screen_change_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *even
 static void
 _save_to(const char *file)
 {
-   char *extn = strrchr(file, '.');
    char opts[256];
    
-   if (!strcasecmp(extn, ".png"))
+   if (eina_str_has_extension(file, ".png"))
       snprintf(opts, sizeof(opts), "compress=%i", 9);
    else
       snprintf(opts, sizeof(opts), "quality=%i", quality);
