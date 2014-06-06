@@ -7,19 +7,15 @@ xchat
 Thunar thunar nautilus pcmanfm dolphin
 chromium firefox iceweasel chromium-browser google-chrome eve epiphany midori konqueror opera rekonq dooble
 icedove sylpheed claws-mail thunderbird evolution KMail
-shotwell
-audacious
-songbird
-clementine xmms2 enjoy banshee rhythmbox amarok listen
+audacious songbird clementine xmms2 enjoy banshee rhythmbox amarok listen
 vlc
+shotwell
 gimp
-inkscape
 rawtherapee
+inkscape
 blender
-scribus
 skype
 pidgin gajim konversation kvirc loqui lostirc quassel qutim
-libreoffice-startcenter openoffice.org-startcenter koffice
 codeblocks eclipse gvim
 virtualbox
 transmission
@@ -32,4 +28,3 @@ demo-6
 demo-7
 demo-8
 demo-9
-eliveinstaller
