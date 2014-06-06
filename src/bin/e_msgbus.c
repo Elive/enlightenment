@@ -1002,6 +1002,38 @@ _e_msgbus_focus_set_cb(E_DBus_Object *obj __UNUSED__,
         e_border_button_bindings_grab_all();
         e_config_save_queue();
      }
+   else if ((strncmp(focus, "NEWNEVER", sizeof(focus)) == 0) ||
+            (strncmp(focus, "newnever", sizeof(focus)) == 0))
+     {
+        e_config->focus_setting = E_FOCUS_NONE;
+        e_border_button_bindings_ungrab_all();
+        e_border_button_bindings_grab_all();
+        e_config_save_queue();
+     }
+   else if ((strncmp(focus, "NEWALWAYS", sizeof(focus)) == 0) ||
+            (strncmp(focus, "newalways", sizeof(focus)) == 0))
+     {
+        e_config->focus_setting = E_FOCUS_NEW_WINDOW;
+        e_border_button_bindings_ungrab_all();
+        e_border_button_bindings_grab_all();
+        e_config_save_queue();
+     }
+   else if ((strncmp(focus, "NEWDIALOG", sizeof(focus)) == 0) ||
+            (strncmp(focus, "newdialog", sizeof(focus)) == 0))
+     {
+        e_config->focus_setting = E_FOCUS_NEW_DIALOG;
+        e_border_button_bindings_ungrab_all();
+        e_border_button_bindings_grab_all();
+        e_config_save_queue();
+     }
+   else if ((strncmp(focus, "NEWDIALOGCHILD", sizeof(focus)) == 0) ||
+            (strncmp(focus, "newdialogchild", sizeof(focus)) == 0))
+     {
+        e_config->focus_setting = E_FOCUS_NEW_DIALOG_IF_OWNER_FOCUSED;
+        e_border_button_bindings_ungrab_all();
+        e_border_button_bindings_grab_all();
+        e_config_save_queue();
+     }
    else
 	 ERR("org.enlightenment.wm.Focus.Set must be MOUSE, CLICK, SLOPPY");
 

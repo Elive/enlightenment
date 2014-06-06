@@ -76,6 +76,8 @@ OPTIONS:
   -edje-collection-cache-get Get the speculative edje collection cache size (items)
 
   -focus-policy-set OPT1 Set the focus policy. OPT1 = CLICK, MOUSE or SLOPPY
+                         to change focus setting, OPT1 = NEWNEVER, NEWALWAYS,
+                                                   NEWDIALOG, NEWDIALOGCHILD.
   -focus-policy-get Get focus policy
 
   -resolution-list List all available resolutions
