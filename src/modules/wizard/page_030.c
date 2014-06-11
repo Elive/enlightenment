@@ -40,7 +40,7 @@ wizard_page_show(E_Wizard_Page *pg __UNUSED__)
    char buf[PATH_MAX];
 
    TS(__FILE__);
-   snprintf(buf, sizeof(buf), "%s/etc/xdg/menus/enlightenment.menu",
+   snprintf(buf, sizeof(buf), "%s/etc/xdg/menus/e-applications.menu",
             e_prefix_get());
    e_config->default_system_menu = eina_stringshare_add(buf);
 
