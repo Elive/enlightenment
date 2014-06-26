@@ -344,8 +344,7 @@ e_msgbus_init(void)
    e_dbus_interface_unref(iface);
 
    /* Exec methods */
-   e_dbus_interface_method_add(iface, "Cmd", "s", "",
-                               _e_msgbus_exec_cmd_cb);
+   e_dbus_interface_method_add(iface, "Cmd", "s", "", _e_msgbus_exec_cmd_cb);
    return 1;
 }
 
@@ -1337,7 +1336,7 @@ _e_msgbus_exec_cmd_cb(E_DBus_Object *obj __UNUSED__,
 {
    DBusMessageIter iter;
    const char *cmd;
-   E_Exec_Instance *ei = NULL;
+   E_Exec_Instance *ei;
    E_Zone *zone;
 
    dbus_message_iter_init(msg, &iter);
@@ -1347,10 +1346,14 @@ _e_msgbus_exec_cmd_cb(E_DBus_Object *obj __UNUSED__,
      return dbus_message_new_method_return(msg);
 
    zone = e_util_zone_current_get(e_container_current_get(e_manager_current_get())->manager);
-
+   ei = e_exec(zone, NULL, cmd, NULL, NULL);
    ei->desk_x = zone->desk_x_current;
    ei->desk_y = zone->desk_y_current;
-   ei = e_exec(zone, NULL, cmd, NULL, NULL);
+
+   if ((!ei) || (!ei->exe))
+     {
+        ERR("could not execute '%s'", cmd);
+     }
 
    return dbus_message_new_method_return(msg);
 }
