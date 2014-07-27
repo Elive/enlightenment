@@ -639,6 +639,7 @@ _adv_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    cfdata->o_preview = ow;
    _bg_set(cfdata);
    e_widget_aspect_child_set(oa, ow);
+   evas_object_show(ow);
    e_widget_table_object_append(ot, oa, 0, 2, 2, 1, 1, 1, 1, 1);
 
    rg = e_widget_radio_group_new(&(cfdata->all_this_desk_screen));
