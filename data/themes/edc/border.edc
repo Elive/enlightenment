@@ -52,7 +52,7 @@ group { name: "e/widgets/border/default/border";
             color_class: "border_top";
             image.normal: "vgrad_med_lighter.png";
             rel2.to_y: "title2";
-            rel2.offset: -1 -4;
+            rel2.offset: -1 0;
             fill.smooth: 0;
             TILED_HORIZ(120)
          }
@@ -678,6 +678,7 @@ group { name: "e/widgets/border/default/border";
 }
 
 group { name: "e/widgets/border/dialog/border";
+   alias: "e/widgets/border/modal/border";
    inherit: "e/widgets/border/default/border";
    parts {
       part { name: "max1";
@@ -1025,6 +1026,7 @@ group { name: "e/widgets/border/default/move";
             color_class: "move_text";
             text { font: "Sans"; size: 10;
                min: 1 1;
+               ellipsis: -1;
                text_class: "move_text";
             }
          }
