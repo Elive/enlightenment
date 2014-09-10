@@ -257,6 +257,9 @@ main(int argc, char **argv)
 
    eina_init();
 
+   // disable temporally ecore vsync that bugs with some intel cards
+   set_env("ECORE_NO_VSYNC", "1");
+
    /* reexcute myself with dbus-launch if dbus-launch is not running yet */
    if ((!getenv("DBUS_SESSION_BUS_ADDRESS")) &&
        (!getenv("DBUS_LAUNCHD_SESSION_BUS_SOCKET")))
