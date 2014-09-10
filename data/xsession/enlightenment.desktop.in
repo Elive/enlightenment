@@ -22,4 +22,4 @@ Comment[ru]=Войти используя Enlightenment (Версия @VERSION@)
 Comment[tr]=Enlightenment kullanarak giriş yaın (Version @VERSION@)
 Icon=@prefix@/share/enlightenment/data/images/enlightenment.png
 TryExec=@prefix@/bin/enlightenment_start
-Exec=ECORE_NO_VSYNC=1 @prefix@/bin/enlightenment_start
+Exec=@prefix@/bin/enlightenment_start
