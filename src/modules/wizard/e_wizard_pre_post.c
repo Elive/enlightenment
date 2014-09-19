@@ -1,7 +1,7 @@
 #include "e_wizard.h"
 
-#define LIVE_SYSTEM "/etc/deliver/hooks.d/e17-wizard"
-#define USER_SYSTEM "/etc/user-manager/hooks.d/e17-wizard"
+#define LIVE_SYSTEM "/usr/lib/deliver/hooks.d/e17-wizard"
+#define USER_SYSTEM "/usr/lib/user-manager/hooks.d/e17-wizard"
 #define E_WIZARD_TIMEOUT 360
 
 # define TIME_SCRIPT(x)                                        \
