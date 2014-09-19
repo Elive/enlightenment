@@ -213,11 +213,12 @@ locale_region_keyboard_get(void)
    E_Locale_Parts *locale;
 
    locale = e_intl_locale_parts_get(e_intl_language_get());
-   fprintf(stdout, "Lang:[%s], Region:[%s] \n", locale->lang, locale->region);
    if (locale)
      {
         Eina_List *l;
         Layout *lay;
+
+        fprintf(stdout, "Lang:[%s], Region:[%s] \n", locale->lang, locale->region);
 
         if (!strcasecmp(locale->lang, "eo"))
           {
