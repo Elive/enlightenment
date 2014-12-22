@@ -156,7 +156,7 @@ _xdg_data_dirs_augment(void)
      }
    else
      {
-        snprintf(buf, sizeof(buf), "%s:/usr/local/share:/usr/share", newpath);
+        snprintf(buf, sizeof(buf), "%s:/usr/share/xdgeldsk:/usr/local/share:/usr/share", newpath);
         e_util_env_set("XDG_DATA_DIRS", buf);
      }
 
