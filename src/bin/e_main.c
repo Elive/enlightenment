@@ -142,7 +142,7 @@ _xdg_data_dirs_augment(void)
 
    // if our prefix is already /usr we should not append /usr/share here yet
    if (strcmp(p, "/usr"))
-     snprintf(newpath, sizeof(newpath), "%s", e_prefix_data_get(), p);
+     snprintf(newpath, sizeof(newpath), "%s", e_prefix_data_get());
    else
      snprintf(newpath, sizeof(newpath), "%s:%s/share", e_prefix_data_get(), p);
 
