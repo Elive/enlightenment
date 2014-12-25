@@ -147,10 +147,10 @@ _xdg_data_dirs_augment(void)
    s = getenv("XDG_DATA_DIRS");
 
    // if our prefix is already /usr we should not append /usr/share here yet
-   if (strcmp(p, "/usr"))
+   if (strcmp(p, "/usr") == 0)
      snprintf(newpath, sizeof(newpath), "%s", e_prefix_data_get());
    else
-     snprintf(newpath, sizeof(newpath), "%s:%s/share", e_prefix_data_get(), p);
+   snprintf(newpath, sizeof(newpath), "%s:%s/share", e_prefix_data_get(), p);
 
    if (s)
      {
@@ -316,7 +316,7 @@ main(int argc, char **argv)
    e_util_env_set("PANTS", "ON");
    e_util_env_set("DESKTOP", "Enlightenment-0.17.0");
    TS("Environment Variables Done");
- 
+
    TS("Parse Arguments");
    _e_main_parse_arguments(argc, argv);
    TS("Parse Arguments Done");
@@ -483,7 +483,7 @@ main(int argc, char **argv)
         _e_main_shutdown(-1);
      }
    TS("Ecore_Evas Engine Check Done");
- 
+
    TS("E_COMP_DETECT Init");
    e_comp_detect_init();
    TS("E_COMP_DETECT Init Done");
