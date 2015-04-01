@@ -1,3 +1,12 @@
+2013-03-01 Sebastian Dransfeld
+
+        * Fix sys hibernate by checking raw condition first
+
+2015-03-25 Samuel F. Baggen (Thanatermesis)
+
+		* included improvement in XDG_DATA_DIRS by zmike
+		* gettext version should match the one required in efl/elm
+
 2014-08-09 Samuel F. Baggen (Thanatermesis)
 
 		* fix for window border titles and sizes (backports)
