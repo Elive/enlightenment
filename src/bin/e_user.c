@@ -142,7 +142,7 @@ e_user_dir_get(void)
 	  }
 	else
 	  {
-	     snprintf(buf, sizeof(buf), ".e17/e");
+	     snprintf(buf, sizeof(buf), ".e/e17");
 	  }
 	_e_user_dir_len = e_user_homedir_concat(dir, sizeof(dir), buf);
 	_e_user_dir = dir;
