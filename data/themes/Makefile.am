@@ -383,6 +383,7 @@ img/wifi_sig_2.png \
 img/wifi_sig_3.png \
 img/win_glow.png \
 img/win_shadow.png \
+img/win_shadow3.png \
 img/O/menu_sel_bg.png \
 img/O/menu_sel_fg.png \
 img/O/pager_window.png \
