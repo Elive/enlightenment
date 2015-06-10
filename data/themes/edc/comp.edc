@@ -306,14 +306,14 @@ group { name: "e/comp/default";
       program {
          signal: "e,state,focus,on"; source: "e";
          action: STATE_SET "focused" 0.0;
-         transition: SINUSOIDAL 0.2;
+         transition: SINUSOIDAL 0.3;
          target: "shadow";
          target: "shadow2";
       }
       program {
          signal: "e,state,focus,off"; source: "e";
          action: STATE_SET "default" 0.0;
-         transition: SINUSOIDAL 0.4;
+         transition: SINUSOIDAL 0.5;
          target: "shadow";
          target: "shadow2";
       }
