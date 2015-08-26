@@ -778,7 +778,7 @@ e_modapi_init(E_Module *m)
         battery_config->alert_p = 10;
         battery_config->alert_timeout = 0;
         battery_config->suspend_below = 0;
-        battery_config->suspend_method = 0;
+        battery_config->suspend_method = 3;
         battery_config->force_mode = 0;
 #if defined HAVE_EEZE || defined __OpenBSD__
         battery_config->fuzzy = 0;
