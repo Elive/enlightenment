@@ -22,6 +22,7 @@ typedef struct _Config       Config;
 #define SUSPEND 0
 #define HIBERNATE 1
 #define SHUTDOWN 2
+#define NOACTION 3
 
 #define POPUP_DEBOUNCE_CYCLES  2
 

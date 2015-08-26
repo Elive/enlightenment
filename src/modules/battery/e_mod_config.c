@@ -248,9 +248,12 @@ _advanced_create_widgets(E_Config_Dialog *cfd __UNUSED__, Evas *evas, E_Config_D
    ob = e_widget_radio_add(evas, _("Shutdown when below:"), 2, rg);
    e_widget_on_change_hook_set(ob, _cb_radio_changed, cfdata);
    e_widget_table_object_append(o, ob, 0, 4, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_radio_add(evas, _("Do nothing when below:"), 3, rg);
+   e_widget_on_change_hook_set(ob, _cb_radio_changed, cfdata);
+   e_widget_table_object_append(o, ob, 0, 5, 1, 1, 1, 0, 1, 0);
    ob = e_widget_slider_add(evas, 1, 0, _("%1.0f %%"), 0, 50, 1, 0,
                             NULL, &(cfdata->suspend_below), 100);
-   e_widget_table_object_append(o, ob, 0, 5, 1, 1, 1, 0, 1, 0);
+   e_widget_table_object_append(o, ob, 0, 6, 1, 1, 1, 0, 1, 0);
 
    e_widget_toolbook_page_append(otb, NULL, _("Polling"), o, 1, 0, 1, 0,
                                  0.5, 0.0);
