@@ -167,6 +167,7 @@ group { name: "e/modules/comp/screen/overlay/default";
 group { name: "e/comp/default";
    alias: "e/comp/popup";
    images.image: "win_shadow.png" COMP;
+   images.image: "win_shadow3.png" COMP;
    images.image: "win_glow.png" COMP;
    parts {
       part { name: "clipper"; type: RECT;
@@ -184,6 +185,30 @@ group { name: "e/comp/default";
             visible: 1;
          }
       }
+      part { name: "shadow2";
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+            // TODO: the size used is a bit big, so when a window is raised (ctrl + alt + r) and you focus it you can see the shadow in the outsides, we will ignore this small bug since we are going to increase the size of the window border (title), so for now let's just have this noted here as a todo
+            // note: the image can be improved, so its a small resize and contrast hack, will need to found a decent way to create images (gimp / inkscape?), pixel-perfect application
+            image.normal: "win_shadow3.png";
+            image.border: 42 42 42 42;
+            image.middle: 0;
+            rel1.to: "e.swallow.content";
+            rel1.offset: -21  -9;
+            rel2.to: "e.swallow.content";
+            rel2.offset: 18 33;
+            fill.smooth: 0;
+            color: 255 255 255 0;
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+         description { state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
       part { name: "shadow";
          clip_to: "clipper";
          description { state: "default" 0.0;
@@ -195,6 +220,11 @@ group { name: "e/comp/default";
             rel2.to: "e.swallow.content";
             rel2.offset: 6 11;
             fill.smooth: 0;
+            color: 255 255 255 255;
+         }
+         description { state: "focused" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 0;
          }
          description { state: "hidden" 0.0;
             inherit: "default" 0.0;
@@ -272,6 +302,20 @@ group { name: "e/comp/default";
       }
       program { name: "hide2";
          action: SIGNAL_EMIT "e,action,hide,done" "e";
+      }
+      program {
+         signal: "e,state,focus,on"; source: "e";
+         action: STATE_SET "focused" 0.0;
+         transition: SINUSOIDAL 0.3;
+         target: "shadow";
+         target: "shadow2";
+      }
+      program {
+         signal: "e,state,focus,off"; source: "e";
+         action: STATE_SET "default" 0.0;
+         transition: SINUSOIDAL 0.5;
+         target: "shadow";
+         target: "shadow2";
       }
       program {
          signal: "e,state,focus,on"; source: "e";
