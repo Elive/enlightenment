@@ -57,6 +57,8 @@ e_focus_event_mouse_in(E_Border *bd)
    if ((e_config->focus_policy == E_FOCUS_MOUSE) ||
        (e_config->focus_policy == E_FOCUS_SLOPPY))
      {
+// The next line is a change made in E17 backports for fix some focus stuff, not sure if is needed but seems like we cannot compile with it so let's disable it for now
+       // if (bd != e_border_focused_get())
         E_Border *_last_focused = NULL;
 
         _last_focused = e_desk_last_focused_border_get(bd->desk);
@@ -94,54 +96,31 @@ e_focus_event_mouse_out(E_Border *bd)
 {
    if (e_config->focus_policy == E_FOCUS_MOUSE)
      {
-        /* FIXME: this is such a hack. its a big hack around x's async events
-         * as we dont know always exactly what action causes what event
-         * so by waiting more than 0.2 secs before reverting focus to nothing
-         * since we entered root, we are ignoring mouse in's on the root
-         * container for a bit after the mosue may have entered it
-         */
-        if ((ecore_loop_time_get() - e_grabinput_last_focus_time_get()) > 0.2)
-          {
              if (!bd->lock_focus_in)
                {
                   if (bd->focused)
                     e_border_focus_set(bd, 0, 1);
                }
           }
-     }
-   if (bd->raise_timer)
-     {
-        ecore_timer_del(bd->raise_timer);
-        bd->raise_timer = NULL;
-     }
+   if (bd->raise_timer) ecore_timer_del(bd->raise_timer);
 }
 
 EAPI void
 e_focus_event_mouse_down(E_Border *bd)
 {
-   if (e_config->focus_policy == E_FOCUS_CLICK)
+   if (!bd->focused)
      {
+        if (e_border_focus_policy_click(bd))
         e_border_focus_set(bd, 1, 1);
-
+        else if (e_config->always_click_to_focus)
+          e_border_focus_set(bd, 1, 1);
+          }
+   if (e_config->always_click_to_raise)
+     {
         if (!bd->lock_user_stacking)
-          {
-             if (e_config->border_raise_on_focus)
                e_border_raise(bd);
           }
      }
-   else if (e_config->always_click_to_raise)
-     {
-        if (!bd->lock_user_stacking)
-          {
-             if (e_config->border_raise_on_focus)
-               e_border_raise(bd);
-          }
-     }
-   else if (e_config->always_click_to_focus)
-     {
-        e_border_focus_set(bd, 1, 1);
-     }
-}
 
 EAPI void
 e_focus_event_mouse_up(E_Border *bd __UNUSED__)
@@ -151,7 +130,7 @@ e_focus_event_mouse_up(E_Border *bd __UNUSED__)
 EAPI void
 e_focus_event_focus_in(E_Border *bd)
 {
-   if ((e_config->focus_policy == E_FOCUS_CLICK) &&
+   if ((e_border_focus_policy_click(bd)) &&
        (!e_config->always_click_to_raise) &&
        (!e_config->always_click_to_focus))
      {
@@ -165,12 +144,17 @@ e_focus_event_focus_in(E_Border *bd)
         e_bindings_wheel_grab(E_BINDING_CONTEXT_WINDOW, bd->win);
         bd->button_grabbed = 0;
      }
+   if (!bd->lock_user_stacking)
+     {
+        if (e_config->border_raise_on_focus)
+          e_border_raise(bd);
+     }
 }
 
 EAPI void
 e_focus_event_focus_out(E_Border *bd)
 {
-   if ((e_config->focus_policy == E_FOCUS_CLICK) &&
+   if ((e_border_focus_policy_click(bd)) &&
        (!e_config->always_click_to_raise) &&
        (!e_config->always_click_to_focus))
      {
@@ -194,7 +178,7 @@ e_focus_event_focus_out(E_Border *bd)
 EAPI void
 e_focus_setup(E_Border *bd)
 {
-   if ((e_config->focus_policy == E_FOCUS_CLICK) ||
+   if ((e_border_focus_policy_click(bd)) ||
        (e_config->always_click_to_raise) ||
        (e_config->always_click_to_focus))
      {

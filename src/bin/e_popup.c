@@ -30,7 +30,7 @@ e_popup_shutdown(void)
         eina_hash_free(_e_popup_hash);
         _e_popup_hash = NULL;
      }
-   E_FN_DEL(ecore_event_handler_del, _e_popup_window_shape_handler);
+   E_FREE_FUNC(_e_popup_window_shape_handler, ecore_event_handler_del);
    return 1;
 }
 

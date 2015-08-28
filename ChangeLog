@@ -1,3 +1,7 @@
+2013-05-08 Mike Blumenkrantz
+
+        * e_fm2_optimal_size_calc returns bool to indicate whether the returned size can be used
+
 2013-03-01 Sebastian Dransfeld
 
         * Fix sys hibernate by checking raw condition first

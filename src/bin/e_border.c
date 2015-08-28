@@ -427,6 +427,7 @@ e_border_new(E_Container *con,
    ecore_x_window_shadow_tree_flush();
    e_object_del_func_set(E_OBJECT(bd), E_OBJECT_CLEANUP_FUNC(_e_border_del));
 
+   bd->focus_policy_override = E_FOCUS_LAST;
    bd->w = 1;
    bd->h = 1;
    /* FIXME: ewww - round trip */
@@ -1089,7 +1090,10 @@ e_border_hide(E_Border *bd,
                     e_border_focus_set(bd->parent, 1, 1);
                   else if (e_config->focus_revert_on_hide_or_close)
                     {
+                       Eina_Bool unlock = bd->lock_focus_out;
+                       bd->lock_focus_out = 1;
                        e_desk_last_focused_focus(desk);
+                       bd->lock_focus_out = unlock;
                     }
                   else if (e_config->focus_policy == E_FOCUS_MOUSE)
                     {
@@ -2061,7 +2065,7 @@ e_border_stack_below(E_Border *bd,
         Eina_List *l, *l_prev;
         Eina_List *list = _e_border_sub_borders_new(bd);
 
-        EINA_LIST_REVERSE_FOREACH_SAFE(bd->transients, l, l_prev, child)
+        EINA_LIST_REVERSE_FOREACH_SAFE(list, l, l_prev, child)
           {
              /* Don't stack iconic transients. If the user wants these shown,
               * thats another option.
@@ -2471,7 +2475,7 @@ e_border_focus_set(E_Border *bd,
                        unfocus_is_parent = EINA_TRUE;
                        break;
                     }
-                  bd_parent = bd->parent;
+                  bd_parent = bd_parent->parent;
                }
              if (!unfocus_is_parent)
                e_border_unfullscreen(bd_unfocus);
@@ -2527,6 +2531,7 @@ e_border_shade(E_Border *bd,
 
    ecore_x_window_shadow_tree_flush();
 
+   bd->take_focus = 0;
    bd->shade.x = bd->x;
    bd->shade.y = bd->y;
    bd->shade.dir = dir;
@@ -3489,7 +3494,7 @@ e_border_find_by_window(Ecore_X_Window win)
 
    bd = eina_hash_find(borders_hash, e_util_winid_str_get(win));
    if ((bd) && (!e_object_is_del(E_OBJECT(bd))) &&
-       (bd->win == win))
+       ((bd->win == win) || (bd->client.lock_win == win)))
      return bd;
    return NULL;
 }
@@ -3890,7 +3895,7 @@ _e_border_action_move_timeout(void *data __UNUSED__)
 static void
 _e_border_action_move_timeout_add(void)
 {
-   E_FN_DEL(ecore_timer_del, action_timer);
+   E_FREE_FUNC(action_timer, ecore_timer_del);
    if (e_config->border_keyboard.timeout)
      action_timer = ecore_timer_add(e_config->border_keyboard.timeout, _e_border_action_move_timeout, NULL);
 }
@@ -4001,7 +4006,7 @@ _e_border_action_resize_timeout(void *data __UNUSED__)
 static void
 _e_border_action_resize_timeout_add(void)
 {
-   E_FN_DEL(ecore_timer_del, action_timer);
+   E_FREE_FUNC(action_timer, ecore_timer_del);
    if (e_config->border_keyboard.timeout)
      action_timer = ecore_timer_add(e_config->border_keyboard.timeout, _e_border_action_resize_timeout, NULL);
 }
@@ -4221,6 +4226,7 @@ e_border_act_menu_begin(E_Border *bd,
 {
    E_OBJECT_CHECK(bd);
    E_OBJECT_TYPE_CHECK(bd, E_BORDER_TYPE);
+   if (bd->border_menu) return;
    if (ev)
      {
         e_int_border_menu_show(bd,
@@ -5352,6 +5358,7 @@ _e_border_del(E_Border *bd)
           {
              if (bd->parent->client.lock_win)
                {
+                  eina_hash_del_by_key(borders_hash, e_util_winid_str_get(bd->parent->client.lock_win));
                   ecore_x_window_hide(bd->parent->client.lock_win);
                   ecore_x_window_free(bd->parent->client.lock_win);
                   bd->parent->client.lock_win = 0;
@@ -6163,6 +6170,10 @@ _e_border_cb_window_focus_in(void *data  __UNUSED__,
    e = ev;
    bd = e_border_find_by_client_window(e->win);
    if (!bd) return ECORE_CALLBACK_PASS_ON;
+
+   /* block refocus attempts on iconic windows
+    * these result from iconifying a window during a grab */
+   if (bd->iconic) return ECORE_CALLBACK_RENEW;
 #ifdef INOUTDEBUG_FOCUS
    {
       time_t t;
@@ -7595,6 +7606,21 @@ _e_border_eval0(E_Border *bd)
                   bd->client.netwm.update.state = 1;
                }
           }
+        else if (bd->client.netwm.type == ECORE_X_WINDOW_TYPE_DESKTOP)
+          {
+             bd->focus_policy_override = E_FOCUS_CLICK;
+             e_focus_setup(bd);
+             if (!bd->client.netwm.state.skip_pager)
+               {
+                  bd->client.netwm.state.skip_pager = 1;
+                  bd->client.netwm.update.state = 1;
+               }
+             if (!bd->client.netwm.state.skip_taskbar)
+               {
+                  bd->client.netwm.state.skip_taskbar = 1;
+                  bd->client.netwm.update.state = 1;
+               }
+          }
         bd->client.netwm.fetch.type = 0;
      }
    if (bd->client.icccm.fetch.machine)
@@ -7785,7 +7811,8 @@ _e_border_eval0(E_Border *bd)
           }
         if (bd->parent)
           {
-             e_border_layer_set(bd, bd->parent->layer);
+             if (bd->parent->layer != bd->layer)
+               e_border_layer_set(bd, bd->parent->layer);
              if ((e_config->modal_windows) && (bd->client.netwm.state.modal))
                {
                   bd->parent->modal = bd;
@@ -7793,6 +7820,7 @@ _e_border_eval0(E_Border *bd)
                   if (!bd->parent->client.lock_win)
                     {
                        bd->parent->client.lock_win = ecore_x_window_input_new(bd->parent->client.shell_win, 0, 0, bd->parent->client.w, bd->parent->client.h);
+                       eina_hash_add(borders_hash, e_util_winid_str_get(bd->parent->client.lock_win), bd->parent);
                        ecore_x_window_show(bd->parent->client.lock_win);
                     }
                }
@@ -8388,6 +8416,8 @@ _e_border_eval0(E_Border *bd)
         else if (bd->bordername)
           bordername = bd->bordername;
         else if ((bd->client.mwm.borderless) || (bd->borderless))
+          bordername = "borderless";
+        else if (bd->client.netwm.type == ECORE_X_WINDOW_TYPE_DESKTOP)
           bordername = "borderless";
         else if (((bd->client.icccm.transient_for != 0) ||
                   (bd->client.netwm.type == ECORE_X_WINDOW_TYPE_DIALOG)) &&
@@ -9367,7 +9397,8 @@ _e_border_eval(E_Border *bd)
              bd->want_focus = 0;
              e_border_focus_set_with_pointer(bd);
           }
-        else if (bd->client.netwm.type == ECORE_X_WINDOW_TYPE_DIALOG)
+        else if ((bd->client.netwm.type == ECORE_X_WINDOW_TYPE_DIALOG) ||
+                 (bd->parent && (bd->parent->modal == bd)))
           {
              if ((e_config->focus_setting == E_FOCUS_NEW_DIALOG) ||
                  ((e_config->focus_setting == E_FOCUS_NEW_DIALOG_IF_OWNER_FOCUSED) &&
@@ -10332,10 +10363,7 @@ _e_border_under_pointer_helper(E_Desk *desk, E_Border *exclude, int x, int y)
         /* If the layer is higher, the position of the window is higher
          * (always on top vs always below) */
         if (!bd || (cbd->layer > bd->layer))
-          {
-             bd = cbd;
-             break;
-          }
+          bd = cbd;
      }
    return bd;
 }

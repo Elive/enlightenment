@@ -181,7 +181,10 @@ _ibar_order_refresh(IBar *b, const char *path)
         /* else same order, refresh all users */
      }
    else
-     io = b->io = _ibar_order_new(b, path);
+     {
+        _ibar_order_del(b);
+        io = b->io = _ibar_order_new(b, path);
+     }
    EINA_LIST_FOREACH(io->bars, l, bar)
      {
         _ibar_empty(bar);
@@ -793,7 +796,6 @@ _ibar_cb_icon_mouse_in(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED
    ic = data;
    if (ic->reset_timer) ecore_timer_del(ic->reset_timer);
    ic->reset_timer = NULL;
-   if (ic->exe_inst) return;
    ic->focused = EINA_TRUE;
    _ibar_icon_signal_emit(ic, "e,state,focused", "e");
    if (ic->ibar->inst->ci->show_label)

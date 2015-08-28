@@ -314,7 +314,7 @@ AM_CONDITIONAL(INSTALL_SYSACTIONS, test x${e_cv_enable_install_sysactions} = xye
 
 AC_MSG_CHECKING([whether to install enlightenment.menu])
 AC_ARG_ENABLE([install-enlightenment-menu],
-  AS_HELP_STRING([--disable-enlightenment-menu],[disable installing /etc/xdg/menus/enlightenment.menu @<:@default=enabled@:>@]),
+  AS_HELP_STRING([--disable-enlightenment-menu],[disable installing /etc/xdg/menus/e-applications.menu @<:@default=enabled@:>@]),
     [e_cv_enable_install_enlightenment_menu=$enableval],
     AC_CACHE_VAL([e_cv_enable_install_enlightenment_menu], [e_cv_enable_install_enlightenment_menu=yes]))
 AC_MSG_RESULT([$e_cv_enable_install_enlightenment_menu])
