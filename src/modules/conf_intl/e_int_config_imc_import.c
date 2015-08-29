@@ -113,7 +113,7 @@ e_int_config_imc_import(E_Config_Dialog *parent)
    e_widget_list_object_append(o, ofm, 1, 1, 0.5);
 
    e_widget_size_min_get(o, &w, &h);
-   edje_extern_object_min_size_set(o, w, h);
+   evas_object_size_hint_min_set(o, w, h);
    edje_object_part_swallow(import->bg_obj, "e.swallow.content", o);
    evas_object_show(o);
 
@@ -131,7 +131,7 @@ e_int_config_imc_import(E_Config_Dialog *parent)
 
    o = import->box_obj;
    e_widget_size_min_get(o, &w, &h);
-   edje_extern_object_min_size_set(o, w, h);
+   evas_object_size_hint_min_set(o, w, h);
    edje_object_part_swallow(import->bg_obj, "e.swallow.buttons", o);
 
    edje_object_size_min_calc(import->bg_obj, &w, &h);
@@ -326,7 +326,7 @@ _imc_import_cb_key_down(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSE
 
    ev = event;
    import = data;
-   if ((!e_widget_fsel_typebuf_visible_get(import->fsel_obj)) && (!strcmp(ev->keyname, "Tab")))
+   if ((!e_widget_fsel_typebuf_visible_get(import->fsel_obj)) && (!strcmp(ev->key, "Tab")))
      {
         if (evas_key_modifier_is_set(evas_key_modifier_get(e_win_evas_get(import->win)), "Shift"))
           {
@@ -363,9 +363,9 @@ _imc_import_cb_key_down(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSE
                }
           }
      }
-   else if (((!strcmp(ev->keyname, "Return")) ||
-             (!strcmp(ev->keyname, "KP_Enter")) ||
-             (!strcmp(ev->keyname, "space"))))
+   else if (((!strcmp(ev->key, "Return")) ||
+             (!strcmp(ev->key, "KP_Enter")) ||
+             (!strcmp(ev->key, "space"))))
      {
         Evas_Object *o = NULL;
 

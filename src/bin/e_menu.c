@@ -193,13 +193,13 @@ e_menu_shutdown(void)
 {
    E_Menu *m;
 
-   E_FN_DEL(ecore_event_handler_del, _e_menu_key_down_handler);
-   E_FN_DEL(ecore_event_handler_del, _e_menu_key_up_handler);
-   E_FN_DEL(ecore_event_handler_del, _e_menu_mouse_down_handler);
-   E_FN_DEL(ecore_event_handler_del, _e_menu_mouse_up_handler);
-   E_FN_DEL(ecore_event_handler_del, _e_menu_mouse_move_handler);
-   E_FN_DEL(ecore_event_handler_del, _e_menu_mouse_wheel_handler);
-   E_FN_DEL(ecore_event_handler_del, _e_menu_window_shape_handler);
+   E_FREE_FUNC(_e_menu_key_down_handler, ecore_event_handler_del);
+   E_FREE_FUNC(_e_menu_key_up_handler, ecore_event_handler_del);
+   E_FREE_FUNC(_e_menu_mouse_down_handler, ecore_event_handler_del);
+   E_FREE_FUNC(_e_menu_mouse_up_handler, ecore_event_handler_del);
+   E_FREE_FUNC(_e_menu_mouse_move_handler, ecore_event_handler_del);
+   E_FREE_FUNC(_e_menu_mouse_wheel_handler, ecore_event_handler_del);
+   E_FREE_FUNC(_e_menu_window_shape_handler, ecore_event_handler_del);
 
    if (!x_fatal)
      {
@@ -1005,7 +1005,7 @@ e_menu_item_active_set(E_Menu_Item *mi, int active)
           e_menu_item_active_set(pmi, 0);
         if (_e_prev_active_menu_item && (mi != _e_prev_active_menu_item))
           {
-             if (_e_prev_active_menu_item != mi->menu->parent_item)
+             if (mi->menu->parent_item && (_e_prev_active_menu_item != mi->menu->parent_item))
                _e_menu_submenu_deactivate(_e_prev_active_menu_item);
           }
         mi->active = 1;
@@ -1570,7 +1570,7 @@ no_submenu_item:
 
              if (mi->icon_bg_object)
                {
-                  edje_extern_object_min_size_set(mi->icon_object, 0, 0);
+                  evas_object_size_hint_min_set(mi->icon_object, 0, 0);
                   edje_object_part_swallow(mi->icon_bg_object,
                                            "e.swallow.content",
                                            mi->icon_object);
@@ -1968,7 +1968,7 @@ _e_menu_items_layout_update(E_Menu *m)
                                  0, 0, /* min */
                                  0, 0 /* max */
                                  );
-        edje_extern_object_min_size_set(mi->container_object,
+        evas_object_size_hint_min_set(mi->container_object,
                                         min_w, min_h);
         edje_object_part_swallow(mi->bg_object, "e.swallow.content",
                                  mi->container_object);
@@ -1984,8 +1984,8 @@ _e_menu_items_layout_update(E_Menu *m)
         e_box_thaw(mi->container_object);
      }
    e_box_size_min_get(m->container_object, &bw, &bh);
-   edje_extern_object_min_size_set(m->container_object, bw, bh);
-   edje_extern_object_max_size_set(m->container_object, bw, bh);
+   evas_object_size_hint_min_set(m->container_object, bw, bh);
+   evas_object_size_hint_max_set(m->container_object, bw, bh);
    edje_object_part_swallow(m->bg_object, "e.swallow.content", m->container_object);
    edje_object_size_min_calc(m->bg_object, &mw, &mh);
    e_box_thaw(m->container_object);
@@ -2386,6 +2386,7 @@ _e_menu_item_activate_nth(int n)
         if (!mi->separator) i++;
         if (i == n) break;
      }
+   if (!mi) return;
    e_menu_item_active_set(mi, 1);
    _e_menu_item_ensure_onscreen(mi);
 }

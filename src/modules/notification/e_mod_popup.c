@@ -296,13 +296,9 @@ _notification_popup_new(E_Notification *n)
             notification_mod->dir);
    popup->theme = edje_object_add(popup->e);
 
-   if (!e_theme_edje_object_set(popup->theme,
-                                "base/theme/modules/notification",
-                                "e/modules/notification/main"))
-     if (!e_theme_edje_object_set(popup->theme,
-                                  "base/theme/modules/notification",
-                                  "modules/notification/main"))
-       edje_object_file_set(popup->theme, buf, "modules/notification/main");
+   e_theme_edje_object_set(popup->theme,
+                           "base/theme/modules/notification",
+                           "e/modules/notification/main");
 
    e_popup_edje_bg_object_set(popup->win, popup->theme);
 
@@ -418,13 +414,18 @@ _notification_popup_refresh(Popup_Data *popup)
           }
         else
           {
-             endptr++;
-             if (endptr)
+             if (!endptr[0])
+               height = width;
+             else
                {
-                  height = strtol(endptr, NULL, 10);
-                  if (errno || (height < 1)) height = 80;
+                  endptr++;
+                  if (endptr[0])
+                    {
+                       height = strtol(endptr, NULL, 10);
+                       if (errno || (height < 1)) height = width;
+                    }
+                  else height = width;
                }
-             else height = 80;
           }
      }
 
@@ -590,7 +591,7 @@ _notification_format_message(Popup_Data *popup)
    Evas_Object *o = popup->theme;
    const char *title = e_notification_summary_get(popup->notif);
    const char *b = e_notification_body_get(popup->notif);
-   edje_object_part_text_set(o, "notification.text.title", title);
+   edje_object_part_text_unescaped_set(o, "notification.text.title", title);
 
    /* FIXME: Filter to only include allowed markup? */
      {
@@ -599,7 +600,7 @@ _notification_format_message(Popup_Data *popup)
         Eina_Strbuf *buf = eina_strbuf_new();
         eina_strbuf_append(buf, b);
         eina_strbuf_replace_all(buf, "\n", "<br/>");
-        edje_object_part_text_set(o, "notification.textblock.message",
+        edje_object_part_text_unescaped_set(o, "notification.textblock.message",
               eina_strbuf_string_get(buf));
         eina_strbuf_free(buf);
      }

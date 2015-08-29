@@ -80,7 +80,7 @@ _key_down_cb(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSE
 {
    Evas_Event_Key_Down *ev = event;
    
-   if (!strcmp(ev->keyname, "Tab"))
+   if (!strcmp(ev->key, "Tab"))
      {
         if (evas_key_modifier_is_set(evas_key_modifier_get(e_win_evas_get(win)), "Shift"))
           {
@@ -117,9 +117,9 @@ _key_down_cb(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSE
                }
           }
      }
-   else if (((!strcmp(ev->keyname, "Return")) ||
-             (!strcmp(ev->keyname, "KP_Enter")) ||
-             (!strcmp(ev->keyname, "space"))))
+   else if (((!strcmp(ev->key, "Return")) ||
+             (!strcmp(ev->key, "KP_Enter")) ||
+             (!strcmp(ev->key, "space"))))
      {
         Evas_Object *o = NULL;
         
@@ -129,7 +129,7 @@ _key_down_cb(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSE
            o = e_widget_focused_object_get(o_box);
         if (o) e_widget_activate(o);
      }            
-   else if (!strcmp(ev->keyname, "Escape"))
+   else if (!strcmp(ev->key, "Escape"))
      _win_cancel_cb(NULL, NULL);
 }            
 
@@ -137,9 +137,9 @@ static void
 _save_key_down_cb(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event)
 {
    Evas_Event_Key_Down *ev = event;
-   if ((!strcmp(ev->keyname, "Return")) || (!strcmp(ev->keyname, "KP_Enter")))
+   if ((!strcmp(ev->key, "Return")) || (!strcmp(ev->key, "KP_Enter")))
      _file_select_ok_cb(NULL, fsel_dia);
-   else if (!strcmp(ev->keyname, "Escape"))
+   else if (!strcmp(ev->key, "Escape"))
      _file_select_cancel_cb(NULL, fsel_dia);
 }            
 
@@ -682,7 +682,7 @@ _shot_now(E_Zone *zone, E_Border *bd)
    o = e_widget_list_add(evas, 0, 0);
    o_content = o;
    e_widget_size_min_get(o, &w, &h);
-   edje_extern_object_min_size_set(o, w, h);
+   evas_object_size_hint_min_set(o, w, h);
    edje_object_part_swallow(o_bg, "e.swallow.content", o);
    evas_object_show(o);
 
@@ -786,7 +786,7 @@ _shot_now(E_Zone *zone, E_Border *bd)
 
    o = o_content;
    e_widget_size_min_get(o, &w, &h);
-   edje_extern_object_min_size_set(o, w, h);
+   evas_object_size_hint_min_set(o, w, h);
    edje_object_part_swallow(o_bg, "e.swallow.content", o);
    evas_object_show(o);
    
@@ -806,7 +806,7 @@ _shot_now(E_Zone *zone, E_Border *bd)
    
    o = o_box;
    e_widget_size_min_get(o, &w, &h);
-   edje_extern_object_min_size_set(o, w, h);
+   evas_object_size_hint_min_set(o, w, h);
    edje_object_part_swallow(o_bg, "e.swallow.buttons", o);
    
    o = evas_object_rectangle_add(evas);
@@ -1002,7 +1002,7 @@ e_modapi_shutdown(E_Module *m __UNUSED__)
         e_object_del(E_OBJECT(win));
         win = NULL;
      }
-   E_FN_DEL(e_object_del, cd);
+   E_FREE_FUNC(cd, e_object_del);
    if (timer)
      {
         ecore_timer_del(timer);

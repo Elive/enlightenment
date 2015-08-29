@@ -262,6 +262,7 @@ _mixer_balance_left(E_Mixer_Instance *inst)
    E_Mixer_Channel_State *state;
 
    state = &inst->mixer_state;
+   if (!inst->channel) return;
    e_mod_mixer_volume_get(inst->sys, inst->channel,
                           &state->left, &state->right);
    if (state->left >= 0)
@@ -377,6 +378,7 @@ _mixer_toggle_mute(E_Mixer_Instance *inst, Eina_Bool non_ui)
 {
    E_Mixer_Channel_State *state;
 
+   if (!inst->channel) return;
    if (!e_mod_mixer_mutable_get(inst->sys, inst->channel))
      return;
 
@@ -401,6 +403,7 @@ _mixer_popup_cb_volume_left_change(void *data, Evas_Object *obj, void *event __U
    E_Mixer_Instance *inst = data;
    E_Mixer_Channel_State *state = &inst->mixer_state;
 
+   if (!inst->channel) return;
    e_mod_mixer_volume_get(inst->sys, inst->channel,
                           &state->left, &state->right);
 
@@ -422,6 +425,7 @@ _mixer_popup_cb_volume_right_change(void *data, Evas_Object *obj, void *event __
    E_Mixer_Instance *inst = data;
    E_Mixer_Channel_State *state = &inst->mixer_state;
 
+   if (!inst->channel) return;
    e_mod_mixer_volume_get(inst->sys, inst->channel,
                           &state->left, &state->right);
 
@@ -443,6 +447,7 @@ _mixer_popup_cb_mute_change(void *data, Evas_Object *obj, void *event __UNUSED__
    E_Mixer_Instance *inst = data;
    E_Mixer_Channel_State *state = &inst->mixer_state;
 
+   if (!inst->channel) return;
    state->mute = e_widget_check_checked_get(obj);
    e_mod_mixer_mute_set(inst->sys, inst->channel, state->mute);
 
@@ -533,7 +538,7 @@ _mixer_popup_input_window_key_down_cb(void *data, int type __UNUSED__, void *eve
              if (ev->modifiers & ECORE_EVENT_MODIFIER_WIN)
                mod |= E_BINDING_MODIFIER_WIN;
 
-             if (binding->key && (!strcmp(binding->key, ev->keyname)) &&
+             if (binding->key && (!strcmp(binding->key, ev->key)) &&
                  ((binding->modifiers == mod) || (binding->any_mod)))
                {
                   if (!(act = e_action_find(binding->action))) continue;

@@ -139,7 +139,7 @@ _xkb_update_icon(int cur_group)
                   eina_stringshare_replace(&(inst->layout->model), e_config->xkb.current_layout->model);
                   eina_stringshare_replace(&(inst->layout->variant), e_config->xkb.current_layout->variant);
                }
-             E_FN_DEL(evas_object_del, inst->o_xkbflag);
+             E_FREE_FUNC(inst->o_xkbflag, evas_object_del);
              e_theme_edje_object_set(inst->o_xkbswitch,
                                      "base/theme/modules/xkbswitch",
                                      "e/modules/xkbswitch/noflag");
