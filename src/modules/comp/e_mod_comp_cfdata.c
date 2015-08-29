@@ -67,7 +67,7 @@ e_mod_comp_cfdata_config_new(void)
    Match *mat;
 
    cfg = E_NEW(Config, 1);
-   cfg->shadow_style = eina_stringshare_add("default");
+   cfg->shadow_style = eina_stringshare_add("none");
    cfg->engine = ENGINE_SW;
    cfg->max_unmapped_pixels = 32 * 1024;  // implement
    cfg->max_unmapped_time = 10 * 3600; // implement
@@ -170,7 +170,7 @@ e_mod_comp_cfdata_config_new(void)
    cfg->match.menus = NULL;
    mat = E_NEW(Match, 1);
    cfg->match.menus = eina_list_append(cfg->match.menus, mat);
-   mat->shadow_style = eina_stringshare_add("menu");
+   mat->shadow_style = eina_stringshare_add("none");
 
    return cfg;
 }
