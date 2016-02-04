@@ -1191,9 +1191,9 @@ while (!e_config)
      E_CONFIG_LIMIT(e_config->clientlist_limit_caption_len, 0, 1);
      E_CONFIG_LIMIT(e_config->clientlist_max_caption_len, 2, E_CLIENTLIST_MAX_CAPTION_LEN);
 
-     E_CONFIG_LIMIT(e_config->mouse_accel_numerator, 1, 10);
+     E_CONFIG_LIMIT(e_config->mouse_accel_numerator, 1, 30);
      E_CONFIG_LIMIT(e_config->mouse_accel_denominator, 1, 10);
-     E_CONFIG_LIMIT(e_config->mouse_accel_threshold, 1, 10);
+     E_CONFIG_LIMIT(e_config->mouse_accel_threshold, 0, 10);
 
      E_CONFIG_LIMIT(e_config->menu_favorites_show, 0, 1);
      E_CONFIG_LIMIT(e_config->menu_apps_show, 0, 1);
