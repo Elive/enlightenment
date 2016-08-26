@@ -650,6 +650,7 @@ _e_module_whitelist_check(void)
         "access",
         "backlight",
         "battery",
+        "penguins",
         "bluez",
         "clock",
         "comp",
