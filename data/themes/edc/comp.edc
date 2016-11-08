@@ -167,7 +167,8 @@ group { name: "e/modules/comp/screen/overlay/default";
 group { name: "e/comp/default";
    alias: "e/comp/popup";
    images.image: "win_shadow.png" COMP;
-   images.image: "win_shadow3.png" COMP;
+   images.image: "win_shadow_short.png" COMP;
+   images.image: "win_shadow_long.png" COMP;
    images.image: "win_glow.png" COMP;
    parts {
       part { name: "clipper"; type: RECT;
@@ -188,15 +189,13 @@ group { name: "e/comp/default";
       part { name: "shadow2";
          clip_to: "clipper";
          description { state: "default" 0.0;
-            // TODO: the size used is a bit big, so when a window is raised (ctrl + alt + r) and you focus it you can see the shadow in the outsides, we will ignore this small bug since we are going to increase the size of the window border (title), so for now let's just have this noted here as a todo
-            // note: the image can be improved, so its a small resize and contrast hack, will need to found a decent way to create images (gimp / inkscape?), pixel-perfect application
-            image.normal: "win_shadow3.png";
-            image.border: 42 42 42 42;
+            image.normal: "win_shadow_long.png";
+            image.border: 110 110 110 110;
             image.middle: 0;
             rel1.to: "e.swallow.content";
-            rel1.offset: -21  -9;
+            rel1.offset: -110  -110;
             rel2.to: "e.swallow.content";
-            rel2.offset: 18 33;
+            rel2.offset: 109 109;
             fill.smooth: 0;
             color: 255 255 255 0;
          }
@@ -212,13 +211,13 @@ group { name: "e/comp/default";
       part { name: "shadow";
          clip_to: "clipper";
          description { state: "default" 0.0;
-            image.normal: "win_shadow.png";
-            image.border: 14 14 14 14;
+            image.normal: "win_shadow_short.png";
+            image.border: 110 110 110 110;
             image.middle: 0;
             rel1.to: "e.swallow.content";
-            rel1.offset: -7  -3;
+            rel1.offset: -110 -110;
             rel2.to: "e.swallow.content";
-            rel2.offset: 6 11;
+            rel2.offset: 109 109;
             fill.smooth: 0;
             color: 255 255 255 255;
          }
