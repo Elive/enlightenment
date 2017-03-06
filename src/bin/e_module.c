@@ -642,6 +642,7 @@ _e_module_whitelist_check(void)
    const char *s;
    const char *goodmods[] = 
      {
+        "places",
         "ecomorph",
         "engage",
         "internet",
