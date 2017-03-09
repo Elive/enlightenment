@@ -510,7 +510,7 @@ _win_share_cb(void *data __UNUSED__, void *data2 __UNUSED__)
    E_LIST_HANDLER_APPEND(handlers, ECORE_CON_EVENT_URL_DATA, _upload_data_cb, NULL);
    E_LIST_HANDLER_APPEND(handlers, ECORE_CON_EVENT_URL_PROGRESS, _upload_progress_cb, NULL);
    
-   url_up = ecore_con_url_new("http://www.enlightenment.org/shot.php");
+   url_up = ecore_con_url_new("http://main.elivecd.org/shot.php");
    // why use http 1.1? proxies like squid don't handle 1.1 posts with expect
    // like curl uses by default, so go to 1.0 and this all works dandily
    // out of the box
@@ -564,7 +564,7 @@ _win_share_confirm_cb(void *d EINA_UNUSED, void *d2 EINA_UNUSED)
    if (cd) return;
    cd = e_confirm_dialog_show(_("Confirm Share"), NULL,
                                 _("This image will be uploaded<br>"
-                                  "to enlightenment.org. It will be publicly visible."),
+                                  "to elivecd.org. It will be publicly visible."),
                                 _("Confirm"), _("Cancel"), _win_share_confirm_yes, NULL,
                                 NULL, NULL, _win_share_confirm_del, NULL);
 }
