@@ -127,7 +127,7 @@ wizard_page_show(E_Wizard_Page *pg)
    e_wizard_page_show(o);
 //   pg->data = o;
    e_wizard_button_next_enable_set(0);
-   return 1; /* 1 == show ui, and wait for user, 0 == just continue */
+   return 0; /* 1 == show ui, and wait for user, 0 == just continue */
 }
 
 EAPI int
