@@ -82,7 +82,7 @@ _e_wizard_run(const char *place)
    ewp->script_dir = NULL;
    ewp->script_list = NULL;
    ewp->total = 0;
-   ewp->quiet = EINA_FALSE;
+   ewp->quiet = EINA_TRUE;
 
    _e_wizard_script_number = 1;
    _e_wizard_idle = 0;
@@ -190,6 +190,8 @@ _e_wizard_script_quiet_get(void)
    FILE *file;
    Eina_Bool quiet = EINA_FALSE;
 
+   quiet = EINA_TRUE;
+
    file = fopen(filename, "r");
 
    if (file)
@@ -197,8 +199,8 @@ _e_wizard_script_quiet_get(void)
         char line[1024];
 
         fgets(line, sizeof(line), file);
-        if (strstr(line, "quiet"))
-          quiet = EINA_TRUE;
+        if (strstr(line, "debug"))
+          quiet = EINA_FALSE;
         fclose(file);
      }
 
