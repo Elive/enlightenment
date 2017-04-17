@@ -161,6 +161,9 @@ _e_wizard_after_script_quiet_get(void)
    FILE *file;
    Eina_Bool quiet = EINA_FALSE;
 
+   // default value
+   quiet = EINA_TRUE;
+
    file = fopen(filename, "r");
 
    if (file)
@@ -168,8 +171,8 @@ _e_wizard_after_script_quiet_get(void)
         char line[1024];
 
         fgets(line, sizeof(line), file);
-        if (strstr(line, "quiet"))
-          quiet = EINA_TRUE;
+        if (strstr(line, "debug"))
+          quiet = EINA_FALSE;
         fclose(file);
      }
 
