@@ -438,7 +438,11 @@ e_desklock_hide(void)
 
    // re-load ecomorph
    if (_ecomorph_used)
-     e_module_enable("ecomorph");
+     {
+        E_Module *m;
+        m = e_module_find("ecomorph");
+        e_module_enable(m);
+     }
 
 }
 
@@ -883,16 +887,6 @@ static int
 _e_desklock_check_auth(void)
 {
    if (!edd) return 0;
-
-   // disable ecomorph module because of a bug that leaves the desktop locked, like doesn't recognize the password
-   if (e_module_enabled_get("ecomorph"))
-     {
-        e_module_disable("ecomorph");
-        _ecomorph_used = EINA_TRUE;
-     }
-   else
-     _ecomorph_used = EINA_FALSE;
-
 #ifdef HAVE_PAM
    if (e_config->desklock_auth_method == 0)
      {
@@ -1004,7 +998,21 @@ _e_desklock_cb_exit(void *data __UNUSED__, int type __UNUSED__, void *event)
 static int
 _desklock_auth(char *passwd)
 {
+
+   // disable ecomorph module because of a bug that leaves the desktop locked, like doesn't recognize the password
+   E_Module *m;
+   m = e_module_find("ecomorph");
+   if (e_module_enabled_get(m))
+     {
+        e_module_disable(m);
+        _ecomorph_used = EINA_TRUE;
+     }
+   else
+     _ecomorph_used = EINA_FALSE;
+
+
    _e_desklock_state_set(E_DESKLOCK_STATE_CHECKING);
+
    _e_desklock_child_pid = fork();
    if (_e_desklock_child_pid > 0)
      {
