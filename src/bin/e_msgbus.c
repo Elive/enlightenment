@@ -1363,6 +1363,7 @@ _e_msgbus_wallpaper_add_cb(E_DBus_Object *obj __UNUSED__,
    return dbus_message_new_method_return(msg);
 }
 
+
 static DBusMessage *
 _e_msgbus_wallpaper_set_cb(E_DBus_Object *obj __UNUSED__,
                               DBusMessage *msg)

@@ -42,6 +42,7 @@ OPTIONS:
 
   -desktop-bg-add Adds wallpaper to E17.
   -desktop-bg-set Set the default bg.
+  -desktop-bg-add-set Adds and set wallpaper to E17.
   -desktop-lock Lock the desktop
 
   -efm-open-dir OPT1 Open dir in OPT1 in EFileManager. Opens /home/$USER if no path is given or it doesn't exist
@@ -367,8 +368,7 @@ er_module_enable(){
 #-------------------------------------------------------------------------------
 er_module_list(){
    echo 'Module -- Status'
-   ERGMST org.enlightenment.wm.Module.List | \
-      sed -e 's/ 1/ -- Enabled/' -e 's/ 0/ -- Disabled/'
+   ERGMST org.enlightenment.wm.Module.List | sed -e 's/ 1/ -- Enabled/' -e 's/ 0/ -- Disabled/'
 }
 #-------------------------------------------------------------------------------
 #   E Module Load
@@ -446,7 +446,25 @@ er_desktop_show_by_name(){
 #   E Wallpaper Add
 #-------------------------------------------------------------------------------
 er_desktop_bg_add(){
-    case $2 in
+    case "$2" in
+        /*)
+           ERCS org.enlightenment.wm.Wallpaper.Add "$2"
+           break
+        ;;
+        *)
+           ERCS org.enlightenment.wm.Wallpaper.Add "$PWD/$2"
+           break
+        ;;
+    esac
+}
+
+#-------------------------------------------------------------------------------
+#   E Wallpaper Add and Set
+#-------------------------------------------------------------------------------
+er_desktop_bg_add_set(){
+   local wallpaper_name wallpaper
+
+    case "$2" in
         /*)
            ERCS org.enlightenment.wm.Wallpaper.Add "$2"
            break
@@ -457,13 +475,30 @@ er_desktop_bg_add(){
         ;;
     esac
 
+    wallpaper_name="$( basename "$2" )"
+    wallpaper_name="$( echo "$wallpaper_name" | sed -e 's|\..*$||g' )"
+
+    if test -s "$HOME/.e/e17/backgrounds/$wallpaper_name" ; then
+       wallpaper="$HOME/.e/e17/backgrounds/$wallpaper_name"
+    else
+       if test -s "$HOME/.e/e/backgrounds/$wallpaper_name" ; then
+          wallpaper="$HOME/.e/e/backgrounds/$wallpaper_name"
+       else
+          wallpaper="$( ls -1 "$HOME/.e/"*"/backgrounds/$wallpaper_name" | sort -g | tail -1 )"
+       fi
+    fi
+
+    if test -s "$wallpaper" ; then
+       ERCS org.enlightenment.wm.Wallpaper.Set "$wallpaper"
+    fi
 }
+
 
 #-------------------------------------------------------------------------------
 #   E Wallpaper Set
 #-------------------------------------------------------------------------------
 er_desktop_bg_set(){
-    case $2 in
+    case "$2" in
         /*)
            ERCS org.enlightenment.wm.Wallpaper.Set "$2"
            break
