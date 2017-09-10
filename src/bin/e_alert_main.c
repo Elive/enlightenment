@@ -95,26 +95,27 @@ main(int argc, char **argv)
    if (!ecore_init()) return EXIT_FAILURE;
    ecore_app_args_set(argc, (const char **)argv);
 
-   if (!_e_alert_connect())
-     {
-        printf("FAILED TO INIT ALERT SYSTEM!!!\n");
-        ecore_shutdown();
-        return EXIT_FAILURE;
-     }
+   /*if (!_e_alert_connect())*/
+     /*{*/
+        /*printf("FAILED TO INIT ALERT SYSTEM!!!\n");*/
+        /*ecore_shutdown();*/
+        /*return EXIT_FAILURE;*/
+     /*}*/
 
-   title = "Enlightenment Error";
-   str1 = "(F1) Recover";
-   str2 = "(F12) Logout";
+   /*title = "Enlightenment Error";*/
+   /*str1 = "(F1) Recover";*/
+   /*str2 = "(F12) Logout";*/
 
-   _e_alert_create();
-   _e_alert_display();
-   _e_alert_run();
-   _e_alert_shutdown();
+   /*_e_alert_create();*/
+   /*_e_alert_display();*/
+   /*_e_alert_run();*/
+   /*_e_alert_shutdown();*/
 
    ecore_shutdown();
 
    /* ret == 1 => restart e => exit code 1 */
    /* ret == 2 => exit e => any code will do that */
+   ret = 1;
    return ret;
 }
 
