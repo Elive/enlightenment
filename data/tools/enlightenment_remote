@@ -26,6 +26,8 @@ OPTIONS:
 
   -save Saves Enlightenment configuration data.
 
+  -ping Pings Enlightenment to see if runs correctly (returns pong)
+
   -module-list List all loaded modules
   -module-enable OPT1 Enable the module named 'OPT1'
   -module-disable OPT1 Disable the module named 'OPT1'
@@ -106,7 +108,7 @@ maintain a bit of compatibility with possible scripts from the users too.
 The original tool is not (at the date of today) not removed and you can still
 have access to it, it is renamed to enlightenment_remote_old
 
-This tool depends of the command dbus-send, normally included in the main 
+This tool depends of the command dbus-send, normally included in the main
 dbus package
 
 This tool is just a front-end and may be not updated, you should
@@ -122,7 +124,7 @@ run: qdbus org.enlightenment.wm.service /org/enlightenment/wm/RemoteObject
 #          NAME:  ERC
 #   DESCRIPTION:  eremote callback
 #    PARAMETERS:  interface/method call
-#       RETURNS:  
+#       RETURNS:
 #===============================================================================
 ERC(){
    dbus-send --print-reply=literal --dest=org.enlightenment.wm.service /org/enlightenment/wm/RemoteObject "$1"
@@ -132,14 +134,14 @@ ERC(){
 #          NAME:  ERCS
 #   DESCRIPTION:  eremote call with string parameter
 #    PARAMETERS:  interface/method call, string parameter
-#       RETURNS:  
+#       RETURNS:
 #===============================================================================
 ERCS(){
    dbus-send --print-reply=literal --dest=org.enlightenment.wm.service /org/enlightenment/wm/RemoteObject "$1" string:"$2"
 }
 
 #===  FUNCTION  ================================================================
-#          NAME:  ERGS 
+#          NAME:  ERGS
 #   DESCRIPTION:  Get a (single) value (string)
 #    PARAMETERS:  interface/method call
 #       RETURNS:  value (string)
@@ -212,7 +214,7 @@ ERGMST(){
 #          NAME:  ERCIIIIS
 #   DESCRIPTION:  eremote call with int, int, int, int, string parameter
 #    PARAMETERS:  interface/method call, int, int, int, int, string
-#       RETURNS:  
+#       RETURNS:
 #===============================================================================
 ERCIIIIS(){
    dbus-send --print-reply=literal --dest=org.enlightenment.wm.service /org/enlightenment/wm/RemoteObject "$1" int32:"$2" int32:"$3" int32:"$4" int32:"$5" string:"$6"
@@ -222,7 +224,7 @@ ERCIIIIS(){
 #          NAME:  ERCIIII
 #   DESCRIPTION:  eremote call with int, int, int, int parameter
 #    PARAMETERS:  interface/method call, int, int, int, int
-#       RETURNS:  
+#       RETURNS:
 #===============================================================================
 ERCIIII(){
    dbus-send --print-reply=literal --dest=org.enlightenment.wm.service /org/enlightenment/wm/RemoteObject "$1" int32:"$2" int32:"$3" int32:"$4" int32:"$5"
@@ -232,7 +234,7 @@ ERCIIII(){
 #          NAME:  ERCII
 #   DESCRIPTION:  eremote call with int, int parameter
 #    PARAMETERS:  interface/method call, int, int
-#       RETURNS:  
+#       RETURNS:
 #===============================================================================
 ERCII(){
    dbus-send --print-reply=literal --dest=org.enlightenment.wm.service /org/enlightenment/wm/RemoteObject "$1" int32:"$2" int32:"$3"
@@ -242,7 +244,7 @@ ERCII(){
 #          NAME:  ERCI
 #   DESCRIPTION:  eremote call with int parameter
 #    PARAMETERS:  interface/method call, int
-#       RETURNS:  
+#       RETURNS:
 #===============================================================================
 ERCI(){
    dbus-send --print-reply=literal --dest=org.enlightenment.wm.service /org/enlightenment/wm/RemoteObject "$1" int32:"$2"
@@ -337,6 +339,13 @@ er_e_exit(){
 #-------------------------------------------------------------------------------
 er_save_setting(){
    ERC org.enlightenment.wm.Core.Save_Setting
+}
+
+#-------------------------------------------------------------------------------
+#   E Ping
+#-------------------------------------------------------------------------------
+er_ping(){
+   ERC org.enlightenment.wm.Core.Ping
 }
 
 #-------------------------------------------------------------------------------
@@ -484,7 +493,7 @@ er_efm_open_dir(){
 	else
 		EFM_DIR="$2"
 	fi
-	
+
    dbus-send --session --type=method_call --print-reply=literal --dest=org.enlightenment.FileManager /org/enlightenment/FileManager org.enlightenment.FileManager.OpenDirectory "string:$EFM_DIR"
 }
 
@@ -744,6 +753,9 @@ case "$1" in
    ;;
   -save)
       er_save_setting
+   ;;
+  -ping)
+      er_ping
    ;;
    -module-list)
       er_module_list

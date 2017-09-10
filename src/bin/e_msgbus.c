@@ -26,6 +26,9 @@ static DBusMessage *_e_msgbus_core_exec_cb(E_DBus_Object *obj,
 static DBusMessage *_e_msgbus_core_save_setting_cb(E_DBus_Object *obj,
                                                    DBusMessage *msg);
 
+static DBusMessage *_e_msgbus_core_ping(E_DBus_Object *obj,
+                                                   DBusMessage *msg);
+
 static DBusMessage *_e_msgbus_module_load_cb(E_DBus_Object *obj,
                                              DBusMessage   *msg);
 static DBusMessage *_e_msgbus_module_unload_cb(E_DBus_Object *obj,
@@ -167,6 +170,8 @@ e_msgbus_init(void)
    e_dbus_interface_method_add(iface, "Lock", "", "", _e_msgbus_core_lock_cb);
    e_dbus_interface_method_add(iface, "Execute", "s", "", _e_msgbus_core_exec_cb);
    e_dbus_interface_method_add(iface, "Save_Setting", "", "", _e_msgbus_core_save_setting_cb);
+
+   e_dbus_interface_method_add(iface, "Ping", "", "", _e_msgbus_core_ping);
 
    iface = e_dbus_interface_new("org.enlightenment.wm.Module");
    if (!iface)
@@ -487,6 +492,26 @@ _e_msgbus_core_save_setting_cb(E_DBus_Object *obj __UNUSED__,
    e_config_save();
    return dbus_message_new_method_return(msg);
 }
+
+static DBusMessage *
+_e_msgbus_core_ping(E_DBus_Object *obj __UNUSED__,
+                        DBusMessage   *msg)
+{
+   DBusMessageIter iter;
+   DBusMessage *reply;
+   const char *answer;
+
+   /*answer = e_ping();*/
+   answer = "pong\n";
+
+   reply = dbus_message_new_method_return(msg);
+   dbus_message_iter_init_append(reply, &iter);
+   dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &answer);
+
+   return reply;
+   /*return dbus_message_new_method_return(msg);*/
+}
+
 /* Modules Handlers */
 static DBusMessage *
 _e_msgbus_module_load_cb(E_DBus_Object *obj __UNUSED__,
