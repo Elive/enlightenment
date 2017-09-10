@@ -367,7 +367,7 @@ er_module_enable(){
 #   E Module List
 #-------------------------------------------------------------------------------
 er_module_list(){
-   echo 'Module -- Status'
+   echo "Module -- Status"
    ERGMST org.enlightenment.wm.Module.List | sed -e 's/ 1/ -- Enabled/' -e 's/ 0/ -- Disabled/'
 }
 #-------------------------------------------------------------------------------
@@ -478,13 +478,13 @@ er_desktop_bg_add_set(){
     wallpaper_name="$( basename "$2" )"
     wallpaper_name="$( echo "$wallpaper_name" | sed -e 's|\..*$||g' )"
 
-    if test -s "$HOME/.e/e17/backgrounds/$wallpaper_name" ; then
-       wallpaper="$HOME/.e/e17/backgrounds/$wallpaper_name"
+    if test -s "$HOME/.e/e17/backgrounds/${wallpaper_name}.edj" ; then
+       wallpaper="$HOME/.e/e17/backgrounds/${wallpaper_name}.edj"
     else
-       if test -s "$HOME/.e/e/backgrounds/$wallpaper_name" ; then
-          wallpaper="$HOME/.e/e/backgrounds/$wallpaper_name"
+       if test -s "$HOME/.e/e/backgrounds/${wallpaper_name}.edj" ; then
+          wallpaper="$HOME/.e/e/backgrounds/${wallpaper_name}.edj"
        else
-          wallpaper="$( ls -1 "$HOME/.e/"*"/backgrounds/$wallpaper_name" | sort -g | tail -1 )"
+          wallpaper="$( ls -1 "$HOME/.e/"*"/backgrounds/${wallpaper_name}.edj" | sort -g | tail -1 )"
        fi
     fi
 
@@ -935,6 +935,9 @@ case "$1" in
    ;;
    -desktop-bg-add)
       er_desktop_bg_add "$@"
+   ;;
+   -desktop-bg-add-set)
+      er_desktop_bg_add_set "$@"
    ;;
    -desktop-bg-set)
       er_desktop_bg_set "$@"
