@@ -1006,6 +1006,7 @@ _desklock_auth(char *passwd)
      {
         e_module_disable(m);
         _ecomorph_used = EINA_TRUE;
+        ecore_exe_run("killall -9 ecomorph", NULL);
      }
    else
      _ecomorph_used = EINA_FALSE;
