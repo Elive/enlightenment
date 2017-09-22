@@ -300,7 +300,7 @@ e_msgbus_init(void)
    /* Font methods */
    e_dbus_interface_method_add(iface, "List", "", "s", _e_msgbus_font_list_cb);
    e_dbus_interface_method_add(iface, "Get", "s", "", _e_msgbus_font_get_cb);
-   e_dbus_interface_method_add(iface, "Set", "sss", "", _e_msgbus_font_set_cb);
+   e_dbus_interface_method_add(iface, "Set", "ssi", "", _e_msgbus_font_set_cb);
 
    e_dbus_interface_method_add(iface, "Cache_Get", "", "d", _e_msgbus_font_cache_get_cb);
    e_dbus_interface_method_add(iface, "Cache_Set", "d", "", _e_msgbus_font_cache_set_cb);
@@ -981,7 +981,7 @@ _e_msgbus_font_set_cb(E_DBus_Object *obj __UNUSED__,
    DBusMessageIter iter;
    char *font_class;
    char *font_name;
-   char *font_size;
+   int font_size;
 
    dbus_message_iter_init(msg, &iter);
    dbus_message_iter_get_basic(&iter, &font_class);
