@@ -67,14 +67,14 @@ static DBusMessage *_e_msgbus_edge_collection_cacheget_cb(E_DBus_Object *obj,
 static DBusMessage *_e_msgbus_edge_collection_cacheset_cb(E_DBus_Object *obj,
                                                           DBusMessage *msg);
 
-static DBusMessage *_e_msgbus_image_get_cb(E_DBus_Object *obj,
+static DBusMessage *_e_msgbus_image_cache_get_cb(E_DBus_Object *obj,
                                            DBusMessage *msg);
-static DBusMessage *_e_msgbus_image_set_cb(E_DBus_Object *obj,
+static DBusMessage *_e_msgbus_image_cache_set_cb(E_DBus_Object *obj,
                                            DBusMessage *msg);
 
-static DBusMessage *_e_msgbus_font_get_cb(E_DBus_Object *obj,
+static DBusMessage *_e_msgbus_font_cache_get_cb(E_DBus_Object *obj,
                                           DBusMessage *msg);
-static DBusMessage *_e_msgbus_font_set_cb(E_DBus_Object *obj,
+static DBusMessage *_e_msgbus_font_cache_set_cb(E_DBus_Object *obj,
                                           DBusMessage *msg);
 
 static DBusMessage *_e_msgbus_focus_get_cb(E_DBus_Object *obj,
@@ -291,8 +291,8 @@ e_msgbus_init(void)
    e_dbus_interface_unref(iface);
 
    /* Font methods */
-   e_dbus_interface_method_add(iface, "Get", "", "d", _e_msgbus_font_get_cb);
-   e_dbus_interface_method_add(iface, "Set", "d", "", _e_msgbus_font_set_cb);
+   e_dbus_interface_method_add(iface, "Cache_Get", "", "d", _e_msgbus_font_cache_get_cb);
+   e_dbus_interface_method_add(iface, "Cache_Set", "d", "", _e_msgbus_font_cache_set_cb);
 
    iface = e_dbus_interface_new("org.enlightenment.wm.Image");
    if (!iface)
@@ -304,8 +304,8 @@ e_msgbus_init(void)
    e_dbus_interface_unref(iface);
 
    /* Image methods */
-   e_dbus_interface_method_add(iface, "Get", "", "d", _e_msgbus_image_get_cb);
-   e_dbus_interface_method_add(iface, "Set", "d", "", _e_msgbus_image_set_cb);
+   e_dbus_interface_method_add(iface, "Cache_Get", "", "d", _e_msgbus_image_cache_get_cb);
+   e_dbus_interface_method_add(iface, "Cache_Set", "d", "", _e_msgbus_image_cache_set_cb);
 
    iface = e_dbus_interface_new("org.enlightenment.wm.Edje");
    if (!iface)
@@ -898,7 +898,7 @@ _e_msgbus_edge_collection_cacheset_cb(E_DBus_Object *obj __UNUSED__,
 }
 
 static DBusMessage *
-_e_msgbus_image_get_cb(E_DBus_Object *obj __UNUSED__,
+_e_msgbus_image_cache_get_cb(E_DBus_Object *obj __UNUSED__,
                        DBusMessage *msg)
 {
    DBusMessageIter iter;
@@ -915,7 +915,7 @@ _e_msgbus_image_get_cb(E_DBus_Object *obj __UNUSED__,
    return reply;
 }
 static DBusMessage *
-_e_msgbus_image_set_cb(E_DBus_Object *obj __UNUSED__,
+_e_msgbus_image_cache_set_cb(E_DBus_Object *obj __UNUSED__,
                        DBusMessage *msg)
 {
    DBusMessageIter iter;
@@ -933,7 +933,7 @@ _e_msgbus_image_set_cb(E_DBus_Object *obj __UNUSED__,
 }
 
 static DBusMessage *
-_e_msgbus_font_get_cb(E_DBus_Object *obj __UNUSED__,
+_e_msgbus_font_cache_get_cb(E_DBus_Object *obj __UNUSED__,
                       DBusMessage *msg)
 {
    DBusMessageIter iter;
@@ -950,7 +950,7 @@ _e_msgbus_font_get_cb(E_DBus_Object *obj __UNUSED__,
 }
 
 static DBusMessage *
-_e_msgbus_font_set_cb(E_DBus_Object *obj __UNUSED__,
+_e_msgbus_font_cache_set_cb(E_DBus_Object *obj __UNUSED__,
                       DBusMessage *msg)
 {
    DBusMessageIter iter;
