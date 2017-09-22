@@ -1000,8 +1000,13 @@ static DBusMessage*
 _e_msgbus_font_list_cb(E_DBus_Object *obj __UNUSED__,
                         DBusMessage *msg)
 {
+   Eina_List *evas_fonts;
+   Eina_List *e_fonts;
    Eina_List *l;
-   E_Font_Default *ect = NULL;
+   const char *evas_font;
+   E_Manager *man;
+   E_Container *con;
+
    DBusMessage *reply;
    DBusMessageIter iter;
    DBusMessageIter arr;
@@ -1009,13 +1014,29 @@ _e_msgbus_font_list_cb(E_DBus_Object *obj __UNUSED__,
    reply = dbus_message_new_method_return(msg);
    dbus_message_iter_init_append(reply, &iter);
    dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, "s", &arr);
-   /*ect = e_font_config_get("font");*/
 
-   EINA_LIST_FOREACH(e_config->font_defaults, l, ect)
+
+   man = e_manager_current_get();
+   if (!man) return NULL;
+   con = e_container_current_get(man);
+   if (!con) con = e_container_number_get(man, 0);
+   if (!con) return NULL;
+
+   evas_fonts = evas_font_available_list(con->bg_evas);
+
+   e_fonts = NULL;
+   EINA_LIST_FOREACH(evas_fonts, l, evas_font)
      {
-	dbus_message_iter_append_basic(&arr, DBUS_TYPE_STRING, &ect->font);
+        E_Font_Available *efa;
+
+        efa = E_NEW(E_Font_Available, 1);
+        efa->name = eina_stringshare_add(evas_font);
+        e_fonts = eina_list_append(e_fonts, efa);
+
+	dbus_message_iter_append_basic(&arr, DBUS_TYPE_STRING, &efa->name);
      }
    dbus_message_iter_close_container(&iter, &arr);
+   evas_font_available_list_free(con->bg_evas, evas_fonts);
 
    return reply;
 }
