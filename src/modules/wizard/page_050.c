@@ -121,6 +121,14 @@ _scale_preview_new(Evas *e, double sc, double *scp)
 EAPI int
 wizard_page_show(E_Wizard_Page *pg)
 {
+   return 0;
+
+   //
+   //
+   //  DISABLED: already configured in page 000, we don't need this page
+   //
+   //
+   //
    Evas_Object *o, *of, *ob;
    Evas_Coord sw, sh;
 
@@ -176,6 +184,12 @@ wizard_page_show(E_Wizard_Page *pg)
 EAPI int
 wizard_page_hide(E_Wizard_Page *pg __UNUSED__)
 {
+   return 1;
+   //
+   //
+   //  Disabled: already configured in page 000
+   //
+   //
    obs = eina_list_free(obs);
 //   evas_object_del(pg->data);
 
