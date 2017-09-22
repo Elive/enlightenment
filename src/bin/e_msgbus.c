@@ -72,6 +72,13 @@ static DBusMessage *_e_msgbus_image_cache_get_cb(E_DBus_Object *obj,
 static DBusMessage *_e_msgbus_image_cache_set_cb(E_DBus_Object *obj,
                                            DBusMessage *msg);
 
+static DBusMessage *_e_msgbus_font_get_cb(E_DBus_Object *obj,
+                                           DBusMessage   *msg);
+static DBusMessage *_e_msgbus_font_set_cb(E_DBus_Object *obj,
+                                           DBusMessage   *msg);
+static DBusMessage *_e_msgbus_font_list_cb(E_DBus_Object *obj,
+                                            DBusMessage   *msg);
+
 static DBusMessage *_e_msgbus_font_cache_get_cb(E_DBus_Object *obj,
                                           DBusMessage *msg);
 static DBusMessage *_e_msgbus_font_cache_set_cb(E_DBus_Object *obj,
@@ -291,6 +298,10 @@ e_msgbus_init(void)
    e_dbus_interface_unref(iface);
 
    /* Font methods */
+   e_dbus_interface_method_add(iface, "List", "", "s", _e_msgbus_font_list_cb);
+   e_dbus_interface_method_add(iface, "Get", "s", "", _e_msgbus_font_get_cb);
+   e_dbus_interface_method_add(iface, "Set", "sss", "", _e_msgbus_font_set_cb);
+
    e_dbus_interface_method_add(iface, "Cache_Get", "", "d", _e_msgbus_font_cache_get_cb);
    e_dbus_interface_method_add(iface, "Cache_Set", "d", "", _e_msgbus_font_cache_set_cb);
 
@@ -930,6 +941,79 @@ _e_msgbus_image_cache_set_cb(E_DBus_Object *obj __UNUSED__,
    e_config_save_queue();
 
    return dbus_message_new_method_return(msg);
+}
+
+static DBusMessage *
+_e_msgbus_font_get_cb(E_DBus_Object *obj __UNUSED__,
+                       DBusMessage *msg)
+{
+   DBusMessageIter iter;
+   DBusMessage *reply;
+   E_Font_Default *ect = NULL;
+   const char *font, *err;
+   err = strdup("Invalid Font Class");
+
+   dbus_message_iter_init(msg, &iter);
+   dbus_message_iter_get_basic(&iter, &font);
+
+   if (font)
+     ect = e_font_default_get(font);
+
+   reply = dbus_message_new_method_return(msg);
+   dbus_message_iter_init_append(reply, &iter);
+
+   if((ect) && (strlen(ect->file) > 0))
+     dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &ect->file);
+   else
+     dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &err);
+
+   return reply;
+}
+
+static DBusMessage *
+_e_msgbus_font_set_cb(E_DBus_Object *obj __UNUSED__,
+                       DBusMessage *msg)
+{
+   DBusMessageIter iter;
+   char *font_class;
+   char *font_name;
+   char *font_size;
+
+   dbus_message_iter_init(msg, &iter);
+   dbus_message_iter_get_basic(&iter, &font_class);
+   dbus_message_iter_next(&iter);
+   dbus_message_iter_get_basic(&iter, &font_name);
+   dbus_message_iter_next(&iter);
+   dbus_message_iter_get_basic(&iter, &font_size);
+
+   e_font_default_set(font_class, font_name, font_size);
+   e_config_save_queue();
+   /*e_sys_action_do(E_SYS_RESTART, NULL);*/
+   return dbus_message_new_method_return(msg);
+}
+
+static DBusMessage*
+_e_msgbus_font_list_cb(E_DBus_Object *obj __UNUSED__,
+                        DBusMessage *msg)
+{
+   Eina_List *l;
+   E_Default_Font *ect = NULL;
+   DBusMessage *reply;
+   DBusMessageIter iter;
+   DBusMessageIter arr;
+
+   reply = dbus_message_new_method_return(msg);
+   dbus_message_iter_init_append(reply, &iter);
+   dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, "s", &arr);
+   /*ect = e_font_config_get("font");*/
+
+   EINA_LIST_FOREACH(e_config->font_defaults, l, ect)
+     {
+	dbus_message_iter_append_basic(&arr, DBUS_TYPE_STRING, &ect->font);
+     }
+   dbus_message_iter_close_container(&iter, &arr);
+
+   return reply;
 }
 
 static DBusMessage *
