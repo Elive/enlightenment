@@ -37,6 +37,28 @@ wizard_page_show(E_Wizard_Page *pg)
    Evas_Object *o;
 
    TS(__FILE__);
+
+   // Scale configuration from here
+   int dpi;
+   double scale = 1.0;
+
+   dpi = ecore_x_dpi_get();
+   scale = ((float)dpi / 96);
+
+   // defaults
+   if (scale < 0.8) scale = 0.8;
+   if (scale > 3.0) scale = 3.0;
+
+   /*// TODO FIXME: temporal elive limitation to max 1.5 scaling: e17 is not so good to work with more than 1.5*/
+   if (scale > 1.5) scale = 1.5;
+
+   // set a good scale since the first page (ignored later in page 050)
+   e_config->scale.use_dpi = 0;
+   e_config->scale.use_custom = 1;
+   e_config->scale.factor = scale;
+   e_scale_update();
+
+
    e_wizard_title_set(_("Enlightenment"));
    o = edje_object_add(pg->evas);
    e_theme_edje_object_set(o, "base/theme/wizard", "e/wizard/firstpage");
