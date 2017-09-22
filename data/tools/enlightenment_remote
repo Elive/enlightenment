@@ -67,6 +67,7 @@ OPTIONS:
   -theme-del OPT1 Delete the theme
 
   -font-set Set the font (class, name, size), ex: application, Sans, -61|8
+  -font-set-auto Set the font (class, name) with autodetected size, ex: application, Sans
   -font-get Get the font value for OPT1 (classname)
   -font-list List available fonts
 
@@ -685,6 +686,12 @@ er_font_set(){
    ERCSSI org.enlightenment.wm.Font.Set "$2" "$3" "$4"
 }
 #-------------------------------------------------------------------------------
+#   E Font Set Auto
+#-------------------------------------------------------------------------------
+er_font_set_auto(){
+   ERCSS org.enlightenment.wm.Font.SetAuto "$2" "$3"
+}
+#-------------------------------------------------------------------------------
 #   E Font Get
 #-------------------------------------------------------------------------------
 er_font_get(){
@@ -954,6 +961,9 @@ case "$1" in
    ;;
    -font-set)
       er_font_set "$@"
+   ;;
+   -font-set-auto)
+      er_font_set_auto "$@"
    ;;
    -font-cache-get)
       er_font_cache_get
