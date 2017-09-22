@@ -67,6 +67,7 @@ OPTIONS:
   -theme-del OPT1 Delete the theme
 
   -font-set Set the font (class, name, size), ex: application, Sans, -61|8
+  -font-set-auto Set the font (class, name) with autodetected size, ex: application, Sans
   -font-get Get the font value for OPT1 (classname)
   -font-list List available fonts
 
@@ -146,15 +147,27 @@ ERCS(){
 }
 
 #===  FUNCTION  ================================================================
+#          NAME:  ERG
+#   DESCRIPTION:  Get a (single) value (string)
+#    PARAMETERS:  interface/method call
+#       RETURNS:  value (string)
+#===============================================================================
+ERG(){
+   local result
+   result="$( dbus-send --print-reply=literal --dest=org.enlightenment.wm.service /org/enlightenment/wm/RemoteObject "$1" )"
+   echo $result
+}
+
+#===  FUNCTION  ================================================================
 #          NAME:  ERGS
 #   DESCRIPTION:  Get a (single) value (string)
 #    PARAMETERS:  interface/method call
 #       RETURNS:  value (string)
 #===============================================================================
 ERGS(){
-   result="$( dbus-send --print-reply=literal --dest=org.enlightenment.wm.service /org/enlightenment/wm/RemoteObject "$1" )"
+   local result
+   result="$( dbus-send --print-reply=literal --dest=org.enlightenment.wm.service /org/enlightenment/wm/RemoteObject "$1" string:"$2" )"
    echo $result
-   unset result
 }
 
 #===  FUNCTION  ================================================================
@@ -263,6 +276,16 @@ ERCI(){
 #===============================================================================
 ERCSS(){
    dbus-send --print-reply=literal --dest=org.enlightenment.wm.service /org/enlightenment/wm/RemoteObject "$1" string:"$2" string:"$3"
+}
+
+#===  FUNCTION  ================================================================
+#          NAME:  ERCSSI
+#   DESCRIPTION:  eremote call with string string parameter
+#    PARAMETERS:  interface/method call, string string int
+#       RETURNS:
+#===============================================================================
+ERCSSI(){
+   dbus-send --print-reply=literal --dest=org.enlightenment.wm.service /org/enlightenment/wm/RemoteObject "$1" string:"$2" string:"$3" int32:"$4"
 }
 
 #===  FUNCTION  ================================================================
@@ -413,7 +436,7 @@ er_profile_list(){
 #   E Profile Get
 #-------------------------------------------------------------------------------
 er_default_profile_get(){
-   ERGS org.enlightenment.wm.Profile.Get
+   ERG org.enlightenment.wm.Profile.Get
 }
 
 
@@ -660,20 +683,26 @@ er_image_cache_get(){
 #   E Font Set
 #-------------------------------------------------------------------------------
 er_font_set(){
-   ERCD org.enlightenment.wm.Font.Set "$2" "$3" "$4"
+   ERCSSI org.enlightenment.wm.Font.Set "$2" "$3" "$4"
+}
+#-------------------------------------------------------------------------------
+#   E Font Set Auto
+#-------------------------------------------------------------------------------
+er_font_set_auto(){
+   ERCSS org.enlightenment.wm.Font.SetAuto "$2" "$3"
 }
 #-------------------------------------------------------------------------------
 #   E Font Get
 #-------------------------------------------------------------------------------
 er_font_get(){
-   ERCD org.enlightenment.wm.Font.Get "$2"
+   ERGS org.enlightenment.wm.Font.Get "$2"
 }
 
 #-------------------------------------------------------------------------------
 #   E Font List
 #-------------------------------------------------------------------------------
 er_font_list(){
-   ERCD org.enlightenment.wm.Font.List
+   ERC org.enlightenment.wm.Font.List
 }
 
 #-------------------------------------------------------------------------------
@@ -932,6 +961,9 @@ case "$1" in
    ;;
    -font-set)
       er_font_set "$@"
+   ;;
+   -font-set-auto)
+      er_font_set_auto "$@"
    ;;
    -font-cache-get)
       er_font_cache_get
