@@ -179,6 +179,8 @@ _fill_data(E_Config_Dialog_Data *cfdata)
    E_Font_Size_Data *size_data;
    CFText_Class *tc;
    int i;
+   int dpi;
+   int font_size_auto;
 
    font_list = e_font_default_list();
 
@@ -247,6 +249,19 @@ _fill_data(E_Config_Dialog_Data *cfdata)
    /* Fill Hinting */
    cfdata->hinting = e_config->font_hinting;
 
+   size_data = E_NEW(E_Font_Size_Data, 1);
+   size_data->cfdata = cfdata;
+   size_data->size_str = eina_stringshare_add(_("Auto"));
+   // dynamically set an optimal size for your fonts
+   // example: in a 157 dpi screen like thinkpad t460s, we will set -61
+   dpi = ecore_x_dpi_get();
+   font_size_auto = ( ( (double)96 / (double)dpi ) * 100.000 );
+   if ((font_size_auto > 0) && (font_size_auto < 900))
+     size_data->size = -font_size_auto;
+   else
+     size_data->size = -100;
+
+   cfdata->font_scale_list = eina_list_append(cfdata->font_scale_list, size_data);
    size_data = E_NEW(E_Font_Size_Data, 1);
    size_data->cfdata = cfdata;
    size_data->size_str = eina_stringshare_add(_("Tiny"));
