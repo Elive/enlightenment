@@ -952,6 +952,7 @@ _e_msgbus_font_get_cb(E_DBus_Object *obj __UNUSED__,
    E_Font_Default *ect = NULL;
    const char *font, *err;
    err = strdup("Invalid Font Class");
+   char *buf;
 
    dbus_message_iter_init(msg, &iter);
    dbus_message_iter_get_basic(&iter, &font);
@@ -962,8 +963,11 @@ _e_msgbus_font_get_cb(E_DBus_Object *obj __UNUSED__,
    reply = dbus_message_new_method_return(msg);
    dbus_message_iter_init_append(reply, &iter);
 
-   if((ect) && (strlen(ect->file) > 0))
-     dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &ect->file);
+   if((ect) && (strlen(ect->font) > 0))
+     {
+        snprintf(buf, sizeof(buf), "%s|%i", ect->font, ect->size);
+        dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &buf);
+     }
    else
      dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &err);
 
@@ -986,7 +990,7 @@ _e_msgbus_font_set_cb(E_DBus_Object *obj __UNUSED__,
    dbus_message_iter_next(&iter);
    dbus_message_iter_get_basic(&iter, &font_size);
 
-   e_font_default_set(font_class, font_name, font_size);
+   e_font_default_set(font_class, font_name, (int)font_size);
    e_config_save_queue();
    /*e_sys_action_do(E_SYS_RESTART, NULL);*/
    return dbus_message_new_method_return(msg);
@@ -997,7 +1001,7 @@ _e_msgbus_font_list_cb(E_DBus_Object *obj __UNUSED__,
                         DBusMessage *msg)
 {
    Eina_List *l;
-   E_Default_Font *ect = NULL;
+   E_Font_Default *ect = NULL;
    DBusMessage *reply;
    DBusMessageIter iter;
    DBusMessageIter arr;
