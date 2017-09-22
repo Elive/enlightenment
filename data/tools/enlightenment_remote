@@ -66,6 +66,10 @@ OPTIONS:
   -theme-get OPT1 List the theme associated with the category OPT1
   -theme-del OPT1 Delete the theme
 
+  -font-set Set the font (class, name, size), ex: application, Sans, -61|8
+  -font-get Get the font value for OPT1 (classname)
+  -font-list List available fonts
+
   -font-cache-set OPT1 Set the font cache size (Kb)
   -font-cache-get Get the speculative font cache size (Kb)
 
@@ -642,28 +646,48 @@ er_edje_cache_get(){
 #   E Image Cache Set
 #-------------------------------------------------------------------------------
 er_image_cache_set(){
-   ERCD org.enlightenment.wm.Image.Set "$2"
+   ERCD org.enlightenment.wm.Image.Cache_Set "$2"
 }
 
 #-------------------------------------------------------------------------------
 #   E Image Cache Get
 #-------------------------------------------------------------------------------
 er_image_cache_get(){
-   ERC org.enlightenment.wm.Image.Get
+   ERC org.enlightenment.wm.Image.Cache_Get
+}
+
+#-------------------------------------------------------------------------------
+#   E Font Set
+#-------------------------------------------------------------------------------
+er_font_set(){
+   ERCD org.enlightenment.wm.Font.Set "$2" "$3" "$4"
+}
+#-------------------------------------------------------------------------------
+#   E Font Get
+#-------------------------------------------------------------------------------
+er_font_get(){
+   ERCD org.enlightenment.wm.Font.Get "$2"
+}
+
+#-------------------------------------------------------------------------------
+#   E Font List
+#-------------------------------------------------------------------------------
+er_font_list(){
+   ERCD org.enlightenment.wm.Font.List
 }
 
 #-------------------------------------------------------------------------------
 #   E Font Cache Set
 #-------------------------------------------------------------------------------
 er_font_cache_set(){
-   ERCD org.enlightenment.wm.Font.Set "$2"
+   ERCD org.enlightenment.wm.Font.Cache_Set "$2"
 }
 
 #-------------------------------------------------------------------------------
 #   E Font Cache Get
 #-------------------------------------------------------------------------------
 er_font_cache_get(){
-   ERC org.enlightenment.wm.Font.Get
+   ERC org.enlightenment.wm.Font.Cache_Get
 }
 
 #-------------------------------------------------------------------------------
@@ -899,6 +923,15 @@ case "$1" in
    ;;
    -focus-set | -focus-policy-set)
       er_focus_set "$@"
+   ;;
+   -font-list)
+      er_font_list
+   ;;
+   -font-get)
+      er_font_get "$@"
+   ;;
+   -font-set)
+      er_font_set "$@"
    ;;
    -font-cache-get)
       er_font_cache_get
