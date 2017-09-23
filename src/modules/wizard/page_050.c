@@ -183,19 +183,28 @@ wizard_page_show(E_Wizard_Page *pg)
 EAPI int
 wizard_page_hide(E_Wizard_Page *pg __UNUSED__)
 {
-   return 1;
-   //
-   //
-   //  Disabled: already configured in page 000
-   //
-   //
-   obs = eina_list_free(obs);
+   /*obs = eina_list_free(obs);*/
 //   evas_object_del(pg->data);
+   // Scale configuration from here
+   int dpi;
+   double scale = 1.0;
 
+   dpi = ecore_x_dpi_get();
+   scale = ((float)dpi / 96);
+
+   // defaults
+   if (scale < 0.8) scale = 0.8;
+   if (scale > 3.0) scale = 3.0;
+
+   /*// TODO FIXME: temporal elive limitation to max 1.5 scaling: e17 is not so good to work with more than 1.5*/
+   if (scale > 1.5) scale = 1.5;
+
+   // set a good scale since the first page (ignored later in page 050)
    e_config->scale.use_dpi = 0;
    e_config->scale.use_custom = 1;
    e_config->scale.factor = scale;
    e_scale_update();
+
    return 1;
 }
 /*
