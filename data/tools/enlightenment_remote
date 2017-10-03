@@ -373,7 +373,7 @@ er_save_setting(){
 #   E Ping
 #-------------------------------------------------------------------------------
 er_ping(){
-   ERC org.enlightenment.wm.Core.Ping
+   ERG org.enlightenment.wm.Core.Ping
 }
 
 #-------------------------------------------------------------------------------
@@ -627,14 +627,14 @@ er_resolution_set(){
 #   E Resolution Get
 #-------------------------------------------------------------------------------
 er_resolution_get(){
-   ERC org.enlightenment.wm.Resolution.Get
+   ERG org.enlightenment.wm.Resolution.Get
 }
 
 #-------------------------------------------------------------------------------
 #   E Resolution List
 #-------------------------------------------------------------------------------
 er_resolution_list(){
-   ERC org.enlightenment.wm.Resolution.List
+   ERG org.enlightenment.wm.Resolution.List
 }
 
 #-------------------------------------------------------------------------------
@@ -648,7 +648,7 @@ er_edje_collection_set(){
 #   E Edje Collection Get
 #-------------------------------------------------------------------------------
 er_edje_collection_get(){
-   ERC org.enlightenment.wm.Edje.Collection_Cache_Get
+   ERG org.enlightenment.wm.Edje.Collection_Cache_Get
 }
 
 #-------------------------------------------------------------------------------
@@ -662,7 +662,7 @@ er_edje_cache_set(){
 #   E Edje Cache Get
 #-------------------------------------------------------------------------------
 er_edje_cache_get(){
-   ERC org.enlightenment.wm.Edje.Cache_Get
+   ERG org.enlightenment.wm.Edje.Cache_Get
 }
 
 #-------------------------------------------------------------------------------
@@ -676,7 +676,7 @@ er_image_cache_set(){
 #   E Image Cache Get
 #-------------------------------------------------------------------------------
 er_image_cache_get(){
-   ERC org.enlightenment.wm.Image.Cache_Get
+   ERG org.enlightenment.wm.Image.Cache_Get
 }
 
 #-------------------------------------------------------------------------------
@@ -716,7 +716,7 @@ er_font_cache_set(){
 #   E Font Cache Get
 #-------------------------------------------------------------------------------
 er_font_cache_get(){
-   ERC org.enlightenment.wm.Font.Cache_Get
+   ERG org.enlightenment.wm.Font.Cache_Get
 }
 
 #-------------------------------------------------------------------------------
@@ -730,14 +730,14 @@ er_focus_set(){
 #   E Focus Get
 #-------------------------------------------------------------------------------
 er_focus_get(){
-   ERC org.enlightenment.wm.Focus.Get
+   ERG org.enlightenment.wm.Focus.Get
 }
 
 #-------------------------------------------------------------------------------
 #   E Intl Get
 #-------------------------------------------------------------------------------
 er_intl_get(){
-   ERC org.enlightenment.wm.Intl.Get
+   ERG org.enlightenment.wm.Intl.Get
 }
 
 #-------------------------------------------------------------------------------
@@ -751,14 +751,14 @@ er_intl_set(){
 #   E Intl List
 #-------------------------------------------------------------------------------
 er_intl_list(){
-   ERC org.enlightenment.wm.Intl.List
+   ERG org.enlightenment.wm.Intl.List
 }
 
 #-------------------------------------------------------------------------------
 #   E Theme Add
 #-------------------------------------------------------------------------------
 er_theme_add(){
-   ERC org.enlightenment.wm.Theme.Add "$2"
+   ERCS org.enlightenment.wm.Theme.Add "$2"
 }
 
 #-------------------------------------------------------------------------------
@@ -786,14 +786,14 @@ er_theme_set(){
 #   E Theme List
 #-------------------------------------------------------------------------------
 er_theme_list(){
-   ERC org.enlightenment.wm.Theme.List
+   ERG org.enlightenment.wm.Theme.List
 }
 
 #-------------------------------------------------------------------------------
 #   E Theme List User Themes
 #-------------------------------------------------------------------------------
 er_theme_lut(){
-   ERC org.enlightenment.wm.Theme.List_User_Themes
+   ERG org.enlightenment.wm.Theme.List_User_Themes
 }
 
 #===  FUNCTION  ================================================================
