@@ -197,7 +197,7 @@ wizard_page_hide(E_Wizard_Page *pg __UNUSED__)
    if (scale > 3.0) scale = 3.0;
 
    /* TODO FIXME: temporal elive limitation to max scaling: e17 is not so good or ready to work actually with more than this */
-   if (scale > 1.4) scale = 1.4;
+   if (scale > 1.3) scale = 1.3;
 
    // set a good scale since the first page (ignored later in page 050)
    e_config->scale.use_dpi = 0;
