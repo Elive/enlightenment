@@ -152,7 +152,8 @@ _xdg_data_dirs_augment(void)
 
    if (!p) return;
 
-   s = getenv("XDG_DATA_DIRS");
+   // we should never want to use provided ones:
+   /*s = getenv("XDG_DATA_DIRS");*/
    if (s)
      {
         Eina_Bool pfxdata, pfx;
@@ -173,7 +174,10 @@ _xdg_data_dirs_augment(void)
      }
    else
      {
-        snprintf(buf, sizeof(buf), "%s:%s/share:/usr/local/share:/usr/share", e_prefix_data_get(), p);
+        if (strstr(p, "/usr") != NULL)
+          snprintf(buf, sizeof(buf), "/usr/local/share:/usr/share/xdgeldsk:%s:/usr/share", e_prefix_data_get());
+        else
+          snprintf(buf, sizeof(buf), "/usr/local/share:/usr/share/xdgeldsk:%s:%s/share:/usr/share", e_prefix_data_get(), p);
         e_util_env_set("XDG_DATA_DIRS", buf);
      }
 
