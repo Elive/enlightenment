@@ -161,11 +161,6 @@ _xdg_data_dirs_augment(void)
    // we should never want to use provided ones:
    /*s = getenv("XDG_DATA_DIRS");*/
 
-   // if our prefix is already /usr we should not append /usr/share here yet
-   if (strcmp(p, "/usr") == 0)
-     snprintf(newpath, sizeof(newpath), "%s", e_prefix_data_get());
-   else
-
    if (s)
      {
         Eina_Bool pfxdata, pfx;
