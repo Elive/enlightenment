@@ -1,0 +1,7 @@
+Warning: some commits from branches removed like 'elive/hacks/xdg_data_dirs_overrides' are ONLY in the 'packaging/e17/dev' !, don't lose them
+
+Full list:
+
+elive/main/TMP_disable_restore_binding
+elive/hacks/xdg_data_dirs_overrides
+elive/conf/composite_defaults
