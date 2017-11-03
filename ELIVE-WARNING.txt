@@ -1,0 +1,1 @@
+Warning: some commits from branches removed like 'elive/hacks/xdg_data_dirs_overrides' are ONLY in the 'packaging/e17/dev' !, don't lose them
