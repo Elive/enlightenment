@@ -158,35 +158,38 @@ _xdg_data_dirs_augment(void)
 
    if (!p) return;
 
-   // we should never want to use provided ones:
+   // we should never want to use provided ones, also seems to be entirely buggy (trash values in the varialbes)
    /*s = getenv("XDG_DATA_DIRS");*/
 
-   if (s)
-     {
-        Eina_Bool pfxdata, pfx;
+   /*if (s)*/
+     /*{*/
+        /*Eina_Bool pfxdata, pfx;*/
 
-        pfxdata = !_xdg_check_str(s, e_prefix_data_get());
-        snprintf(newpath, sizeof(newpath), "%s/share", p);
-        pfx = !_xdg_check_str(s, newpath);
-        if (pfxdata || pfx)
-          {
-             snprintf(buf, sizeof(buf), "%s%s%s%s%s",
-               pfxdata ? e_prefix_data_get() : "",
-               pfxdata ? ":" : "",
-               pfx ? newpath : "",
-               pfx ? ":" : "",
-               s);
-             e_util_env_set("XDG_DATA_DIRS", buf);
-          }
-     }
-   else
-     {
+        /*pfxdata = !_xdg_check_str(s, e_prefix_data_get());*/
+        /*snprintf(newpath, sizeof(newpath), "%s/share", p);*/
+        /*pfx = !_xdg_check_str(s, newpath);*/
+        /*if (pfxdata || pfx)*/
+          /*{*/
+             /*snprintf(buf, sizeof(buf), "%s%s%s%s%s",*/
+               /*pfxdata ? e_prefix_data_get() : "",*/
+               /*pfxdata ? ":" : "",*/
+               /*pfx ? newpath : "",*/
+               /*pfx ? ":" : "",*/
+               /*s);*/
+             /*e_util_env_set("XDG_DATA_DIRS", buf);*/
+          /*}*/
+     /*}*/
+   /*else*/
+     /*{*/
         if (strstr(p, "/usr") != NULL)
           snprintf(buf, sizeof(buf), "/usr/local/share:/usr/share/xdgeldsk:%s:/usr/share", e_prefix_data_get());
         else
           snprintf(buf, sizeof(buf), "/usr/local/share:/usr/share/xdgeldsk:%s:%s/share:/usr/share", e_prefix_data_get(), p);
         e_util_env_set("XDG_DATA_DIRS", buf);
-     }
+     /*}*/
+
+   // debug only, we don't need this variable but maybe we need to know which varialbe is:
+   setenv("XDG_DATA_DIRS", buf, 1);
 
    s = getenv("XDG_CONFIG_DIRS");
    snprintf(newpath, sizeof(newpath), "%s/etc/xdg", p);
