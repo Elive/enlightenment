@@ -189,7 +189,8 @@ _xdg_data_dirs_augment(void)
      /*}*/
 
    // debug only, we don't need this variable but maybe we need to know which varialbe is:
-   /*setenv("XDG_DATA_DIRS", buf, 1);*/
+   // update: it may be required, for other apps inside the desktop like gtk ones
+   setenv("XDG_DATA_DIRS", buf, 1);
 
    s = getenv("XDG_CONFIG_DIRS");
    snprintf(newpath, sizeof(newpath), "%s/etc/xdg", p);
