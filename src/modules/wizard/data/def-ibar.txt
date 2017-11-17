@@ -15,10 +15,10 @@ opera
 rekonq
 dooble
 # icedove sylpheed claws-mail thunderbird evolution KMail
-audacious clementine xmms2 enjoy banshee listen
+#audacious clementine xmms2 enjoy banshee listen
 rhythmbox amarok songbird
-spotify
-vlc
+#spotify
+#vlc
 shotwell
 gimp
 rawtherapee
@@ -27,8 +27,12 @@ blender
 skype
 pidgin gajim konversation kvirc loqui lostirc quassel qutim
 libreoffice lowriter
-qalculate-gtk galculator
-sublime_text codeblocks eclipse gvim scite
-transmission-gtk
+#qalculate-gtk galculator
+sublime_text codeblocks eclipse
+#gvim scite
+#transmission-gtk
 virtualbox
 synaptic
+
+
+# vim: set foldmethod=marker filetype=sh :
