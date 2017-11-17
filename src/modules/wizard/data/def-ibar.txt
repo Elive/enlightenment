@@ -28,7 +28,8 @@ skype
 pidgin gajim konversation kvirc loqui lostirc quassel qutim
 libreoffice lowriter
 #qalculate-gtk galculator
-sublime_text codeblocks eclipse gvim scite
+sublime_text codeblocks eclipse
+#gvim scite
 #transmission-gtk
 virtualbox
 synaptic
