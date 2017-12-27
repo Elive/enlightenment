@@ -884,7 +884,7 @@ _ibar_cb_icon_mouse_down(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUS
         snprintf(buf, sizeof(buf), _("Icon %s"), ic->app->name);
         e_menu_item_label_set(mi, buf);
         e_util_desktop_menu_item_icon_add(ic->app,
-                                          e_util_icon_size_normalize(24 * e_scale),
+                                          e_util_icon_size_normalize(96 * e_scale),
                                           mi);
         e_menu_item_submenu_set(mi, mo);
         e_object_unref(E_OBJECT(mo));
