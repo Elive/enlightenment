@@ -937,11 +937,11 @@ _advanced_create_widgets(E_Config_Dialog *cfd EINA_UNUSED, Evas *evas, E_Config_
    e_widget_frametable_object_append(of, ow, 1, 2, 1, 1, 1, 1, 1, 0);
 
    ow = e_widget_label_add(evas, "ECORE_IMF_MODULE");
-   e_widget_frametable_object_append(of, ow, 0, 2, 1, 1, 1, 1, 0, 0);
+   e_widget_frametable_object_append(of, ow, 0, 3, 1, 1, 1, 1, 0, 0);
    ow = e_widget_entry_add(evas, &(cfdata->imc.ecore_imf_module), NULL, NULL, NULL);
    e_widget_on_change_hook_set(ow, _e_imc_entry_change_cb, cfdata);
    cfdata->gui.ecore_imf_module = ow;
-   e_widget_frametable_object_append(of, ow, 1, 2, 1, 1, 1, 1, 1, 0);
+   e_widget_frametable_object_append(of, ow, 1, 3, 1, 1, 1, 1, 1, 0);
 
 
    e_widget_table_object_append(ot, of, 0, 2, 3, 1, 1, 1, 1, 1);
