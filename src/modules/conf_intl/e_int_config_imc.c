@@ -59,6 +59,7 @@ struct _E_Config_Dialog_Data
       char *gtk_im_module;
       char *qt_im_module;
       char *xmodifiers;
+      char *ecore_imf_module;
    } imc;
 
    Eina_Hash *imc_change_map;
@@ -78,6 +79,7 @@ struct _E_Config_Dialog_Data
       Evas_Object *gtk_im_module;
       Evas_Object *qt_im_module;
       Evas_Object *xmodifiers;
+      Evas_Object *ecore_imf_module;
    } gui;
 
    E_Win *win_import;
@@ -169,6 +171,7 @@ _free_data(E_Config_Dialog *cfd __UNUSED__, E_Config_Dialog_Data *cfdata)
    E_FREE(cfdata->imc.gtk_im_module);
    E_FREE(cfdata->imc.qt_im_module);
    E_FREE(cfdata->imc.xmodifiers);
+   E_FREE(cfdata->imc.ecore_imf_module);
    E_FREE(cfdata);
 }
 
@@ -678,6 +681,7 @@ _e_imc_form_fill(E_Config_Dialog_Data *cfdata)
         e_widget_entry_text_set(cfdata->gui.gtk_im_module, imc->gtk_im_module);
         e_widget_entry_text_set(cfdata->gui.qt_im_module, imc->qt_im_module);
         e_widget_entry_text_set(cfdata->gui.xmodifiers, imc->xmodifiers);
+        e_widget_entry_text_set(cfdata->gui.ecore_imf_module, imc->ecore_imf_module);
 
         e_widget_entry_readonly_set(cfdata->gui.e_im_name, cfdata->fmdir);
         e_widget_entry_readonly_set(cfdata->gui.e_im_exec, cfdata->fmdir);
@@ -685,6 +689,7 @@ _e_imc_form_fill(E_Config_Dialog_Data *cfdata)
         e_widget_entry_readonly_set(cfdata->gui.gtk_im_module, cfdata->fmdir);
         e_widget_entry_readonly_set(cfdata->gui.qt_im_module, cfdata->fmdir);
         e_widget_entry_readonly_set(cfdata->gui.xmodifiers, cfdata->fmdir);
+        e_widget_entry_readonly_set(cfdata->gui.ecore_imf_module, cfdata->fmdir);
         if (imc_free) e_intl_input_method_config_free(imc);
      }
    e_widget_check_checked_set(cfdata->gui.imc_advanced_disable, 0);
@@ -711,6 +716,7 @@ _e_imc_change_enqueue(E_Config_Dialog_Data *cfdata)
         imc_update->gtk_im_module = eina_stringshare_add(cfdata->imc.gtk_im_module);
         imc_update->qt_im_module = eina_stringshare_add(cfdata->imc.qt_im_module);
         imc_update->xmodifiers = eina_stringshare_add(cfdata->imc.xmodifiers);
+        imc_update->ecore_imf_module = eina_stringshare_add(cfdata->imc.ecore_imf_module);
 
         /* look for changes to this file and remove them */
         imc_update_old = eina_hash_find(cfdata->imc_change_map, cfdata->imc_current);
@@ -929,6 +935,14 @@ _advanced_create_widgets(E_Config_Dialog *cfd EINA_UNUSED, Evas *evas, E_Config_
    e_widget_on_change_hook_set(ow, _e_imc_entry_change_cb, cfdata);
    cfdata->gui.xmodifiers = ow;
    e_widget_frametable_object_append(of, ow, 1, 2, 1, 1, 1, 1, 1, 0);
+
+   ow = e_widget_label_add(evas, "ECORE_IMF_MODULE");
+   e_widget_frametable_object_append(of, ow, 0, 3, 1, 1, 1, 1, 0, 0);
+   ow = e_widget_entry_add(evas, &(cfdata->imc.ecore_imf_module), NULL, NULL, NULL);
+   e_widget_on_change_hook_set(ow, _e_imc_entry_change_cb, cfdata);
+   cfdata->gui.ecore_imf_module = ow;
+   e_widget_frametable_object_append(of, ow, 1, 3, 1, 1, 1, 1, 1, 0);
+
 
    e_widget_table_object_append(ot, of, 0, 2, 3, 1, 1, 1, 1, 1);
 
