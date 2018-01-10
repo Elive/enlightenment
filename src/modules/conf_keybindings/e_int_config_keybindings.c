@@ -493,22 +493,22 @@ _restore_key_binding_defaults_cb(void *data,
   cfdata->binding.key = eina_list_append(cfdata->binding.key, bi)
 
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Left",
-                    E_BINDING_MODIFIER_SHIFT | E_BINDING_MODIFIER_ALT, 0,
+                    E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,
                     "desk_flip_by", "-1 0");
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Right",
-                    E_BINDING_MODIFIER_SHIFT | E_BINDING_MODIFIER_ALT, 0,
+                    E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,
                     "desk_flip_by", "1 0");
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Up",
-                    E_BINDING_MODIFIER_SHIFT | E_BINDING_MODIFIER_ALT, 0,
+                    E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,
                     "desk_flip_by", "0 -1");
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Down",
-                    E_BINDING_MODIFIER_SHIFT | E_BINDING_MODIFIER_ALT, 0,
+                    E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,
                     "desk_flip_by", "0 1");
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Up",
-                    E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,
+                    E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_SHIFT | E_BINDING_MODIFIER_ALT, 0,
                     "window_raise", NULL);
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Down",
-                    E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,
+                    E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_SHIFT | E_BINDING_MODIFIER_ALT, 0,
                     "window_lower", NULL);
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "x",
                     E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,
