@@ -531,12 +531,12 @@ _restore_key_binding_defaults_cb(void *data,
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "n",
                     E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,
                     "window_maximized_toggle", NULL);
-   CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "F10",
-                    E_BINDING_MODIFIER_SHIFT, 0,
-                    "window_maximized_toggle", "default vertical");
-   CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "F10",
-                    E_BINDING_MODIFIER_CTRL, 0,
-                    "window_maximized_toggle", "default horizontal");
+   /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "F10",*/
+                    /*E_BINDING_MODIFIER_SHIFT, 0,*/
+                    /*"window_maximized_toggle", "default vertical");*/
+   /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "F10",*/
+                    /*E_BINDING_MODIFIER_CTRL, 0,*/
+                    /*"window_maximized_toggle", "default horizontal");*/
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Left",
                     E_BINDING_MODIFIER_WIN, 0,
                     "window_maximized_toggle", "default left");
@@ -591,9 +591,9 @@ _restore_key_binding_defaults_cb(void *data,
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "m",
                     E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,
                     "menu_show", "main");
-   CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "a",
-                    E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,
-                    "menu_show", "favorites");
+   /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "a",*/
+                    /*E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,*/
+                    /*"menu_show", "favorites");*/
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Menu",
                     0, 0,
                     "menu_show", "main");
@@ -603,9 +603,9 @@ _restore_key_binding_defaults_cb(void *data,
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Menu",
                     E_BINDING_MODIFIER_ALT, 0,
                     "menu_show", "favorites");
-   CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Insert",
-                    E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,
-                    "exec", "terminology");
+   /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Insert",*/
+                    /*E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,*/
+                    /*"exec", "terminology");*/
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Tab",
                     E_BINDING_MODIFIER_ALT, 0,
                     "winlist", "next");
