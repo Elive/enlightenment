@@ -1006,7 +1006,7 @@ _desklock_auth(char *passwd)
      {
         e_module_disable(m);
         _ecomorph_used = EINA_TRUE;
-        ecore_exe_run("killall -9 ecomorph", NULL);
+        // ecore_exe_run("killall -9 ecomorph", NULL); // disabling the emodule should be enough for kill ecomorph process, we don't want to segfault E so the password thing can be useless then (desktop unlocked)
      }
    else
      _ecomorph_used = EINA_FALSE;
