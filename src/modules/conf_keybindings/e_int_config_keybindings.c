@@ -528,30 +528,30 @@ _restore_key_binding_defaults_cb(void *data,
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "i",
                     E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,
                     "window_iconic_toggle", NULL);
-   CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "n",
-                    E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,
-                    "window_maximized_toggle", NULL);
+   /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "n",*/
+                    /*E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,*/
+                    /*"window_maximized_toggle", NULL);*/
    /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "F10",*/
                     /*E_BINDING_MODIFIER_SHIFT, 0,*/
                     /*"window_maximized_toggle", "default vertical");*/
    /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "F10",*/
                     /*E_BINDING_MODIFIER_CTRL, 0,*/
                     /*"window_maximized_toggle", "default horizontal");*/
-   CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Left",
-                    E_BINDING_MODIFIER_WIN, 0,
-                    "window_maximized_toggle", "default left");
-   CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Right",
-                    E_BINDING_MODIFIER_WIN, 0,
-                    "window_maximized_toggle", "default right");
+   /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Left",*/
+                    /*E_BINDING_MODIFIER_WIN, 0,*/
+                    /*"window_maximized_toggle", "default left");*/
+   /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Right",*/
+                    /*E_BINDING_MODIFIER_WIN, 0,*/
+                    /*"window_maximized_toggle", "default right");*/
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "r",
                     E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,
                     "window_shaded_toggle", NULL);
-   CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Left",
-                    E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,
-                    "desk_linear_flip_by", "-1");
-   CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Right",
-                    E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,
-                    "desk_linear_flip_by", "1");
+   /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Left",*/
+                    /*E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,*/
+                    /*"desk_linear_flip_by", "-1");*/
+   /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Right",*/
+                    /*E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,*/
+                    /*"desk_linear_flip_by", "1");*/
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "F1",
                     E_BINDING_MODIFIER_SHIFT | E_BINDING_MODIFIER_ALT, 0,
                     "desk_linear_flip_to", "0");
@@ -627,27 +627,27 @@ _restore_key_binding_defaults_cb(void *data,
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "d",
                     E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_ALT, 0,
                     "desk_deskshow_toggle", NULL);
-   CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "F1",
-                    E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_SHIFT, 0,
-                    "screen_send_to", "0");
-   CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "F2",
-                    E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_SHIFT, 0,
-                    "screen_send_to", "1");
-   CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "F3",
-                    E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_SHIFT, 0,
-                    "screen_send_to", "2");
-   CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "F4",
-                    E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_SHIFT, 0,
-                    "screen_send_to", "3");
-   CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "XF86AudioLowerVolume",
-                    0, 0,
-                    "volume_decrease", NULL);
-   CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "XF86AudioRaiseVolume",
-                    0, 0,
-                    "volume_increase", NULL);
-   CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "XF86AudioMute",
-                    0, 0,
-                    "volume_mute", NULL);
+   /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "F1",*/
+                    /*E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_SHIFT, 0,*/
+                    /*"screen_send_to", "0");*/
+   /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "F2",*/
+                    /*E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_SHIFT, 0,*/
+                    /*"screen_send_to", "1");*/
+   /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "F3",*/
+                    /*E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_SHIFT, 0,*/
+                    /*"screen_send_to", "2");*/
+   /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "F4",*/
+                    /*E_BINDING_MODIFIER_CTRL | E_BINDING_MODIFIER_SHIFT, 0,*/
+                    /*"screen_send_to", "3");*/
+   /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "XF86AudioLowerVolume",*/
+                    /*0, 0,*/
+                    /*"volume_decrease", NULL);*/
+   /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "XF86AudioRaiseVolume",*/
+                    /*0, 0,*/
+                    /*"volume_increase", NULL);*/
+   /*CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "XF86AudioMute",*/
+                    /*0, 0,*/
+                    /*"volume_mute", NULL);*/
    CFG_KEYBIND_DFLT(E_BINDING_CONTEXT_ANY, "Print",
                     0, 0,
                     "shot", NULL);
