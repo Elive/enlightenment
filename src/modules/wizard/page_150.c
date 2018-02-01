@@ -56,6 +56,11 @@ match_xorg_log(const char *globbing)
 static void
 _e_config_dialog_cb_changed(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
 {
+   // Examples:
+   // virtualbox:             (II) VBoxVideo(0):
+   // vmware:                 (II) vmware(0):
+   // KVM specific driver:    (II) qxl(0):
+   //
    if ((match_xorg_log("*(II)*intel*: Creating default Display*")) ||
       (match_xorg_log("*(II)*NOUVEAU*: Creating default Display*")) ||
       (match_xorg_log("*(II)*NVIDIA*: Creating default Display*")) ||
