@@ -60,6 +60,7 @@ _e_config_dialog_cb_changed(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
    // virtualbox:             (II) VBoxVideo(0):
    // vmware:                 (II) vmware(0):
    // KVM specific driver:    (II) qxl(0):
+   // notes: llvmpipe should be disabled
    //
    if ((match_xorg_log("*(II)*intel*: Creating default Display*")) ||
       (match_xorg_log("*(II)*NOUVEAU*: Creating default Display*")) ||
@@ -180,7 +181,7 @@ wizard_page_show(E_Wizard_Page *pg)
        (gl_avail) && (!llvmpipe))
      {
         do_gl = 1;
-        do_vsync = 1;
+        /*do_vsync = 1;*/
      }
 
    o = e_widget_list_add(pg->evas, 1, 0);
@@ -219,9 +220,9 @@ wizard_page_show(E_Wizard_Page *pg)
         ob_comp_gl = ob;
         e_widget_framelist_object_append(of, ob);
 
-        ob = e_widget_check_add(pg->evas, _("Tear-free Rendering (OpenGL only)"), &(do_vsync));
-        ob_comp_vsync = ob;
-        e_widget_framelist_object_append(of, ob);
+        /*ob = e_widget_check_add(pg->evas, _("Tear-free Rendering (OpenGL only)"), &(do_vsync));*/
+        /*ob_comp_vsync = ob;*/
+        /*e_widget_framelist_object_append(of, ob);*/
      }
 
    e_widget_list_object_append(o, of, 0, 0, 0.5);
@@ -287,7 +288,8 @@ wizard_page_hide(E_Wizard_Page *pg __UNUSED__)
           {
              cfg->engine = ENGINE_GL;
              cfg->smooth_windows = 1;
-             cfg->vsync = do_vsync;
+             /*cfg->vsync = do_vsync;*/
+             cfg->vsync = 1;
 
              //Disable blanking if opengl is enabled on intel gpu!
              if (match_xorg_log("*(II)*intel*: Creating default Display*"))
