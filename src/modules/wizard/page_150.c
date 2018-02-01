@@ -235,15 +235,16 @@ wizard_page_show(E_Wizard_Page *pg)
    e_widget_textblock_markup_set
      (ob,
      _("Use hardware accelerated desktop?<br>"
+       "<br>"
        "Enabling this option uses your graphic card<br>"
        "to have a faster desktop experience and smoother<br>"
        "video playbacks, consuming less resources.<br>"
        "<br>"
        "Important: A very few drivers doesn't manage it<br>"
-       "correctly, so if you see any issue with your desktop,<br>"
+       "correctly, if you see any issue with your desktop,<br>"
        "try to disable this option the next time.<br>"
        "<br>"
-       "Very Suggested! [X]<br>"
+       "Suggestion: accelerated [X]<br>"
        )
      );
    e_widget_framelist_object_append(of, ob);
