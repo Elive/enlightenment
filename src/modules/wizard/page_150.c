@@ -9,9 +9,9 @@ static Eina_Bool _wizard_is_gl_supported(void);
 static Eina_Bool gl_avail = EINA_FALSE;
 static Eina_Bool llvmpipe = EINA_FALSE;
 static const char *gl_renderer = NULL;
-static Evas_Object *ob_comp;
+/*static Evas_Object *ob_comp;*/
 static Evas_Object *ob_comp_gl;
-static Evas_Object *ob_comp_vsync;
+/*static Evas_Object *ob_comp_vsync;*/
 static int do_comp = 1;
 static int do_gl = 0;
 static int do_vsync = 0;
@@ -53,48 +53,56 @@ match_xorg_log(const char *globbing)
    return 0;
 }
 
-static void
-_e_config_dialog_cb_changed(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
-{
-   if ((match_xorg_log("*(II)*intel*: Creating default Display*")) ||
-      (match_xorg_log("*(II)*NOUVEAU*: Creating default Display*")) ||
-      (match_xorg_log("*(II)*NVIDIA*: Creating default Display*")) ||
-      (match_xorg_log("*(II)*RADEON*: Creating default Display*")))
-       {
-          if (!_wizard_is_gl_supported())
-            return;
-       }
+// Update: we don't need all this code since we will only use the GL option alone
+/*static void*/
+/*_e_config_dialog_cb_changed(void *data __UNUSED__, Evas_Object *obj __UNUSED__)*/
+/*{*/
+   /*// Examples:*/
+   /*// virtualbox:             (II) VBoxVideo(0):*/
+   /*// vmware:                 (II) vmware(0):*/
+   /*// KVM specific driver:    (II) qxl(0):*/
+   /*// notes: llvmpipe should be disabled*/
 
-   if (e_widget_check_checked_get(ob_comp))
-     {
-        e_widget_disabled_set(ob_comp_gl, 0);
-        e_widget_disabled_set(ob_comp_vsync, 0);
-     }
-   else
-     {
-        if (e_widget_check_checked_get(ob_comp_gl))
-          e_widget_check_checked_set(ob_comp_gl, 0);
+   /*if ((match_xorg_log("*(II)*intel*: Creating default Display*")) ||*/
+      /*(match_xorg_log("*(II)*NOUVEAU*: Creating default Display*")) ||*/
+      /*(match_xorg_log("*(II)*NVIDIA*: Creating default Display*")) ||*/
+      /*(match_xorg_log("*(II)*RADEON*: Creating default Display*")))*/
+       /*{*/
+          /*if (!_wizard_is_gl_supported())*/
+            /*do_gl = 0;*/
+            /*return;*/
+       /*}*/
 
-        if (e_widget_check_checked_get(ob_comp_vsync))
-          e_widget_check_checked_set(ob_comp_vsync, 0);
+   /*if (e_widget_check_checked_get(ob_comp))*/
+     /*{*/
+        /*e_widget_disabled_set(ob_comp_gl, 0);*/
+        /*e_widget_disabled_set(ob_comp_vsync, 0);*/
+     /*}*/
+   /*else*/
+     /*{*/
+        /*if (e_widget_check_checked_get(ob_comp_gl))*/
+          /*e_widget_check_checked_set(ob_comp_gl, 0);*/
 
-        e_widget_disabled_set(ob_comp_gl, 1);
-        e_widget_disabled_set(ob_comp_vsync, 1);
-     }
+        /*if (e_widget_check_checked_get(ob_comp_vsync))*/
+          /*e_widget_check_checked_set(ob_comp_vsync, 0);*/
 
-   if (e_widget_check_checked_get(ob_comp_gl))
-     {
-        if (!e_widget_disabled_get(ob_comp_gl))
-          e_widget_disabled_set(ob_comp_vsync, 0);
-     }
-   else
-     {
-        if (e_widget_check_checked_get(ob_comp_vsync))
-          e_widget_check_checked_set(ob_comp_vsync, 0);
+        /*e_widget_disabled_set(ob_comp_gl, 1);*/
+        /*e_widget_disabled_set(ob_comp_vsync, 1);*/
+     /*}*/
 
-        e_widget_disabled_set(ob_comp_vsync, 1);
-     }
-}
+   /*if (e_widget_check_checked_get(ob_comp_gl))*/
+     /*{*/
+        /*if (!e_widget_disabled_get(ob_comp_gl))*/
+          /*e_widget_disabled_set(ob_comp_vsync, 0);*/
+     /*}*/
+   /*else*/
+     /*{*/
+        /*if (e_widget_check_checked_get(ob_comp_vsync))*/
+          /*e_widget_check_checked_set(ob_comp_vsync, 0);*/
+
+        /*e_widget_disabled_set(ob_comp_vsync, 1);*/
+     /*}*/
+/*}*/
 
 /*
 EAPI int
@@ -123,11 +131,11 @@ _wizard_is_gl_supported(void)
              e_widget_disabled_set(ob_comp_gl, 1);
           }
 
-        if (ob_comp_vsync)
-          {
-             e_widget_check_checked_set(ob_comp_vsync, 0);
-             e_widget_disabled_set(ob_comp_vsync, 1);
-          }
+        /*if (ob_comp_vsync)*/
+          /*{*/
+             /*e_widget_check_checked_set(ob_comp_vsync, 0);*/
+             /*e_widget_disabled_set(ob_comp_vsync, 1);*/
+          /*}*/
 
         return EINA_FALSE;
      }
@@ -154,6 +162,22 @@ wizard_page_show(E_Wizard_Page *pg)
    if(!ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_OPENGL_X11))
      return 0;
 
+   // Disable the page for not valid cards
+   if ((match_xorg_log("*(II)*VESA*: Creating default Display*")) ||
+      (match_xorg_log("*(II)*vmware*: Creating default Display*")) ||
+      (match_xorg_log("*(II)*VBoxVideo*: Creating default Display*")) ||
+      (match_xorg_log("*(II)*qxl*: Creating default Display*")))
+       {
+          do_gl = 0;
+          return 0;
+       }
+   if ecore_file_exists("/tmp/.virtualmachine-detected")
+       {
+          do_gl = 0;
+          return 0;
+       }
+
+   // TODO: we should have nouveau disabled by default?
    if ((match_xorg_log("*(II)*intel*: Creating default Display*")) ||
       (match_xorg_log("*(II)*NOUVEAU*: Creating default Display*")) ||
       (match_xorg_log("*(II)*NVIDIA*: Creating default Display*")) ||
@@ -162,6 +186,7 @@ wizard_page_show(E_Wizard_Page *pg)
           ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 320, 240);
           if (ee)
             {
+               do_gl = 1;
                gl_avail = EINA_TRUE;
                ecore_evas_free(ee);
             }
@@ -172,42 +197,61 @@ wizard_page_show(E_Wizard_Page *pg)
    if (gl_renderer && (strstr(gl_renderer, "llvmpipe")))
      llvmpipe = EINA_TRUE;
 
-   if (match_xorg_log("*(II)*NVIDIA*: Creating default Display*") &&
-       (gl_avail) && (!llvmpipe))
+   if (match_xorg_log("*(II)*NVIDIA*: Creating default Display*") && (gl_avail))
      {
+       if (llvmpipe)
+        do_gl = 0;
+       else
         do_gl = 1;
-        do_vsync = 1;
+
+        /*do_vsync = 1;*/
      }
 
    o = e_widget_list_add(pg->evas, 1, 0);
-   e_wizard_title_set(_("Compositing"));
+   /*e_wizard_title_set(_("Compositing"));*/
+   e_wizard_title_set(_("Hardware Acceleration"));
 
    of = e_widget_framelist_add(pg->evas, _("Transparent windows and effects"), 0);
 
    ob = e_widget_textblock_add(pg->evas);
-   e_widget_size_min_set(ob, 260 * e_scale, 200 * e_scale);
+   /*e_widget_size_min_set(ob, 260 * e_scale, 200 * e_scale);*/
+   e_widget_size_min_set(ob, 280 * e_scale, 200 * e_scale);
+   /*e_widget_textblock_markup_set*/
+     /*(ob,*/
+     /*_("Compositing provides translucency<br>"*/
+       /*"for windows, window effects like<br>"*/
+       /*"fading in and out and zooming<br>"*/
+       /*"when they appear and dissapear.<br>"*/
+       /*"It is highly recommended to<br>"*/
+       /*"enable this for a better<br>"*/
+       /*"experience, but it comes at a<br>"*/
+       /*"cost. It requires extra CPU<br>"*/
+       /*"or a GLSL Shader capable GPU<br>"*/
+       /*"with well written drivers.<br>"*/
+       /*"It also will add between 10 to<br>"*/
+       /*"100 MB to the memory needed<br>"*/
+       /*"for Enlightenment."*/
+       /*)*/
+     /*);*/
    e_widget_textblock_markup_set
      (ob,
-     _("Compositing provides translucency<br>"
-       "for windows, window effects like<br>"
-       "fading in and out and zooming<br>"
-       "when they appear and dissapear.<br>"
-       "It is highly recommended to<br>"
-       "enable this for a better<br>"
-       "experience, but it comes at a<br>"
-       "cost. It requires extra CPU<br>"
-       "or a GLSL Shader capable GPU<br>"
-       "with well written drivers.<br>"
-       "It also will add between 10 to<br>"
-       "100 MB to the memory needed<br>"
-       "for Enlightenment."
+     _("Use hardware accelerated desktop?<br>"
+       "Enabling this option uses your graphic card<br>"
+       "to have a faster desktop experience and smoother<br>"
+       "video playbacks, consuming less resources.<br>"
+       "<br>"
+       "Important: A very few drivers doesn't manage it<br>"
+       "correctly, so if you see any issue with your desktop,<br>"
+       "try to disable this option the next time.<br>"
+       "<br>"
+       "Very Suggested! [X]<br>"
        )
      );
    e_widget_framelist_object_append(of, ob);
 
-   ob = e_widget_check_add(pg->evas, _("Enable Compositing"), &(do_comp));
-   ob_comp = ob;
-   e_widget_framelist_object_append(of, ob);
+   /*ob = e_widget_check_add(pg->evas, _("Enable Compositing"), &(do_comp));*/
+   /*ob_comp = ob;*/
+   /*e_widget_framelist_object_append(of, ob);*/
 
    if (ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_OPENGL_X11))
      {
@@ -215,14 +259,19 @@ wizard_page_show(E_Wizard_Page *pg)
         ob_comp_gl = ob;
         e_widget_framelist_object_append(of, ob);
 
-        ob = e_widget_check_add(pg->evas, _("Tear-free Rendering (OpenGL only)"), &(do_vsync));
-        ob_comp_vsync = ob;
-        e_widget_framelist_object_append(of, ob);
+        /*ob = e_widget_check_add(pg->evas, _("Tear-free Rendering (OpenGL only)"), &(do_vsync));*/
+        /*ob_comp_vsync = ob;*/
+        /*e_widget_framelist_object_append(of, ob);*/
+     }
+   else
+     {
+        do_gl = 0;
+        return 0;
      }
 
    e_widget_list_object_append(o, of, 0, 0, 0.5);
-   _e_config_dialog_cb_changed(NULL, NULL);
-   e_widget_on_change_hook_set(o, _e_config_dialog_cb_changed, NULL);
+   /*_e_config_dialog_cb_changed(NULL, NULL);*/
+   /*e_widget_on_change_hook_set(o, _e_config_dialog_cb_changed, NULL);*/
 
    evas_object_show(of);
 
@@ -283,7 +332,8 @@ wizard_page_hide(E_Wizard_Page *pg __UNUSED__)
           {
              cfg->engine = ENGINE_GL;
              cfg->smooth_windows = 1;
-             cfg->vsync = do_vsync;
+             /*cfg->vsync = do_vsync;*/
+             cfg->vsync = 1;
 
              //Disable blanking if opengl is enabled on intel gpu!
              if (match_xorg_log("*(II)*intel*: Creating default Display*"))
