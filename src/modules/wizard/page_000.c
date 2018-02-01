@@ -59,7 +59,7 @@ wizard_page_show(E_Wizard_Page *pg)
    e_scale_update();
 
 
-   e_wizard_title_set(_("Enlightenment"));
+   e_wizard_title_set(_("Elive"));
    o = edje_object_add(pg->evas);
    e_theme_edje_object_set(o, "base/theme/wizard", "e/wizard/firstpage");
    e_wizard_page_show(o);
