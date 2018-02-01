@@ -311,7 +311,7 @@ _e_wizard_main_new(E_Zone *zone)
                                   _e_wizard_cb_key_down, popup);
 
    /* set up next/prev buttons */
-   edje_object_part_text_set(o_bg, "e.text.title", _("Welcome to Enlightenment"));
+   edje_object_part_text_set(o_bg, "e.text.title", _("Welcome to Elive"));
 //   edje_object_signal_emit(o_bg, "e,state,next,disable", "e");
    e_wizard_labels_update();
 

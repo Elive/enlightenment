@@ -42,7 +42,10 @@ e_theme_init(void)
    /* this is a fallback that is ALWAYS there - if all fails things will */
    /* always fall back to the default theme. the rest after this are config */
    /* values users can set */
-   e_theme_file_set("base", "default.edj");
+   if (ecore_file_exists("/usr/share/enlightenment/data/themes/Elive Light.edj"))
+     e_theme_file_set("base", "Elive Light.edj");
+   else
+     e_theme_file_set("base", "default.edj");
 
    EINA_LIST_FOREACH(e_config->themes, l, et)
      {
