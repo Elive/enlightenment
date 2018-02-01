@@ -51,7 +51,12 @@ e_init_show(void)
    /* exec init */
 
    if (!e_config->init_default_theme)
-     s = e_path_find(path_themes, "default.edj");
+     {
+        if (ecore_file_exists("/usr/share/enlightenment/data/themes/Elive Light.edj"))
+          s = e_path_find(path_themes, "Elive Light.edj");
+        else
+          s = e_path_find(path_themes, "default.edj");
+     }
    else if (e_config->init_default_theme[0] == '/')
      s = eina_stringshare_add(e_config->init_default_theme);
    else
