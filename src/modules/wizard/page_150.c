@@ -170,7 +170,7 @@ wizard_page_show(E_Wizard_Page *pg)
           do_gl = 0;
           return 0;
        }
-   if ecore_file_exists("/tmp/.virtualmachine-detected")
+   if (ecore_file_exists("/tmp/.virtualmachine-detected"))
        {
           do_gl = 0;
           return 0;
