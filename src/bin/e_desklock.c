@@ -441,7 +441,8 @@ e_desklock_hide(void)
      {
         E_Module *m;
         m = e_module_find("ecomorph");
-        e_module_enable(m);
+        if (m)
+          e_module_enable(m);
      }
 
 }
@@ -1002,7 +1003,8 @@ _desklock_auth(char *passwd)
    // disable ecomorph module because of a bug that leaves the desktop locked, like doesn't recognize the password
    E_Module *m;
    m = e_module_find("ecomorph");
-   if (e_module_enabled_get(m))
+
+   if (m && m->enabled)
      {
         e_module_disable(m);
         _ecomorph_used = EINA_TRUE;
