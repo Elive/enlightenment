@@ -477,7 +477,7 @@ e_util_icon_size_normalize(unsigned int desired)
 {
    const unsigned int *itr, known_sizes[] =
    {
-      16, 22, 24, 32, 36, 48, 64, 72, 96, 128, 192, 256, 0
+      16, 22, 24, 32, 36, 48, 64, 72, 96, 128, 192, 256, 512, 0
    };
 
    for (itr = known_sizes; *itr > 0; itr++)
@@ -494,7 +494,7 @@ _e_util_menu_item_fdo_icon_set(E_Menu_Item *mi, const char *icon)
    unsigned int size;
 
    if ((!icon) || (!icon[0])) return 0;
-   size = e_util_icon_size_normalize(96 * e_scale);
+   size = e_util_icon_size_normalize(128 * e_scale);
    path = efreet_icon_path_find(e_config->icon_theme, icon, size);
    if (!path) return 0;
    e_menu_item_icon_file_set(mi, path);
@@ -939,7 +939,7 @@ e_util_file_time_get(time_t ftime)
 EAPI Evas_Object *
 e_util_icon_add(const char *path, Evas *evas)
 {
-   return _e_util_icon_add(path, evas, 64);
+   return _e_util_icon_add(path, evas, 128);
 }
 
 EAPI Evas_Object *
