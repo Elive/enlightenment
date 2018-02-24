@@ -177,9 +177,7 @@ wizard_page_show(E_Wizard_Page *pg)
           return 0;
        }
 
-   // TODO: we should have nouveau disabled by default?
    if ((match_xorg_log("*(II)*intel*: Creating default Display*")) ||
-      (match_xorg_log("*(II)*NOUVEAU*: Creating default Display*")) ||
       (match_xorg_log("*(II)*NVIDIA*: Creating default Display*")) ||
       (match_xorg_log("*(II)*RADEON*: Creating default Display*")))
        {
