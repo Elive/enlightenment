@@ -437,13 +437,13 @@ e_desklock_hide(void)
    e_util_env_set("E_DESKLOCK_LOCKED", "freefreefree");
 
    // re-load ecomorph
-   if (_ecomorph_used)
-     {
-        E_Module *m;
-        m = e_module_find("ecomorph");
-        if (m)
-          e_module_enable(m);
-     }
+   /*if (_ecomorph_used)*/
+     /*{*/
+        /*E_Module *m;*/
+        /*m = e_module_find("ecomorph");*/
+        /*if (m)*/
+          /*e_module_enable(m);*/
+     /*}*/
 
 }
 
@@ -1006,13 +1006,14 @@ _desklock_auth(char *passwd)
 
    if (m && m->enabled)
      {
-        e_module_disable(m);
+        // update: do not unload the emodule since can make your desktop to reload, just kill the ecomorph process?
+        /*e_module_disable(m);*/
         _ecomorph_used = EINA_TRUE;
-        // ecore_exe_run("killall -9 ecomorph", NULL); // disabling the emodule should be enough for kill ecomorph process, we don't want to segfault E so the password thing can be useless then (desktop unlocked)
+        ecore_exe_run("killall -9 ecomorph", NULL); // disabling the emodule should be enough for kill ecomorph process, we don't want to segfault E so the password thing can be useless then (desktop unlocked)
      }
    // note: do not set it to false, if ecomorph has been previously disabled by a previous call (like password failed attempt) this can think that we never used it (but we had), only with the enabled check should be enough
-   /*else*/
-     /*_ecomorph_used = EINA_FALSE;*/
+   else
+     _ecomorph_used = EINA_FALSE;
 
 
    _e_desklock_state_set(E_DESKLOCK_STATE_CHECKING);
