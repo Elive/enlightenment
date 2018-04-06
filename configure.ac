@@ -41,6 +41,7 @@ AM_INIT_AUTOMAKE([1.11 dist-bzip2 -Wno-portability])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AC_GNU_SOURCE
+AC_PROG_MKDIR_P
 AC_C_BIGENDIAN
 AC_PROG_CC_C99
 AM_PROG_CC_C_O
@@ -217,6 +218,18 @@ CPPFLAGS="${PCPPFLAGS}"
 AC_SUBST(cf_cflags)
 AC_SUBST(cf_libs)
 
+want_systemd=auto
+have_systemd_user_session="no"
+
+if test "$want_systemd" == ""auto; then
+  USER_SESSION_DIR=$(pkg-config --variable=systemduserunitdir systemd)
+  if [ -n "$USER_SESSION_DIR" ]; then
+    have_systemd_user_session="yes"
+  fi
+fi
+
+AM_CONDITIONAL([HAVE_SYSTEMD_USER_SESSION], [test "x${have_systemd_user_session}" = "xyes"])
+AC_SUBST([USER_SESSION_DIR])
 
 execinfo_libs=""
 AC_CHECK_HEADERS([execinfo.h], [have_execinfo="yes"], [have_execinfo="no"])
@@ -470,6 +483,7 @@ PKG_CHECK_MODULES(E_REMOTE, [
 
 PKG_CHECK_MODULES(E_START, [
   eina >= ${efl_version}
+  evas >= ${efl_version}
 ])
 
 PKG_CHECK_MODULES(E_IMC, [
@@ -918,31 +932,42 @@ case "$host_os" in
    freebsd*|pcbsd*)
       SUSPEND="acpiconf -s3"
       AC_MSG_NOTICE([use suspend method: $SUSPEND])
-      AC_SUBST(SUSPEND)
       HIBERNATE="acpiconf -s4"
       AC_MSG_NOTICE([use hibernate method: $HIBERNATE])
-      AC_SUBST(HIBERNATE)
       ;;
    *)
-      AC_PATH_PROGS([SUSPEND], [sleep.sh pm-suspend],[/etc/acpi/sleep.sh], [/etc/acpi:/sbin:/usr/sbin:$PATH])
-      if test "$SUSPEND" = "/etc/acpi/sleep.sh" ; then
-         SUSPEND="/etc/acpi/sleep.sh force"
-         AC_MSG_NOTICE([use suspend method: $SUSPEND])
-      fi
+      if test "x${have_systemd_user_session}" = "xyes"; then
+         HALT="/usr/bin/systemctl poweroff"
+         REBOOT="/usr/bin/systemctl reboot"
+         SUSPEND="/usr/bin/systemctl suspend"
+         HIBERNATE="/usr/bin/systemctl hibernate"
+         AC_MSG_NOTICE([use systemctl for halt, reboot, suspend and hibernate])
+      else
+         AC_PATH_PROGS([SUSPEND], [sleep.sh pm-suspend],[/etc/acpi/sleep.sh], [/etc/acpi:/sbin:/usr/sbin:$PATH])
+         if test "$SUSPEND" = "/etc/acpi/sleep.sh" ; then
+            SUSPEND="/etc/acpi/sleep.sh force"
+            AC_MSG_NOTICE([use suspend method: $SUSPEND])
+         fi
 
-      AC_PATH_PROGS([HIBERNATE], [hibernate.sh pm-hibernate],[/etc/acpi/hibernate.sh], [/etc/acpi:/sbin:/usr/sbin:$PATH])
-      if test "$HIBERNATE" = "/etc/acpi/hibernate.sh" ; then
-         HIBERNATE="/etc/acpi/hibernate.sh force"
-         AC_MSG_NOTICE([use hibernate method: $HIBERNATE])
+         AC_PATH_PROGS([HIBERNATE], [hibernate.sh pm-hibernate],[/etc/acpi/hibernate.sh], [/etc/acpi:/sbin:/usr/sbin:$PATH])
+         if test "$HIBERNATE" = "/etc/acpi/hibernate.sh" ; then
+            HIBERNATE="/etc/acpi/hibernate.sh force"
+            AC_MSG_NOTICE([use hibernate method: $HIBERNATE])
+         fi
       fi
       ;;
 esac
+AC_SUBST(HALT)
+AC_SUBST(REBOOT)
+AC_SUBST(SUSPEND)
+AC_SUBST(HIBERNATE)
 
 m4_ifdef([v_mic],
    [
     EFL_COMPILER_FLAG([-Wshadow])
     EFL_COMPILER_FLAG([-Wall])
     EFL_COMPILER_FLAG([-W])
+    EFL_COMPILER_FLAG([-Wno-missing-field-initializers])
    ])
 
 SUID_CFLAGS=-fPIE
@@ -1030,6 +1055,8 @@ data/etc/Makefile
 data/etc/sysactions.conf
 data/icons/Makefile
 data/backgrounds/Makefile
+data/units/Makefile
+data/units/e17.service
 doc/Makefile
 doc/Doxyfile
 doc/e.dox
@@ -1092,3 +1119,4 @@ cat << INSTALL_EOF
 Installation.......: make all install (as root if needed, with 'su' or 'sudo')
 INSTALL_EOF
 echo
+
