@@ -15,6 +15,7 @@ struct _E_Config_Dialog_Data
 
    char *bl_dev;
    
+   int backlight_fake;
    int enable_idle_dim;
 
    double backlight_normal;
@@ -50,6 +51,7 @@ e_int_config_dpms(E_Container *con, const char *params __UNUSED__)
 static void
 _fill_data(E_Config_Dialog_Data *cfdata)
 {
+   cfdata->backlight_fake = e_config->backlight.fake;
    cfdata->backlight_normal = e_config->backlight.normal * 100.0;
    cfdata->backlight_dim = e_config->backlight.dim * 100.0;
    cfdata->backlight_transition = e_config->backlight.transition;
@@ -78,6 +80,7 @@ _free_data(E_Config_Dialog *cfd __UNUSED__, E_Config_Dialog_Data *cfdata)
 static int
 _apply_data(E_Config_Dialog *cfd __UNUSED__, E_Config_Dialog_Data *cfdata)
 {
+   e_config->backlight.fake = cfdata->backlight_fake;
    e_config->backlight.normal = cfdata->backlight_normal / 100.0;
    e_config->backlight.dim = cfdata->backlight_dim / 100.0;
    e_config->backlight.transition = cfdata->backlight_transition;
@@ -111,6 +114,7 @@ _advanced_check_changed(E_Config_Dialog *cfd __UNUSED__, E_Config_Dialog_Data *c
           (e_config->backlight.dim * 100.0 != cfdata->backlight_dim) ||
           (e_config->backlight.transition != cfdata->backlight_transition) ||
           (e_config->backlight.timer != cfdata->backlight_timeout) ||
+          (e_config->backlight.fake != cfdata->backlight_fake) ||
           (e_config->backlight.idle_dim != cfdata->enable_idle_dim);
 }
 
@@ -147,6 +151,8 @@ _advanced_create_widgets(E_Config_Dialog *cfd __UNUSED__, Evas *evas, E_Config_D
       e_widget_list_object_append(o, ob, 0, 1, 0.5);
    }
  */
+   ob = e_widget_check_add(evas, _("Force use the brightness XRandR"), &(cfdata->backlight_fake));
+   e_widget_list_object_append(o, ob, 1, 1, 0.5);
    ob = e_widget_label_add(evas, _("Normal Backlight"));
    e_widget_list_object_append(o, ob, 1, 1, 0.5);
    ob = e_widget_slider_add(evas, 1, 0, _("%3.0f"), 0.0, 100.0, 1.0, 0,

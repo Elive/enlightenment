@@ -337,6 +337,7 @@ struct _E_Config
 
    struct
    {
+      unsigned char fake; // GUI
       double        normal; // GUI
       double        dim; // GUI
       double        transition; // GUI

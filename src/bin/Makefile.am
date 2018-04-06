@@ -47,6 +47,7 @@ e_actions.h \
 e_alert.h \
 e_atoms.h \
 e_backlight.h \
+e_backlight_fake.h \
 e_bg.h \
 e_bindings.h \
 e_border.h \
@@ -204,6 +205,7 @@ e_alert.c \
 e_actions.c \
 e_atoms.c \
 e_backlight.c \
+e_backlight_fake.c \
 e_bg.c \
 e_bindings.c \
 e_border.c \
@@ -355,7 +357,7 @@ e_main.c \
 $(enlightenment_src)
 
 enlightenment_LDFLAGS = -export-dynamic
-enlightenment_LDADD = @e_libs@ @ELM_LIBS@ @EMOTION_LIBS@ @dlopen_libs@ @cf_libs@ @VALGRIND_LIBS@ -lm
+enlightenment_LDADD = @e_libs@ @ELM_LIBS@ @EMOTION_LIBS@ @dlopen_libs@ @cf_libs@ @VALGRIND_LIBS@ -lm -lX11 -lXext -lXrandr
 
 enlightenment_imc_SOURCES = \
 e.h \

@@ -2,6 +2,7 @@
 #ifdef HAVE_EEZE
 # include <Eeze.h>
 #endif
+#include "e_backlight_fake.h"
 
 // FIXME: backlight should be tied per zone but this implementation is just
 // a signleton right now as thats 99% of use cases. but api supports
@@ -10,6 +11,7 @@
 #define MODE_NONE  -1
 #define MODE_RANDR 0
 #define MODE_SYS   1
+#define MODE_FAKE  2
 
 static double bl_val = 1.0;
 static double bl_animval = 1.0;
@@ -51,7 +53,7 @@ EINTERN int
 e_backlight_init(void)
 {
 #ifdef HAVE_EEZE
-   eeze_init();
+    eeze_init();
 #endif
 // why did someone do this? this makes it ONLY work if xrandr has bl support.
 // WRONG!
@@ -101,13 +103,13 @@ EINTERN int
 e_backlight_shutdown(void)
 {
    const char *s;
-   
+
    if (bl_anim) ecore_animator_del(bl_anim);
    bl_anim = NULL;
 
    if (e_config->backlight.mode != E_BACKLIGHT_MODE_NORMAL)
      e_backlight_level_set(NULL, e_config->backlight.normal, 0.0);
-   
+
    EINA_LIST_FREE(bl_devs, s) eina_stringshare_del(s);
 #ifdef HAVE_EEZE
    if (bl_sysval) eina_stringshare_del(bl_sysval);
@@ -240,7 +242,7 @@ EAPI void
 e_backlight_mode_set(E_Zone *zone, E_Backlight_Mode mode)
 {
    E_Backlight_Mode pmode;
-   
+
    // zone == NULL == everything
    if (e_config->backlight.mode == mode) return;
    pmode = e_config->backlight.mode;
@@ -296,6 +298,13 @@ _e_backlight_update(E_Zone *zone)
    int i, num = 0;
 
    root = zone->container->manager->root;
+   if (e_config->backlight.fake)
+   {
+
+     bl_val = e_backlight_fake_update(zone);
+     sysmode = MODE_FAKE;
+     return;
+   }
    // try randr
    out = ecore_x_randr_window_outputs_get(root, &num);
    if ((out) && (num > 0) && (ecore_x_randr_output_backlight_available()))
@@ -303,7 +312,7 @@ _e_backlight_update(E_Zone *zone)
         char *name;
         const char *s;
         Eina_Bool gotten = EINA_FALSE;
-        
+
         EINA_LIST_FREE(bl_devs, s) eina_stringshare_del(s);
         for (i = 0; i < num; i++)
           {
@@ -321,19 +330,22 @@ _e_backlight_update(E_Zone *zone)
           x_bl = ecore_x_randr_output_backlight_level_get(root, out[0]);
      }
    free(out);
-   if (x_bl >= 0.0)
+   if (x_bl >= 0.0 || e_config->backlight.fake)
      {
         bl_val = x_bl;
         sysmode = MODE_RANDR;
         return;
      }
 #ifdef HAVE_EEZE
-   _bl_sys_find();
-   if (bl_sysval)
+   if (!e_config->backlight.fake)
      {
-        sysmode = MODE_SYS;
-        _bl_sys_level_get();
-        return;
+       _bl_sys_find();
+       if (bl_sysval)
+         {
+           sysmode = MODE_SYS;
+           _bl_sys_level_get();
+           return;
+         }
      }
 #endif
 }
@@ -342,7 +354,12 @@ static void
 _e_backlight_set(E_Zone *zone, double val)
 {
    if (val < 0.05) val = 0.05;
-   if (sysmode == MODE_RANDR)
+   if (e_config->backlight.fake)
+     {
+        sysmode = MODE_FAKE;
+        e_backlight_fake_set(zone, val);
+     }
+   else if (sysmode == MODE_RANDR)
      {
         Ecore_X_Window root;
         Ecore_X_Randr_Output *out;
@@ -511,8 +528,8 @@ _bl_sys_level_get(void)
    int maxval, val;
    const char *str;
 
-   if (bl_anim) return;
-   
+   if (bl_anim || !bl_sysval) return;
+
    str = eeze_udev_syspath_get_sysattr(bl_sysval, "max_brightness");
    if (!str) return;
 
@@ -543,7 +560,7 @@ _e_bl_cb_ext_delay(void *data __UNUSED__)
    if (bl_sys_pending_set)
      {
         bl_sys_pending_set = EINA_FALSE;
-        
+
         _bl_sys_level_set(bl_delayval);
      }
    return EINA_FALSE;

@@ -730,6 +730,7 @@ _e_config_edd_init(Eina_Bool old)
 
    E_CONFIG_LIST(D, T, env_vars, _e_config_env_var_edd);
 
+   E_CONFIG_VAL(D, T, backlight.fake, UCHAR);
    E_CONFIG_VAL(D, T, backlight.normal, DOUBLE);
    E_CONFIG_VAL(D, T, backlight.dim, DOUBLE);
    E_CONFIG_VAL(D, T, backlight.transition, DOUBLE);
@@ -1205,6 +1206,7 @@ while (!e_config)
 
      E_CONFIG_LIMIT(e_config->multiscreen_flip, 0, 1);
 
+     E_CONFIG_LIMIT(e_config->backlight.fake, 0, 1);
      E_CONFIG_LIMIT(e_config->backlight.normal, 0.1, 1.0);
      E_CONFIG_LIMIT(e_config->backlight.dim, 0.1, 1.0);
      E_CONFIG_LIMIT(e_config->backlight.idle_dim, 0.1, 1.0);
