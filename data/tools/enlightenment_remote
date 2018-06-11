@@ -504,6 +504,9 @@ er_desktop_bg_add_set(){
 
     wallpaper_name="$( basename "$2" )"
     wallpaper_name="$( echo "$wallpaper_name" | sed -e 's|\..*$||g' )"
+    sync
+    sleep 4
+    sync
 
     if test -s "$HOME/.e/e17/backgrounds/${wallpaper_name}.edj" ; then
        wallpaper="$HOME/.e/e17/backgrounds/${wallpaper_name}.edj"
