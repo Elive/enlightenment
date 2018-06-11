@@ -476,11 +476,9 @@ er_desktop_bg_add(){
     case "$2" in
         /*)
            ERCS org.enlightenment.wm.Wallpaper.Add "$2"
-           break
         ;;
         *)
            ERCS org.enlightenment.wm.Wallpaper.Add "$PWD/$2"
-           break
         ;;
     esac
 }
@@ -494,29 +492,33 @@ er_desktop_bg_add_set(){
     case "$2" in
         /*)
            ERCS org.enlightenment.wm.Wallpaper.Add "$2"
-           break
         ;;
         *)
            ERCS org.enlightenment.wm.Wallpaper.Add "$PWD/$2"
-           break
         ;;
     esac
 
     wallpaper_name="$( basename "$2" )"
     wallpaper_name="$( echo "$wallpaper_name" | sed -e 's|\..*$||g' )"
-    sync
-    sleep 4
-    sync
 
-    if test -s "$HOME/.e/e17/backgrounds/${wallpaper_name}.edj" ; then
-       wallpaper="$HOME/.e/e17/backgrounds/${wallpaper_name}.edj"
-    else
-       if test -s "$HOME/.e/e/backgrounds/${wallpaper_name}.edj" ; then
-          wallpaper="$HOME/.e/e/backgrounds/${wallpaper_name}.edj"
-       else
-          wallpaper="$( ls -1 "$HOME/.e/"*"/backgrounds/${wallpaper_name}.edj" | sort -g | tail -1 )"
-       fi
-    fi
+    for i in $( seq 20 )
+    do
+        if test -s "$HOME/.e/e17/backgrounds/${wallpaper_name}.edj" ; then
+            wallpaper="$HOME/.e/e17/backgrounds/${wallpaper_name}.edj"
+        else
+            if test -s "$HOME/.e/e/backgrounds/${wallpaper_name}.edj" ; then
+                wallpaper="$HOME/.e/e/backgrounds/${wallpaper_name}.edj"
+            else
+                wallpaper="$( ls -1 "$HOME/.e/"*"/backgrounds/${wallpaper_name}.edj" 2>/dev/null | sort -g | tail -1 )"
+            fi
+        fi
+
+        if test -s "$wallpaper" ; then
+            break
+        else
+            sleep 1
+        fi
+    done
 
     if test -s "$wallpaper" ; then
        ERCS org.enlightenment.wm.Wallpaper.Set "$wallpaper"
@@ -531,11 +533,9 @@ er_desktop_bg_set(){
     case "$2" in
         /*)
            ERCS org.enlightenment.wm.Wallpaper.Set "$2"
-           break
         ;;
         *)
            ERCS org.enlightenment.wm.Wallpaper.Set "$PWD/$2"
-           break
         ;;
     esac
 
