@@ -51,7 +51,8 @@ e_comp_detect_init(void)
    E_EVENT_COMPOSITE_CHANGE = ecore_event_type_new();
 
    if (!_e_comp_timer)
-     _e_comp_timer = ecore_timer_add(0.25, _e_composite_detect_timer, NULL);
+     /*_e_comp_timer = ecore_timer_add(0.25, _e_composite_detect_timer, NULL);*/
+     _e_comp_timer = ecore_timer_add(5.00, _e_composite_detect_timer, NULL);
    return 1;
 }
 
