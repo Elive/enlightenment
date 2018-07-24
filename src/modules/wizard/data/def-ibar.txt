@@ -5,13 +5,8 @@
 terminology rxvt urxvt rxvt-unicode gnome-terminal xterm konsole xfce4-terminal exo-terminal-emulator lxde-x-terminal-emulator lxterminal mlterm roxterm Terminal terminator vala-terminal
 xchat
 Thunar thunar nautilus pcmanfm dolphin
-chromium chromium-browser google-chrome google-chrome-stable
-firefox firefox-esr iceweasel
-eve
-epiphany
-midori
-konqueror
-opera
+chromium chromium-browser google-chrome google-chrome-stable firefox firefox-esr iceweasel midori konqueror opera eve
+thunderbird epiphany
 rekonq
 dooble
 # icedove sylpheed claws-mail thunderbird evolution KMail
@@ -21,18 +16,19 @@ rhythmbox amarok songbird
 #vlc
 shotwell
 gimp
-rawtherapee
+#rawtherapee
 inkscape
-blender
+#blender
 skype
 pidgin gajim konversation kvirc loqui lostirc quassel qutim
-libreoffice lowriter
+libreoffice-writer lowriter libreoffice abiword
 #qalculate-gtk galculator
 sublime_text codeblocks eclipse
 #gvim scite
 #transmission-gtk
-virtualbox
+virtualbox virtualbox-ose virtualbox-qt
 synaptic
+gnome-search-tool search
 
 
 # vim: set foldmethod=marker filetype=sh :
