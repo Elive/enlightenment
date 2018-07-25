@@ -5,7 +5,7 @@
 terminology rxvt urxvt rxvt-unicode gnome-terminal xterm konsole xfce4-terminal exo-terminal-emulator lxde-x-terminal-emulator lxterminal mlterm roxterm Terminal terminator vala-terminal
 xchat
 Thunar thunar nautilus pcmanfm dolphin
-chromium chromium-browser google-chrome google-chrome-stable firefox firefox-esr iceweasel midori konqueror opera eve rekonq dooble netsurf surf-browser links2
+firefox-esr google-chrome-stable google-chrome chromium-browser chromium firefox iceweasel midori konqueror opera eve rekonq dooble netsurf surf-browser links2
 #thunderbird epiphany
 # icedove sylpheed claws-mail thunderbird evolution KMail
 #audacious clementine xmms2 enjoy banshee listen
