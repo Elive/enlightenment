@@ -19,6 +19,7 @@ gimp
 #blender
 skype
 pidgin gajim konversation kvirc loqui lostirc quassel qutim
+elicit
 libreoffice-writer lowriter libreoffice abiword
 #qalculate-gtk galculator
 sublime_text codeblocks eclipse
