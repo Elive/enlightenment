@@ -251,15 +251,31 @@ _fill_data(E_Config_Dialog_Data *cfdata)
 
    size_data = E_NEW(E_Font_Size_Data, 1);
    size_data->cfdata = cfdata;
-   size_data->size_str = eina_stringshare_add(_("Auto"));
    // dynamically set an optimal size for your fonts
-   // example: in a 157 dpi screen like thinkpad t460s, we will set -61
+   // example: in a 157 dpi screen like thinkpad t460s, we will need -61
+   // IMPORTANT: the correct result is based in the equivalence by the scale factor, so if the max. is 1.3 (when it should have been 1.65) we should keep a max value of -80 instead of -60
+   // So, limits in wizard for scale default values are: 0.8 & 1.3, on which the equivalence is: 76 & 125
+   // Correct values that should be used: for a 96dpi screen: 100, for 157 dpi screen, 80 in 1.3x scale, or -60 in 1.65 scale
    dpi = ecore_x_dpi_get();
    font_size_auto = ( ( (double)96 / (double)dpi ) * 100.000 );
    if ((font_size_auto > 0) && (font_size_auto < 900))
      size_data->size = -font_size_auto;
    else
      size_data->size = -100;
+
+   // XXX static value to fit the limitations in the default configurations by Scale wizard in src/modules/wizard/page_050.c
+   if (dpi < 77)
+     size_data->size = -124;
+   if (dpi > 125)
+     size_data->size = -80;
+
+   /*ERR("oooooooooooooooooooooooooooooooooooooo: font_size_auto: -%d", font_size_auto);*/
+   /*ERR("oooooooooooooooooooooooooooooooooooooo: dpi: %d", dpi);*/
+
+   char buf[64];
+   snprintf(buf, sizeof(buf), "%s (%i)", _("Auto"), size_data->size);
+   size_data->size_str = eina_stringshare_add(buf);
+
 
    cfdata->font_scale_list = eina_list_append(cfdata->font_scale_list, size_data);
    size_data = E_NEW(E_Font_Size_Data, 1);
