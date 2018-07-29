@@ -4034,12 +4034,12 @@ e_mod_comp_init(void)
    Eina_List *l;
    E_Manager *man;
    
-   e_sys_handlers_set(_e_mod_comp_sys_suspend,
-                      _e_mod_comp_sys_hibernate,
-                      _e_mod_comp_sys_reboot,
-                      _e_mod_comp_sys_shutdown,
-                      _e_mod_comp_sys_logout,
-                      _e_mod_comp_sys_resume);
+   /*e_sys_handlers_set(_e_mod_comp_sys_suspend,*/
+                      /*_e_mod_comp_sys_hibernate,*/
+                      /*_e_mod_comp_sys_reboot,*/
+                      /*_e_mod_comp_sys_shutdown,*/
+                      /*_e_mod_comp_sys_logout,*/
+                      /*_e_mod_comp_sys_resume);*/
 
    windows = eina_hash_string_superfast_new(NULL);
    borders = eina_hash_string_superfast_new(NULL);
