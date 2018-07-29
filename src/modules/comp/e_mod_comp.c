@@ -3972,59 +3972,59 @@ _e_mod_comp_sys_emit_cb_wait(E_Sys_Action a, const char *sig, const char *rep, E
      }
 }
 
-static void
-_e_mod_comp_sys_suspend(void)
-{
-   _e_mod_comp_sys_emit_cb_wait(E_SYS_SUSPEND,
-                                "e,state,sys,suspend",
-                                "e,state,sys,suspend,done",
-                                EINA_TRUE);
-}
+/*static void*/
+/*_e_mod_comp_sys_suspend(void)*/
+/*{*/
+   /*_e_mod_comp_sys_emit_cb_wait(E_SYS_SUSPEND,*/
+                                /*"e,state,sys,suspend",*/
+                                /*"e,state,sys,suspend,done",*/
+                                /*EINA_TRUE);*/
+/*}*/
 
-static void
-_e_mod_comp_sys_hibernate(void)
-{
-   _e_mod_comp_sys_emit_cb_wait(E_SYS_HIBERNATE,
-                                "e,state,sys,hibernate",
-                                "e,state,sys,hibernate,done",
-                                EINA_TRUE);
-}
+/*static void*/
+/*_e_mod_comp_sys_hibernate(void)*/
+/*{*/
+   /*_e_mod_comp_sys_emit_cb_wait(E_SYS_HIBERNATE,*/
+                                /*"e,state,sys,hibernate",*/
+                                /*"e,state,sys,hibernate,done",*/
+                                /*EINA_TRUE);*/
+/*}*/
 
-static void
-_e_mod_comp_sys_reboot(void)
-{
-   _e_mod_comp_sys_emit_cb_wait(E_SYS_REBOOT,
-                                "e,state,sys,reboot",
-                                "e,state,sys,reboot,done",
-                                EINA_TRUE);
-}
+/*static void*/
+/*_e_mod_comp_sys_reboot(void)*/
+/*{*/
+   /*_e_mod_comp_sys_emit_cb_wait(E_SYS_REBOOT,*/
+                                /*"e,state,sys,reboot",*/
+                                /*"e,state,sys,reboot,done",*/
+                                /*EINA_TRUE);*/
+/*}*/
 
-static void
-_e_mod_comp_sys_shutdown(void)
-{
-   _e_mod_comp_sys_emit_cb_wait(E_SYS_HALT,
-                                "e,state,sys,halt",
-                                "e,state,sys,halt,done",
-                                EINA_TRUE);
-}
+/*static void*/
+/*_e_mod_comp_sys_shutdown(void)*/
+/*{*/
+   /*_e_mod_comp_sys_emit_cb_wait(E_SYS_HALT,*/
+                                /*"e,state,sys,halt",*/
+                                /*"e,state,sys,halt,done",*/
+                                /*EINA_TRUE);*/
+/*}*/
 
-static void
-_e_mod_comp_sys_logout(void)
-{
-   _e_mod_comp_sys_emit_cb_wait(E_SYS_LOGOUT,
-                                "e,state,sys,logout",
-                                "e,state,sys,logout,done",
-                                EINA_TRUE);
-}
+/*static void*/
+/*_e_mod_comp_sys_logout(void)*/
+/*{*/
+   /*_e_mod_comp_sys_emit_cb_wait(E_SYS_LOGOUT,*/
+                                /*"e,state,sys,logout",*/
+                                /*"e,state,sys,logout,done",*/
+                                /*EINA_TRUE);*/
+/*}*/
 
-static void
-_e_mod_comp_sys_resume(void)
-{
-   _e_mod_comp_sys_emit_cb_wait(E_SYS_SUSPEND,
-                                "e,state,sys,resume",
-                                NULL,
-                                EINA_FALSE);
-}
+/*static void*/
+/*_e_mod_comp_sys_resume(void)*/
+/*{*/
+   /*_e_mod_comp_sys_emit_cb_wait(E_SYS_SUSPEND,*/
+                                /*"e,state,sys,resume",*/
+                                /*NULL,*/
+                                /*EINA_FALSE);*/
+/*}*/
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -4034,12 +4034,12 @@ e_mod_comp_init(void)
    Eina_List *l;
    E_Manager *man;
    
-   e_sys_handlers_set(_e_mod_comp_sys_suspend,
-                      _e_mod_comp_sys_hibernate,
-                      _e_mod_comp_sys_reboot,
-                      _e_mod_comp_sys_shutdown,
-                      _e_mod_comp_sys_logout,
-                      _e_mod_comp_sys_resume);
+   /*e_sys_handlers_set(_e_mod_comp_sys_suspend,*/
+                      /*_e_mod_comp_sys_hibernate,*/
+                      /*_e_mod_comp_sys_reboot,*/
+                      /*_e_mod_comp_sys_shutdown,*/
+                      /*_e_mod_comp_sys_logout,*/
+                      /*_e_mod_comp_sys_resume);*/
 
    windows = eina_hash_string_superfast_new(NULL);
    borders = eina_hash_string_superfast_new(NULL);
