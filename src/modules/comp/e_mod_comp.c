@@ -3971,59 +3971,59 @@ _e_mod_comp_sys_emit_cb_wait(E_Sys_Action a, const char *sig, const char *rep, E
      }
 }
 
-static void
-_e_mod_comp_sys_suspend(void)
-{
-   _e_mod_comp_sys_emit_cb_wait(E_SYS_SUSPEND,
-                                "e,state,sys,suspend",
-                                "e,state,sys,suspend,done",
-                                EINA_TRUE);
-}
+/*static void*/
+/*_e_mod_comp_sys_suspend(void)*/
+/*{*/
+   /*_e_mod_comp_sys_emit_cb_wait(E_SYS_SUSPEND,*/
+                                /*"e,state,sys,suspend",*/
+                                /*"e,state,sys,suspend,done",*/
+                                /*EINA_TRUE);*/
+/*}*/
 
-static void
-_e_mod_comp_sys_hibernate(void)
-{
-   _e_mod_comp_sys_emit_cb_wait(E_SYS_HIBERNATE,
-                                "e,state,sys,hibernate",
-                                "e,state,sys,hibernate,done",
-                                EINA_TRUE);
-}
+/*static void*/
+/*_e_mod_comp_sys_hibernate(void)*/
+/*{*/
+   /*_e_mod_comp_sys_emit_cb_wait(E_SYS_HIBERNATE,*/
+                                /*"e,state,sys,hibernate",*/
+                                /*"e,state,sys,hibernate,done",*/
+                                /*EINA_TRUE);*/
+/*}*/
 
-static void
-_e_mod_comp_sys_reboot(void)
-{
-   _e_mod_comp_sys_emit_cb_wait(E_SYS_REBOOT,
-                                "e,state,sys,reboot",
-                                "e,state,sys,reboot,done",
-                                EINA_TRUE);
-}
+/*static void*/
+/*_e_mod_comp_sys_reboot(void)*/
+/*{*/
+   /*_e_mod_comp_sys_emit_cb_wait(E_SYS_REBOOT,*/
+                                /*"e,state,sys,reboot",*/
+                                /*"e,state,sys,reboot,done",*/
+                                /*EINA_TRUE);*/
+/*}*/
 
-static void
-_e_mod_comp_sys_shutdown(void)
-{
-   _e_mod_comp_sys_emit_cb_wait(E_SYS_HALT,
-                                "e,state,sys,halt",
-                                "e,state,sys,halt,done",
-                                EINA_TRUE);
-}
+/*static void*/
+/*_e_mod_comp_sys_shutdown(void)*/
+/*{*/
+   /*_e_mod_comp_sys_emit_cb_wait(E_SYS_HALT,*/
+                                /*"e,state,sys,halt",*/
+                                /*"e,state,sys,halt,done",*/
+                                /*EINA_TRUE);*/
+/*}*/
 
-static void
-_e_mod_comp_sys_logout(void)
-{
-   _e_mod_comp_sys_emit_cb_wait(E_SYS_LOGOUT,
-                                "e,state,sys,logout",
-                                "e,state,sys,logout,done",
-                                EINA_TRUE);
-}
+/*static void*/
+/*_e_mod_comp_sys_logout(void)*/
+/*{*/
+   /*_e_mod_comp_sys_emit_cb_wait(E_SYS_LOGOUT,*/
+                                /*"e,state,sys,logout",*/
+                                /*"e,state,sys,logout,done",*/
+                                /*EINA_TRUE);*/
+/*}*/
 
-static void
-_e_mod_comp_sys_resume(void)
-{
-   _e_mod_comp_sys_emit_cb_wait(E_SYS_SUSPEND,
-                                "e,state,sys,resume",
-                                NULL,
-                                EINA_FALSE);
-}
+/*static void*/
+/*_e_mod_comp_sys_resume(void)*/
+/*{*/
+   /*_e_mod_comp_sys_emit_cb_wait(E_SYS_SUSPEND,*/
+                                /*"e,state,sys,resume",*/
+                                /*NULL,*/
+                                /*EINA_FALSE);*/
+/*}*/
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -4057,8 +4057,8 @@ e_mod_comp_init(void)
    E_LIST_HANDLER_APPEND(handlers, ECORE_X_EVENT_DAMAGE_NOTIFY, _e_mod_comp_damage, NULL);
    E_LIST_HANDLER_APPEND(handlers, ECORE_X_EVENT_WINDOW_DAMAGE, _e_mod_comp_damage_win, NULL);
    
-   /*E_LIST_HANDLER_APPEND(handlers, E_EVENT_SCREENSAVER_ON, _e_mod_comp_screensaver_on, NULL);*/
-   /*E_LIST_HANDLER_APPEND(handlers, E_EVENT_SCREENSAVER_OFF, _e_mod_comp_screensaver_off, NULL);*/
+   E_LIST_HANDLER_APPEND(handlers, E_EVENT_SCREENSAVER_ON, _e_mod_comp_screensaver_on, NULL);
+   E_LIST_HANDLER_APPEND(handlers, E_EVENT_SCREENSAVER_OFF, _e_mod_comp_screensaver_off, NULL);
 
    E_LIST_HANDLER_APPEND(handlers, ECORE_EVENT_KEY_DOWN, _e_mod_comp_key_down, NULL);
    E_LIST_HANDLER_APPEND(handlers, ECORE_EVENT_SIGNAL_USER, _e_mod_comp_signal_user, NULL);
