@@ -4057,8 +4057,8 @@ e_mod_comp_init(void)
    E_LIST_HANDLER_APPEND(handlers, ECORE_X_EVENT_DAMAGE_NOTIFY, _e_mod_comp_damage, NULL);
    E_LIST_HANDLER_APPEND(handlers, ECORE_X_EVENT_WINDOW_DAMAGE, _e_mod_comp_damage_win, NULL);
    
-   E_LIST_HANDLER_APPEND(handlers, E_EVENT_SCREENSAVER_ON, _e_mod_comp_screensaver_on, NULL);
-   E_LIST_HANDLER_APPEND(handlers, E_EVENT_SCREENSAVER_OFF, _e_mod_comp_screensaver_off, NULL);
+   /*E_LIST_HANDLER_APPEND(handlers, E_EVENT_SCREENSAVER_ON, _e_mod_comp_screensaver_on, NULL);*/
+   /*E_LIST_HANDLER_APPEND(handlers, E_EVENT_SCREENSAVER_OFF, _e_mod_comp_screensaver_off, NULL);*/
 
    E_LIST_HANDLER_APPEND(handlers, ECORE_EVENT_KEY_DOWN, _e_mod_comp_key_down, NULL);
    E_LIST_HANDLER_APPEND(handlers, ECORE_EVENT_SIGNAL_USER, _e_mod_comp_signal_user, NULL);
