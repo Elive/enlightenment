@@ -330,7 +330,9 @@ wizard_page_hide(E_Wizard_Page *pg __UNUSED__)
         if (do_gl)
           {
              cfg->engine = ENGINE_GL;
-             cfg->smooth_windows = 1;
+             /*cfg->smooth_windows = 1;*/
+             // do not smooth_windows, because is slower, nettops don't play videos enough fast with this and we don't need it at all (improves visuals? we want good reponsive)
+             cfg->smooth_windows = 0;
              /*cfg->vsync = do_vsync;*/
              cfg->vsync = 1;
 
