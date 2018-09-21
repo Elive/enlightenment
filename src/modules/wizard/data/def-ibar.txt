@@ -19,7 +19,6 @@ gimp
 #blender
 skype
 pidgin gajim konversation kvirc loqui lostirc quassel qutim
-elicit
 libreoffice-writer lowriter libreoffice abiword
 #qalculate-gtk galculator
 sublime_text codeblocks eclipse
@@ -29,6 +28,7 @@ virtualbox virtualbox-ose virtualbox-qt
 steam
 synaptic
 gnome-search-tool search
+elive-help-hotkeys
 
 
 # vim: set foldmethod=marker filetype=sh :
